@@ -1,0 +1,25 @@
+{
+  "name": "1rd_game_dev",
+  "version": "1.0.0",
+  "description": "Game voor basisonderwijs",
+  "main": "app.js",
+  "scripts": {
+    "test": "Hello World!",
+    "tsc" : "tsc",
+    "watch" : "tsc -w"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DjordyKoert/1rd-GameDev.git"
+  },
+  "author": "1rd Game Dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DjordyKoert/1rd-GameDev/issues"
+  },
+  "homepage": "https://github.com/DjordyKoert/1rd-GameDev#readme",
+  "dependencies": {
+    "typescript": "^3.2.2"
+  }
+}
