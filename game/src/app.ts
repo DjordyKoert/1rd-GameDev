@@ -5,7 +5,7 @@ class App {
     private _wood: number
 
     constructor(canvasElem: HTMLCanvasElement) {
-        this._canvas = new CanvasHelper(canvasElem)
+        this._canvas = new BaseView(canvasElem)
         this._gold = 0
         this._wood = 0
     }
