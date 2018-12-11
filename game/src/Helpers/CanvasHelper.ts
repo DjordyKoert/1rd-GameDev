@@ -33,4 +33,9 @@ class CanvasHelper {
     public getCenter() {
         return this._canvas.width / this._canvas.height;
     }
+
+    public createRect() {
+    this._context.fillStyle="#FF0000";
+    this._context.fillRect(20,20,150,100);    
+    }
 }
