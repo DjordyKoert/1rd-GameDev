@@ -34,12 +34,12 @@ class CanvasHelper {
      * @param xPos The X position of the image
      * @param yPos The Y position of the image
      */
-    public writeImageToCanvas(Src: string, xPos: number, yPos: number) {
+    public writeImageToCanvas(Src: string, xPos: number, yPos: number, imgWidth: number, imgHeight: number) {
         let image = new Image();
         // add the listener so the waiting will not affect the change
         image.addEventListener('load', () => {
             //this.d_context.clip();
-            this._context.drawImage(image, xPos, yPos);
+            this._context.drawImage(image, xPos, yPos, imgWidth, imgHeight);
         });
 
         // load the source in the image.
