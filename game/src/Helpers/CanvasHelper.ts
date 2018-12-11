@@ -126,4 +126,12 @@ class CanvasHelper {
 
 
     }
+
+    public moveTo(xPos: number, yPos: number): void {
+        this._context.moveTo(xPos, yPos)
+    }
+    public lineTo(xPos: number, yPos: number): void {
+        this._context.lineTo(xPos, yPos)
+        this._context.stroke()
+    }
 }
