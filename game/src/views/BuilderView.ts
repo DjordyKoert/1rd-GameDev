@@ -1,6 +1,8 @@
-class BuilderView extends BaseView {
+class BuilderView{
 
-    protected constructor(canvas: HTMLCanvasElement){
-        super(canvas)
+    protected CanvasHelper: CanvasHelper
+
+    public constructor(canvas: CanvasHelper){
+        this.CanvasHelper = canvas
     }
 }
