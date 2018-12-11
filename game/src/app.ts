@@ -3,7 +3,7 @@ class App {
     private readonly _canvas: CanvasHelper
     private _gold: number
     private _wood: number
-    
+
     constructor(canvasElem: HTMLCanvasElement) {
         this._canvas = new CanvasHelper(canvasElem)
         this._gold = 0
