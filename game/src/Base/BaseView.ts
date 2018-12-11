@@ -1,18 +1,15 @@
 class BaseView {
-    protected _canvasHelper: CanvasHelper
-    private _HomeView: HomeView
+    private _canvasHelper: CanvasHelper
+    private _homeView: HomeView
     private _BuilderView: BuilderView
-
     public constructor(canvas: HTMLCanvasElement){
         this._canvasHelper = new CanvasHelper(canvas)
-
-        this._HomeView = new HomeView(this._canvasHelper)
+        
+        this._homeView = new HomeView(this._canvasHelper)
         this._BuilderView = new BuilderView(this._canvasHelper)
-        console.log("new baseview")
+        //this._homeView.homeScreen()
     }
-
-    public render(){
-        console.log("baseview render")
-        this._HomeView.homeScreen()
+    public render() {
+        this._homeView.renderScreen()
     }
 }

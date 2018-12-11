@@ -42,6 +42,7 @@ class App {
         this._wood = 0;
     }
     gameLoop() {
+        this._canvas.render();
     }
 }
 let init = function () {
@@ -52,6 +53,11 @@ window.addEventListener('load', init);
 class BaseView {
     constructor(canvas) {
         this._canvasHelper = new CanvasHelper(canvas);
+        this._homeView = new HomeView(this._canvasHelper);
+        this._BuilderView = new BuilderView(this._canvasHelper);
+    }
+    render() {
+        this._homeView.renderScreen();
     }
 }
 class MouseHelper {
@@ -70,23 +76,19 @@ class MouseHelper {
         window.addEventListener("mouseup", this.mouseUp);
     }
 }
-class BuilderView extends BaseView {
+class BuilderView {
     constructor(canvas) {
-        super(canvas);
+        this.CanvasHelper = canvas;
     }
 }
-class HomeView extends BaseView {
-    constructor(screen, ctx, canvas) {
-        super(canvas);
+class HomeView {
+    constructor(canvas) {
         this._screen = "homeScreen";
-        this._screen = screen;
-        this._context = ctx;
-        this.CanvasHelper = new CanvasHelper(canvas);
-        this.homeScreen();
+        this.CanvasHelper = canvas;
     }
-    homeScreen() {
-        this.CanvasHelper.writeTextToCanvas("BACK", 24, 20, 20);
+    renderScreen() {
         this.CanvasHelper.createRect(0, 0, 150, 100);
+        this.CanvasHelper.writeTextToCanvas("BArewwfCK", 24, 20, 20, "purple");
     }
 }
 class StartView extends BaseView {
