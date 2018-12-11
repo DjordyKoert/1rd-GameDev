@@ -1,10 +1,9 @@
 class HomeView extends BaseView{
     protected _screen: string = "homeScreen";
-    private _canvasHelper: CanvasHelper;
-    private _context: 
+    private _context: CanvasRenderingContext2D;
 
     public constructor(screen: string){
-        super(Canvas)
+        super(canvas)
         this._screen = screen;
     }
 
