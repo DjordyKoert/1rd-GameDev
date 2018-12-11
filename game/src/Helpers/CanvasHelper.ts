@@ -9,8 +9,11 @@ class CanvasHelper {
         this._canvas.width = window.innerWidth;
         this._canvas.height = window.innerHeight;
     }
-    public writeTextToCanvas() {
-
+    public writeTextToCanvas(Text: string, fontSize: number, xPos: number, yPos: number, Color: string = "white", Alignment: CanvasTextAlign = "center") {
+        this._context.font = `${fontSize}px Minecraft`;
+        this._context.fillStyle = Color;
+        this._context.textAlign = Alignment;
+        this._context.fillText(Text, xPos, yPos);
     }
     
     public writeImageToCanvas(): void {
