@@ -11,7 +11,7 @@ class GameView {
         this.xCoord = 0
         this.yCoord = 0
         this.lines = 10
-        this.sqSize = this.CanvasHelper.getWidth() / lines
+        this.sqSize = this.CanvasHelper.getWidth() / this.lines
         this.renderGrid()
     }
     public renderScreen() {
