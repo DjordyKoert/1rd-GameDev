@@ -11,7 +11,7 @@ class App {
     }
 
     public gameLoop(): void {
-
+        this._canvas.render()
     }
 }
 
