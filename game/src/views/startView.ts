@@ -17,4 +17,3 @@ class StartView extends BaseView {
         this._context.fillRect(0,0,150,100)
     }
 }
-}
