@@ -16,8 +16,16 @@ class CanvasHelper {
         this._context.fillText(Text, xPos, yPos);
     }
     
-    public writeImageToCanvas(): void {
+    public writeImageToCanvas(Src: string, xPos: number, yPos: number) {
+        let image = new Image();
+        // add the listener so the waiting will not affect the change
+        image.addEventListener('load', () => {
+            //this.d_context.clip();
+            this._context.drawImage(image, xPos, yPos);
+        });
 
+        // load the source in the image.
+        image.src = Src;
     }
 
     public clear(): void {
