@@ -8,6 +8,8 @@ class HomeView extends BaseView{
         this._screen = screen;
         this._context = ctx;
         this.CanvasHelper = new CanvasHelper(canvas)
+
+        this.homeScreen()
     }
 
     public homeScreen(){
