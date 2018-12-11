@@ -9,13 +9,31 @@ class CanvasHelper {
         this._canvas.width = window.innerWidth;
         this._canvas.height = window.innerHeight;
     }
-    public writeTextToCanvas(Text: string, fontSize: number, xPos: number, yPos: number, Color: string = "white", Alignment: CanvasTextAlign = "center") {
+
+    /**
+     * Writes text to the canvas
+     * @param text The text written to the canvas
+     * @param fontSize The font size of the text
+     * @param xPos The X Position of the text
+     * @param yPos The Y Position of the tect
+     * @param color The color of the text
+     * @param alignment The alignment of the text
+     * @param textBaseLine The baseline of the text
+     */
+    public writeTextToCanvas(text: string, fontSize: number, xPos: number, yPos: number, color: string = "white", alignment: CanvasTextAlign = "center", textBaseLine: any = 'middle') {
         this._context.font = `${fontSize}px Minecraft`;
-        this._context.fillStyle = Color;
-        this._context.textAlign = Alignment;
-        this._context.fillText(Text, xPos, yPos);
+        this._context.fillStyle = color;
+        this._context.textAlign = alignment;
+        this._context.textBaseline = textBaseLine;
+        this._context.fillText(text, xPos, yPos);
     }
 
+    /**
+     * Writes an image to the canvas
+     * @param Src The image link
+     * @param xPos The X position of the image
+     * @param yPos The Y position of the image
+     */
     public writeImageToCanvas(Src: string, xPos: number, yPos: number) {
         let image = new Image();
         // add the listener so the waiting will not affect the change
@@ -27,26 +45,85 @@ class CanvasHelper {
         // load the source in the image.
         image.src = Src;
     }
-
+    /**
+     * Clears screen
+     */
     public clear(): void {
         //clear the screen
         this._context.clearRect(0, 0, this._canvas.width, this._canvas.height)
     }
 
+    /**
+     * returns the canvas height
+     */
     public getHeight(): number {
         return this._canvas.height;
     }
 
+    /**
+     * returns the canvas width
+     */
     public getWidth(): number {
         return this._canvas.width;
     }
 
+    /**
+     * returns an object with X and Y coordinates
+     */
     public getCenter(): { X: number, Y: number } {
-        return { X: this._canvas.width / 2, Y: this._canvas.height / 2};
+        return { X: this._canvas.width / 2, Y: this._canvas.height / 2 };
     }
 
+
+    /**
+     * Creates a Rectangle
+     * @param xPos The start position of the X coordinate of the rectangle
+     * @param yPos The start position of the Y coordinate of the rectangle
+     * @param width The width of the rectangle
+     * @param height The height of the rectangle
+     * @param color The color of the rectangle -- DEFAULT WHITE
+     */
     public createRect(xPos: number, yPos: number, width: number, height: number, color: string = "white") {
         this._context.fillStyle = color;
         this._context.fillRect(xPos, yPos, width, height);
+    }
+
+    /**
+     * Makes a clickable button
+     * @param rectXPos Start X position of the button
+     * @param rectYPos start Y position of the button
+     * @param rectWidth button's width
+     * @param rectHeight button's height
+     * @param text Displayed text
+     * @param fontSize fontsize of the displayed text
+     * @param rectColor color of the button -- DEFAULTED TO WHITE
+     * @param textColor color for the text -- DEFAULTED TO BLACK
+     * @param alignment alignment of the text -- DEFAULTED TO CENTER
+     */
+    public writeButtonToCanvas(
+        rectXPos: number,
+        rectYPos: number,
+        rectWidth: number,
+        rectHeight: number,
+
+        text: string,
+        fontSize: number,
+        rectColor: string = "white",
+        textColor: string = "black",
+        textAlignment: CanvasTextAlign = "center",
+    ) {
+        this.createRect(rectXPos, rectYPos, rectWidth, rectHeight, rectColor)
+        this.writeTextToCanvas(text, fontSize, rectXPos + (rectWidth / 2), rectYPos + (rectHeight / 2), textColor, textAlignment)
+        window.addEventListener("click", (event) => {
+            console.log(event.x, event.y)
+            if (event.x > rectXPos && event.x < rectXPos + rectWidth) {
+                if (event.y > rectYPos && event.y < rectYPos + rectHeight) {
+                    alert('button pressed')
+                    // TODO changeScreen
+                }
+            }
+        })
+
+
     }
 }
