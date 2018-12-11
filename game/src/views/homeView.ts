@@ -8,12 +8,13 @@ class HomeView extends BaseView{
         this._screen = screen;
         this._context = ctx;
         this.CanvasHelper = new CanvasHelper(canvas)
+
+        this.homeScreen()
     }
 
     public homeScreen(){
         this.CanvasHelper.writeTextToCanvas("BACK", 24, 20, 20);
         
-        this._context.fillStyle="#ffeda0";
-        this._context.fillRect(0,0,150,100)
+        this.CanvasHelper.createRect(0,0,150,100)
     }
 }
