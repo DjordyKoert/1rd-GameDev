@@ -28,7 +28,7 @@ class CanvasHelper {
         image.src = Src;
     }
 
-    public clear(): void {
+    public clear() {
         //clear the screen
         this._context.clearRect(0, 0, this._canvas.width, this._canvas.height)
     }
