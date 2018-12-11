@@ -1,17 +1,13 @@
+/// <reference path="./Helpers/CanvasHelper.ts" />
 class App {
     private readonly _canvas: CanvasHelper
-    private gold: number
-    private wood: number
-    protected homeView: HomeView
-    
-
+    private _gold: number
+    private _wood: number
 
     constructor(canvasElem: HTMLCanvasElement) {
-        this._canvas = canvasElem
-        this.gold = 0
-        this.wood = 0
-
-        //this.homeView.homeScreen()
+        this._canvas = new CanvasHelper(canvasElem)
+        this._gold = 0
+        this._wood = 0
     }
 
     public gameLoop(): void {
