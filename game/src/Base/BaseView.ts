@@ -5,7 +5,6 @@ class BaseView {
 
     protected constructor(canvas: HTMLCanvasElement){
 
-        this._canvas = canvas
         this._canvasHelper = new CanvasHelper(canvas)
 
     }
