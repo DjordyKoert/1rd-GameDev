@@ -1,3 +1,4 @@
-class homeView{
+class HomeView{
+    protected screen: string = "homeScreen"
     
 }
