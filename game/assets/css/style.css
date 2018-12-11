@@ -1,3 +1,7 @@
 body {
     background-image: url("../images/backgrounds/background_1.jpg");
+    overflow: hidden;
+}
+* {
+    margin: 0
 }
