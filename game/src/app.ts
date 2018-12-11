@@ -1,3 +1,4 @@
+/// <reference path="./Helpers/CanvasHelper.ts" />
 class App {
     private readonly _canvas: CanvasHelper
     private _gold: number
