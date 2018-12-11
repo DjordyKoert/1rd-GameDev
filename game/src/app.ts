@@ -2,11 +2,16 @@ class App {
     private readonly _canvas: CanvasHelper
     private gold: number
     private wood: number
+    protected homeView: HomeView
     
+
+
     constructor(canvasElem: HTMLCanvasElement) {
         this._canvas = canvasElem
         this.gold = 0
         this.wood = 0
+
+        //this.homeView.homeScreen()
     }
 
     public gameLoop(): void {
