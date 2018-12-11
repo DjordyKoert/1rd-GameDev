@@ -23,14 +23,14 @@ class CanvasHelper {
     }
 
     public getHeight() {
-
+        return this._canvas.height;
     }
 
     public getWidth() {
-
+        return this._canvas.width;
     }
 
     public getCenter() {
-
+        return this._canvas.width / this._canvas.height;
     }
 }
