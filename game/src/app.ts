@@ -1,12 +1,12 @@
 class App {
     private readonly _canvas: CanvasHelper
-    private gold: number
-    private wood: number
+    private _gold: number
+    private _wood: number
     
     constructor(canvasElem: HTMLCanvasElement) {
         this._canvas = new CanvasHelper(canvasElem)
-        this.gold = 0
-        this.wood = 0
+        this._gold = 0
+        this._wood = 0
     }
 
     public gameLoop(): void {
