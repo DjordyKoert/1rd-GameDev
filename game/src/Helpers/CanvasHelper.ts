@@ -45,8 +45,8 @@ class CanvasHelper {
         return { X: this._canvas.width / 2, Y: this._canvas.height / 2};
     }
 
-    public createRect() {
-        this._context.fillStyle = "#FF0000";
-        this._context.fillRect(20, 20, 150, 100);
+    public createRect(xPos: number, yPos: number, width: number, height: number, color: string = "white") {
+        this._context.fillStyle = color;
+        this._context.fillRect(xPos, yPos, width, height);
     }
 }
