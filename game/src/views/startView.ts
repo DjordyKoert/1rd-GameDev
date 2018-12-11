@@ -10,10 +10,7 @@ class StartView extends BaseView {
         this.CanvasHelper = new CanvasHelper(canvas)
     }
 
-    public homeScreen(){
-        this.CanvasHelper.writeTextToCanvas("PLAY", 24, 100, 100);
-        
-        this._context.fillStyle="#ffeda0";
-        this._context.fillRect(0,0,150,100)
+    public renderScreen(){
+        this.CanvasHelper.writeButtonToCanvas(200,200,200,200, "START GAME", 50)
     }
 }

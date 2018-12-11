@@ -5,11 +5,12 @@ class CanvasHelper {
         this._canvas.width = window.innerWidth;
         this._canvas.height = window.innerHeight;
     }
-    writeTextToCanvas(Text, fontSize, xPos, yPos, Color = "white", Alignment = "center") {
+    writeTextToCanvas(text, fontSize, xPos, yPos, color = "white", alignment = "center", textBaseLine = 'middle') {
         this._context.font = `${fontSize}px Minecraft`;
-        this._context.fillStyle = Color;
-        this._context.textAlign = Alignment;
-        this._context.fillText(Text, xPos, yPos);
+        this._context.fillStyle = color;
+        this._context.textAlign = alignment;
+        this._context.textBaseline = textBaseLine;
+        this._context.fillText(text, xPos, yPos);
     }
     writeImageToCanvas(Src, xPos, yPos) {
         let image = new Image();
@@ -33,6 +34,18 @@ class CanvasHelper {
     createRect(xPos, yPos, width, height, color = "white") {
         this._context.fillStyle = color;
         this._context.fillRect(xPos, yPos, width, height);
+    }
+    writeButtonToCanvas(rectXPos, rectYPos, rectWidth, rectHeight, text, fontSize, rectColor = "white", textColor = "black", textAlignment = "center") {
+        this.createRect(rectXPos, rectYPos, rectWidth, rectHeight, rectColor);
+        this.writeTextToCanvas(text, fontSize, rectXPos + (rectWidth / 2), rectYPos + (rectHeight / 2), textColor, textAlignment);
+        window.addEventListener("click", (event) => {
+            console.log(event.x, event.y);
+            if (event.x > rectXPos && event.x < rectXPos + rectWidth) {
+                if (event.y > rectYPos && event.y < rectYPos + rectHeight) {
+                    alert('button pressed');
+                }
+            }
+        });
     }
 }
 class App {
@@ -66,14 +79,21 @@ class MouseHelper {
             return { mouseX: event.x, mouseY: event.y };
         };
         this.mouseDown = (event) => {
-            return { mouseX: event.x, mouseY: event.y };
+            this.mDown = true;
+            this.mX = event.x;
+            this.mY = event.y;
         };
         this.mouseUp = (event) => {
-            return { mouseX: event.x, mouseY: event.y };
+            this.mDown = false;
+            this.mX = event.x;
+            this.mY = event.y;
         };
         window.addEventListener("mousemove", this.mouseMove);
         window.addEventListener("mousedown", this.mouseDown);
         window.addEventListener("mouseup", this.mouseUp);
+    }
+    getClick() {
+        return { click: this.mDown, x: this.mX, y: this.mY };
     }
 }
 class BuilderView {
@@ -99,10 +119,8 @@ class StartView extends BaseView {
         this._context = ctx;
         this.CanvasHelper = new CanvasHelper(canvas);
     }
-    homeScreen() {
-        this.CanvasHelper.writeTextToCanvas("PLAY", 24, 100, 100);
-        this._context.fillStyle = "#ffeda0";
-        this._context.fillRect(0, 0, 150, 100);
+    renderScreen() {
+        this.CanvasHelper.writeButtonToCanvas(200, 200, 200, 200, "START GAME", 50);
     }
 }
 //# sourceMappingURL=app.js.map
