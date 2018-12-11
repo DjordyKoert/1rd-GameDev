@@ -37,7 +37,7 @@ class CanvasHelper {
 }
 class App {
     constructor(canvasElem) {
-        this._canvas = new CanvasHelper(canvasElem);
+        this._canvas = new BaseView(canvasElem);
         this._gold = 0;
         this._wood = 0;
     }
@@ -51,7 +51,6 @@ let init = function () {
 window.addEventListener('load', init);
 class BaseView {
     constructor(canvas) {
-        this._canvas = canvas;
         this._canvasHelper = new CanvasHelper(canvas);
     }
 }
@@ -83,10 +82,25 @@ class HomeView extends BaseView {
         this._screen = screen;
         this._context = ctx;
         this.CanvasHelper = new CanvasHelper(canvas);
+        this.homeScreen();
     }
     homeScreen() {
         this.CanvasHelper.writeTextToCanvas("BACK", 24, 20, 20);
         this.CanvasHelper.createRect(0, 0, 150, 100);
+    }
+}
+class StartView extends BaseView {
+    constructor(screen, ctx, canvas) {
+        super(canvas);
+        this._screen = "homeScreen";
+        this._screen = screen;
+        this._context = ctx;
+        this.CanvasHelper = new CanvasHelper(canvas);
+    }
+    homeScreen() {
+        this.CanvasHelper.writeTextToCanvas("PLAY", 24, 100, 100);
+        this._context.fillStyle = "#ffeda0";
+        this._context.fillRect(0, 0, 150, 100);
     }
 }
 //# sourceMappingURL=app.js.map
