@@ -16,7 +16,7 @@ class App {
 
 
 let init = function () {
-    const App = new App(<HTMLCanvasElement>document.getElementById('canvas'));
-    window.setInterval(() => App.gameLoop(), 1000 / 60)
+    const Game = new App(<HTMLCanvasElement>document.getElementById('canvas'));
+    window.setInterval(() => Game.gameLoop(), 1000 / 60)
 };
 window.addEventListener('load', init);
