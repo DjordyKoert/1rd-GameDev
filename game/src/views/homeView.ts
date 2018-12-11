@@ -15,5 +15,4 @@ class HomeView extends BaseView{
         this._canvasHelper.createRect(0,0,150,100)
         this._canvasHelper.writeTextToCanvas("BACK", 24, 20, 20, "black");
     }
-
 }
