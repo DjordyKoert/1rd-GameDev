@@ -4,7 +4,7 @@ class App {
     private wood: number
     
     constructor(canvasElem: HTMLCanvasElement) {
-        this._canvas = canvasElem
+        this._canvas = new CanvasHelper(canvasElem)
         this.gold = 0
         this.wood = 0
     }
