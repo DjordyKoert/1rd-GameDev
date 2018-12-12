@@ -5,6 +5,7 @@ class GameView {
     private yCoord: number
     private lines: number
     private sqSize: number
+    private image: CanvasImageSource
     private gridsRendered: boolean
     private tileImages: Array<string>
     public tileInfo: Array<any>
@@ -40,7 +41,10 @@ class GameView {
             //this.CanvasHelper.createRect(this.xCoord, 0, this.sqSize, this.sqSize)
             for (let i = 0; i < this.lines; i++) {
                 let imageSrc = this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)]
-                this.CanvasHelper.writeImageToCanvas(imageSrc, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
+                let image = new Image()
+                image.src = imageSrc
+                this.image = image
+                this.CanvasHelper.writeImageToCanvas(this.image, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
                 //Try to create array with objects
                 let vr = { xStart: this.xCoord, xEnd: this.xCoord + this.sqSize, yStart: this.sqSize * i, yEnd: (this.sqSize * i) + this.sqSize, imageSrc: imageSrc }
                 this.tileInfo.push(vr)

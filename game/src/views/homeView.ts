@@ -2,7 +2,7 @@ class HomeView {
     protected _screen: string = "homeScreen";
     protected CanvasHelper: CanvasHelper;
     protected imageCenter: number;
-    protected image: HTMLImageElement;
+    protected image: CanvasImageSource;
     
 
     public constructor(canvas: CanvasHelper){
@@ -34,7 +34,10 @@ class HomeView {
         const maxPlanets: number = 3;
 
         for (let i = 0; i < maxPlanets; i++) {
-            this.CanvasHelper.writeImageToCanvas(planetList[i], planetXCoords[i], planetYCoords[i], 300, 300)
+            let image = new Image()
+            image.src = planetList[i]
+            this.image = image
+            this.CanvasHelper.writeImageToCanvas(this.image, planetXCoords[i], planetYCoords[i], 300, 300)
         }
         // this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet2.png", 250, 300, 300, 300)
         // this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet2.png", 750, 400, 300, 300)

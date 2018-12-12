@@ -36,13 +36,26 @@ class CanvasHelper {
      */
     public writeImageToCanvas(image: CanvasImageSource,
         aXpos: number,
-        aYpos: number): CanvasImageSource {
+        aYpos: number,
+        imgWidth: number = null,
+        imgHeight: number = null,
+    ): CanvasImageSource {
         // save the current state
         this._context.save();
         // move the origin to the desired location
         this._context.translate(aXpos, aYpos);
         // draw
-        this._context.drawImage(image, -image.width / 2, -image.height / 2);
+        if (imgWidth != null && imgHeight != null) {
+            this._context.drawImage(image, imgWidth, imgHeight);
+        }
+        else if (imgWidth != null) {
+            this._context.drawImage(image, imgWidth, -image.height / 2);
+        }
+        else if (imgHeight != null) {
+            this._context.drawImage(image, -image.width / 2, imgHeight);
+        } else {
+            this._context.drawImage(image, -image.width / 2, -image.height / 2);
+        }
         // reset to saved state
         this._context.restore();
         return image;
@@ -138,11 +151,11 @@ class CanvasHelper {
 
         barProgress: string = "green",
         barLeft: string = "red",
-    ) {   
+    ) {
         //Red bar
         this.createRect(rectXPos + 10, rectYPos + 10, rectWidth, rectHeight, barLeft)
         //Green bar
-        this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value/ maxNumber), rectHeight, barProgress)
+        this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value / maxNumber), rectHeight, barProgress)
 
     }
 
