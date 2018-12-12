@@ -20,7 +20,7 @@ class CanvasHelper {
      * @param alignment The alignment of the text
      * @param textBaseLine The baseline of the text
      */
-    public writeTextToCanvas(text: string, fontSize: number, xPos: number, yPos: number, color: string = "white", alignment: CanvasTextAlign = "center", textBaseLine: any = 'middle') {
+    public writeTextToCanvas(text: string, fontSize: number, xPos: number, yPos: number, color: string = "black", alignment: CanvasTextAlign = "center", textBaseLine: any = 'middle') {
         this._context.font = `${fontSize}px Minecraft`;
         this._context.fillStyle = color;
         this._context.textAlign = alignment;
