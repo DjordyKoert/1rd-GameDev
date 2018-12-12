@@ -64,7 +64,7 @@ class HomeView {
                         else{
                             this.clicked = true
                             this.CanvasHelper.clear()
-                            this._gameView.renderScreen()
+                            BaseView.changeScreen("game")
 
                         }
                     }
