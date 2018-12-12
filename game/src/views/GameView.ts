@@ -7,7 +7,7 @@ class GameView {
     private sqSize: number
     private gridsRendered: boolean
     private tileImages: Array<string>
-    public tileInfo: Array<Object>
+    public tileInfo: Array<any>
 
     public constructor(canvas: CanvasHelper) {
         this.CanvasHelper = canvas
@@ -49,6 +49,9 @@ class GameView {
             this.xCoord += this.sqSize
             this.yCoord += this.sqSize
         }
-        console.log(this.tileInfo[1])
+        window.addEventListener("mousedown", e => {
+            let  v = this.tileInfo.filter(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+            console.log(v[0].imageSrc)
+        })
     }
 }
