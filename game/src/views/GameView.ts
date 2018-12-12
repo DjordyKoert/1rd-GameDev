@@ -8,10 +8,12 @@ class GameView {
     private image: CanvasImageSource
     private gridsRendered: boolean
     private tileImages: Array<string>
+    private _BuilderView: BuilderView
     public tileInfo: Array<any>
 
     public constructor(canvas: CanvasHelper) {
         this.CanvasHelper = canvas
+        this._BuilderView = new BuilderView(this.CanvasHelper)
         this.gridsRendered = false
         this.xCoord = this.yCoord = 0
         this.lines = 10
@@ -53,6 +55,7 @@ class GameView {
         window.addEventListener("mousedown", e => {
             let  v = this.tileInfo.filter(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
             console.log(v[0].imageSrc)
+            this._BuilderView.renderScreen()
         })
     }
 }
