@@ -9,11 +9,13 @@ class GameView {
     private gridsRendered: boolean
     private tileImages: Array<string>
     private _BuilderView: BuilderView
+    private _UIView: UIView
     public tileInfo: Array<any>
 
     public constructor(canvas: CanvasHelper) {
         this.CanvasHelper = canvas
-        this._BuilderView = new BuilderView(this.CanvasHelper)
+        this._BuilderView = new BuilderView(canvas)
+        this._UIView = new UIView(canvas)
         this.gridsRendered = false
         this.xCoord = this.yCoord = 0
         this.lines = 10
@@ -52,9 +54,10 @@ class GameView {
             this.xCoord += this.sqSize
             this.yCoord += this.sqSize
         }
+        this._UIView.renderScreen()
         window.addEventListener("mousedown", e => {
-            let  v = this.tileInfo.filter(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
-            console.log(v[0].imageSrc)
+            // let  v = this.tileInfo.filter(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+            // console.log(v[0].imageSrc)
             this._BuilderView.renderScreen()
         })
     }
