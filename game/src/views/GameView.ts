@@ -41,10 +41,7 @@ class GameView {
             //this.CanvasHelper.createRect(this.xCoord, 0, this.sqSize, this.sqSize)
             for (let i = 0; i < this.lines; i++) {
                 let imageSrc = this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)]
-                let image = new Image()
-                image.src = imageSrc
-                this.image = image
-                this.CanvasHelper.writeImageToCanvas(this.image, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
+                this.CanvasHelper.writeImageToCanvas(imageSrc, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
                 //Try to create array with objects
                 let vr = { xStart: this.xCoord, xEnd: this.xCoord + this.sqSize, yStart: this.sqSize * i, yEnd: (this.sqSize * i) + this.sqSize, imageSrc: imageSrc }
                 this.tileInfo.push(vr)

@@ -20,7 +20,7 @@ class CanvasHelper {
      * @param alignment The alignment of the text
      * @param textBaseLine The baseline of the text
      */
-    public writeTextToCanvas(text: string, fontSize: number, xPos: number, yPos: number, color: string = "black", alignment: CanvasTextAlign = "center", textBaseLine: any = 'middle') {
+    public writeTextToCanvas(text: string, fontSize: number, xPos: number, yPos: number, color: string = "white", alignment: CanvasTextAlign = "center", textBaseLine: any = 'middle') {
         this._context.font = `${fontSize}px Minecraft`;
         this._context.fillStyle = color;
         this._context.textAlign = alignment;
@@ -34,31 +34,16 @@ class CanvasHelper {
      * @param xPos The X position of the image
      * @param yPos The Y position of the image
      */
-    public writeImageToCanvas(image: CanvasImageSource,
-        aXpos: number,
-        aYpos: number,
-        imgWidth: number = null,
-        imgHeight: number = null,
-    ): CanvasImageSource {
-        // save the current state
-        this._context.save();
-        // move the origin to the desired location
-        this._context.translate(aXpos, aYpos);
-        // draw
-        if (imgWidth != null && imgHeight != null) {
-            this._context.drawImage(image, imgWidth, imgHeight);
-        }
-        else if (imgWidth != null) {
-            this._context.drawImage(image, imgWidth, -image.height / 2);
-        }
-        else if (imgHeight != null) {
-            this._context.drawImage(image, -image.width / 2, imgHeight);
-        } else {
-            this._context.drawImage(image, -image.width / 2, -image.height / 2);
-        }
-        // reset to saved state
-        this._context.restore();
-        return image;
+    public writeImageToCanvas(Src: string, xPos: number, yPos: number, imgWidth: number, imgHeight: number) {
+        let image = new Image();
+        // add the listener so the waiting will not affect the change
+        image.addEventListener('load', () => {
+            //this.d_context.clip();
+            this._context.drawImage(image, xPos, yPos, imgWidth, imgHeight);
+        });
+
+        // load the source in the image.
+        image.src = Src;
     }
     /**
      * Clears screen
@@ -151,11 +136,11 @@ class CanvasHelper {
 
         barProgress: string = "green",
         barLeft: string = "red",
-    ) {
+    ) {   
         //Red bar
         this.createRect(rectXPos + 10, rectYPos + 10, rectWidth, rectHeight, barLeft)
         //Green bar
-        this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value / maxNumber), rectHeight, barProgress)
+        this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value/ maxNumber), rectHeight, barProgress)
 
     }
 
