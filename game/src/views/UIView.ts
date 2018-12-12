@@ -28,7 +28,7 @@ class UIView {
             //this.d_context.clip();
             this.CanvasHelper._context.font = "40px Minecraft";
             this.CanvasHelper._context.fillStyle = "#ff00ff";
-            this.CanvasHelper._context.fillText(`${App.getGold()}`, 80, 46)
+            this.CanvasHelper._context.fillText(`${App._gold}`, 80, 46)
         });
         image.src = "./assets/images/backgrounds/UIBackground.png"
         image2.src = "./assets/images/resources/woodResource.png"
