@@ -1,23 +1,49 @@
 /// <reference path="./Helpers/CanvasHelper.ts" />
 class App {
     private readonly _canvas: BaseView
-    public _gold: number
-    public _wood: number
-    public _stone: number
+    public static _gold: number = 0
+    public static _wood: number = 0
+    public static _stone: number = 0
+    public static _klimaat: number = 0
 
     constructor(canvasElem: HTMLCanvasElement) {
         this._canvas = new BaseView(canvasElem)
-        this._gold = 0
-        this._wood = 0
-        this._stone = 0
     }
 
     public gameLoop(): void {
         this._canvas.render()
     }
 
-    public getGold(): number {
+
+    public static updateWood(num: number) {
+        this._wood += num
+    }
+    public static getWood() {
+        return this._wood
+    }
+    
+    public static updateGold(num: number) {
+        this._gold += num
+    }
+    public static getGold() {
         return this._gold
+    }
+    
+    public static updateStone(num: number) {
+        this._stone += num
+    }
+    public static getStone() {
+        return this._stone
+    }
+
+    public static updateKlimaat(num: number) {
+        this._klimaat += num
+        if (this._klimaat >= 75) {
+            this._klimaat = 75
+        }
+    }
+    public static getKlimaat() {
+        return this._klimaat
     }
 }
 
