@@ -43,6 +43,9 @@ class GameView {
         this.CanvasHelper.loadingBar(400, 300, 100, 20, App._klimaat, 100)
     }
     public renderGrid() {
+        let music = new Audio("./assets/sounds/yeet.mp3")
+        music.volume = 1
+        music.play()
         for (let line = 0; line < this.lines; line++) {
             this.CanvasHelper.moveTo(0, this.yCoord)
             this.CanvasHelper.lineTo(this.CanvasHelper.getWidth(), this.yCoord)
