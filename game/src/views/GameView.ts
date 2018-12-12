@@ -5,11 +5,13 @@ class GameView {
     private yCoord: number
     private lines: number
     private sqSize: number
+    private gridsRendered: boolean
     private tileImages: Array<string>
     public tileInfo: Array<Object>
 
     public constructor(canvas: CanvasHelper) {
         this.CanvasHelper = canvas
+        this.gridsRendered = false
         this.xCoord = this.yCoord = 0
         this.lines = 10
         //Check screen size to make grids fit
@@ -27,7 +29,7 @@ class GameView {
        // this.renderGrid()
     }
     public renderScreen() {
-
+        if (!this.gridsRendered) {this.renderGrid(); this.gridsRendered = true}
     }
     public renderGrid() {
         for (let line = 0; line < this.lines; line++) {
@@ -47,6 +49,6 @@ class GameView {
             this.xCoord += this.sqSize
             this.yCoord += this.sqSize
         }
-        console.log(this.tileInfo)
+        console.log(this.tileInfo[1])
     }
 }
