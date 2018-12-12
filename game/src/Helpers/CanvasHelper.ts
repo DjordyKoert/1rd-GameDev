@@ -21,7 +21,7 @@ class CanvasHelper {
      * @param textBaseLine The baseline of the text
      */
     public writeTextToCanvas(text: string, fontSize: number, xPos: number, yPos: number, color: string = "white", alignment: CanvasTextAlign = "center", textBaseLine: any = 'middle') {
-        this._context.font = `${fontSize}px Minecraft`;
+        this._context.font = `${fontSize}m Minecraft`;
         this._context.fillStyle = color;
         this._context.textAlign = alignment;
         this._context.textBaseline = textBaseLine;
@@ -34,7 +34,7 @@ class CanvasHelper {
      * @param xPos The X position of the image
      * @param yPos The Y position of the image
      */
-    public writeImageToCanvas(Src: string, xPos: number, yPos: number, imgWidth: number, imgHeight: number) {
+    public writeImageToCanvas(Src: string, xPos: number, yPos: number, imgWidth: number, imgHeight: number):boolean {
         let image = new Image();
         // add the listener so the waiting will not affect the change
         image.addEventListener('load', () => {
@@ -44,6 +44,7 @@ class CanvasHelper {
 
         // load the source in the image.
         image.src = Src;
+        return true
     }
     /**
      * Clears screen

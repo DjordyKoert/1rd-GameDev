@@ -1,17 +1,24 @@
 class GameView {
     protected _screen: string = "gameScreen";
     protected CanvasHelper: CanvasHelper
+    private _mouseHelper: MouseHelper
     private xCoord: number
     private yCoord: number
     private lines: number
     private sqSize: number
-    private image: CanvasImageSource
     private gridsRendered: boolean
     private tileImages: Array<string>
+    private _BuilderView: BuilderView
+    private _UIView: UIView
+    private _ToolbarView: ToolbarView
     public tileInfo: Array<any>
 
     public constructor(canvas: CanvasHelper) {
         this.CanvasHelper = canvas
+        this._mouseHelper = new MouseHelper()
+        this._BuilderView = new BuilderView(canvas)
+        this._UIView = new UIView(canvas)
+        this._ToolbarView = new ToolbarView(canvas)
         this.gridsRendered = false
         this.xCoord = this.yCoord = 0
         this.lines = 10
@@ -31,6 +38,7 @@ class GameView {
     }
     public renderScreen() {
         if (!this.gridsRendered) {this.renderGrid(); this.gridsRendered = true}
+        this._ToolbarView.renderToolbar()
     }
     public renderGrid() {
         for (let line = 0; line < this.lines; line++) {
@@ -50,9 +58,6 @@ class GameView {
             this.xCoord += this.sqSize
             this.yCoord += this.sqSize
         }
-        window.addEventListener("mousedown", e => {
-            let  v = this.tileInfo.filter(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
-            console.log(v[0].imageSrc)
-        })
+        this._UIView.renderScreen()
     }
 }

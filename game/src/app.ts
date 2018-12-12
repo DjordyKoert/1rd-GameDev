@@ -4,6 +4,7 @@ class App {
     public static _gold: number = 0
     public static _wood: number = 0
     public static _stone: number = 0
+    public static _klimaat: number = 0
 
     constructor(canvasElem: HTMLCanvasElement) {
         this._canvas = new BaseView(canvasElem)
@@ -33,6 +34,16 @@ class App {
     }
     public static getStone() {
         return this._stone
+    }
+
+    public static updateKlimaat(num: number) {
+        this._klimaat += num
+        if (this._klimaat >= 75) {
+            this._klimaat = 75
+        }
+    }
+    public static getKlimaat() {
+        return this._klimaat
     }
 }
 
