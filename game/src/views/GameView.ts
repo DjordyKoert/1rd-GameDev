@@ -24,7 +24,7 @@ class GameView {
             "./assets/images/houses/house.png",
         ]
         this.tileInfo = [{}]
-        this.renderGrid()
+       // this.renderGrid()
     }
     public renderScreen() {
 

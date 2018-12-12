@@ -119,7 +119,7 @@ class GameView {
         this._screen = "gameScreen";
         this.CanvasHelper = canvas;
         this.xCoord = this.yCoord = 0;
-        this.lines = 50;
+        this.lines = 10;
         if (this.CanvasHelper.getWidth() > this.CanvasHelper.getHeight()) {
             this.sqSize = this.CanvasHelper.getWidth() / this.lines;
         }
@@ -130,7 +130,7 @@ class GameView {
             "./assets/images/earth_textures/grass.png",
             "./assets/images/houses/house.png",
         ];
-        this.renderGrid();
+        this.tileInfo = [{}];
     }
     renderScreen() {
     }
@@ -141,11 +141,15 @@ class GameView {
             this.CanvasHelper.moveTo(this.xCoord, 0);
             this.CanvasHelper.lineTo(this.xCoord, this.CanvasHelper.getHeight());
             for (let i = 0; i < this.lines; i++) {
-                this.CanvasHelper.writeImageToCanvas(this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)], this.xCoord, this.sqSize * i, this.sqSize, this.sqSize);
+                let imageSrc = this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)];
+                this.CanvasHelper.writeImageToCanvas(imageSrc, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize);
+                let vr = { xStart: this.xCoord, xEnd: this.xCoord + this.sqSize, yStart: this.sqSize * i, yEnd: (this.sqSize * i) + this.sqSize, imageSrc: imageSrc };
+                this.tileInfo.push(vr);
             }
             this.xCoord += this.sqSize;
             this.yCoord += this.sqSize;
         }
+        console.log(this.tileInfo);
     }
 }
 class HomeView {
@@ -154,8 +158,13 @@ class HomeView {
         this.CanvasHelper = canvas;
     }
     renderScreen() {
-        this.CanvasHelper.createRect(0, 0, 150, 100);
-        this.CanvasHelper.writeTextToCanvas("BArewwfCK", 24, 20, 20, "purple");
+        this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet.png", 250, 300, 300, 300);
+        this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet.png", 750, 400, 300, 300);
+        this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet.png", 1250, 200, 300, 300);
+        this.CanvasHelper.writeButtonToCanvas(0, 0, 150, 100, "BACK", 20);
+        this.CanvasHelper.writeButtonToCanvas(275, 325, 250, 250, "", 0, "transparent");
+        this.CanvasHelper.writeButtonToCanvas(775, 425, 250, 250, "", 0, "transparent");
+        this.CanvasHelper.writeButtonToCanvas(1275, 225, 250, 250, "", 0, "transparent");
     }
 }
 class StartView extends BaseView {

@@ -7,9 +7,9 @@ class HomeView {
     }
 
     public renderScreen(){
-        this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet.png", 250, 300)
-        this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet.png", 750, 400)
-        this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet.png", 1250, 200)
+        this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet.png", 250, 300, 300, 300)
+        this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet.png", 750, 400, 300, 300)
+        this.CanvasHelper.writeImageToCanvas("./assets/images/temporary_textures/homeScreen_planet.png", 1250, 200, 300, 300)
         
         this.CanvasHelper.writeButtonToCanvas(0,0,150,100, "BACK", 20);
         this.CanvasHelper.writeButtonToCanvas(275,325,250,250, "", 0,"transparent");
