@@ -202,13 +202,16 @@ class GameView {
         }
         this._ToolbarView.renderToolbar();
         this._UIView.renderScreen();
-        this.CanvasHelper.writeTextToCanvas("Djordy was hier ;)", 100, this.CanvasHelper.getCenter().X, this.CanvasHelper.getCenter().Y, "red", "center");
+        this.CanvasHelper.writeTextToCanvas("Djordy was hier ;), ik heb gekut met een muziekje", 90, this.CanvasHelper.getCenter().X, this.CanvasHelper.getCenter().Y, "red", "center");
         this.CanvasHelper.loadingBar(400, 300, 100, 20, App._klimaat, 100);
     }
     renderGrid() {
         let music = new Audio("./assets/sounds/yeet2.mp3");
-        music.volume = 1;
         music.play();
+        setTimeout(() => {
+            let music2 = new Audio("./assets/sounds/yeet.mp3");
+            music2.play();
+        }, 15000);
         for (let line = 0; line < this.lines; line++) {
             this.CanvasHelper.moveTo(0, this.yCoord);
             this.CanvasHelper.lineTo(this.CanvasHelper.getWidth(), this.yCoord);
