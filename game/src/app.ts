@@ -8,6 +8,7 @@ class App {
 
     constructor(canvasElem: HTMLCanvasElement) {
         this._canvas = new BaseView(canvasElem)
+        BaseView.changeScreen("home")
     }
 
     public gameLoop(): void {
