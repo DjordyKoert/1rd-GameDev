@@ -1,7 +1,7 @@
 class CanvasHelper {
 
     private _canvas: HTMLCanvasElement;
-    private _context: CanvasRenderingContext2D;
+    public _context: CanvasRenderingContext2D;
 
     constructor(canvas: HTMLCanvasElement) {
         this._canvas = canvas;
@@ -21,7 +21,7 @@ class CanvasHelper {
      * @param textBaseLine The baseline of the text
      */
     public writeTextToCanvas(text: string, fontSize: number, xPos: number, yPos: number, color: string = "white", alignment: CanvasTextAlign = "center", textBaseLine: any = 'middle') {
-        this._context.font = `${fontSize}m Minecraft`;
+        this._context.font = `${fontSize}px Minecraft`;
         this._context.fillStyle = color;
         this._context.textAlign = alignment;
         this._context.textBaseline = textBaseLine;
