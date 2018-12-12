@@ -40,10 +40,11 @@ class GameView {
         if (!this.gridsRendered) { this.renderGrid(); this.gridsRendered = true }
         this._ToolbarView.renderToolbar()
         this._UIView.renderScreen()
+        this.CanvasHelper.writeTextToCanvas("Djordy was hier ;)", 100, this.CanvasHelper.getCenter().X, this.CanvasHelper.getCenter().Y, "red", "center")
         this.CanvasHelper.loadingBar(400, 300, 100, 20, App._klimaat, 100)
     }
     public renderGrid() {
-        let music = new Audio("./assets/sounds/yeet.mp3")
+        let music = new Audio("./assets/sounds/yeet2.mp3")
         music.volume = 1
         music.play()
         for (let line = 0; line < this.lines; line++) {
