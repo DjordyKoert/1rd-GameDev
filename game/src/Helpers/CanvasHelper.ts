@@ -126,6 +126,23 @@ class CanvasHelper {
 
 
     }
+    public loadingBar(
+        rectXPos: number,
+        rectYPos: number,
+        rectWidth: number,
+        rectHeight: number,
+        value: number,
+        maxNumber: number,
+
+        barProgress: string = "green",
+        barLeft: string = "red",
+    ) {   
+        //Red bar
+        this.createRect(rectXPos + 10, rectYPos + 10, rectWidth, rectHeight, barLeft)
+        //Green bar
+        this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value/ maxNumber), rectHeight, barProgress)
+
+    }
 
     public moveTo(xPos: number, yPos: number): void {
         this._context.moveTo(xPos, yPos)
