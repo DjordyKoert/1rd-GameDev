@@ -1,7 +1,6 @@
 class UIView {
     protected _screen: string = "homeScreen";
     protected CanvasHelper: CanvasHelper
-    private app: App
     public constructor(canvas: CanvasHelper){
         this.CanvasHelper = canvas
     }
