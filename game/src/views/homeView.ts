@@ -8,12 +8,14 @@ class HomeView {
     private planetXCoords: Array<number>
     private planetYCoords: Array<number>
     private _gameView: GameView
+    private _startView: StartView
     private clicked: boolean
 
     public constructor(canvas: CanvasHelper) {
         this.CanvasHelper = canvas;
         this.MouseHelper = new MouseHelper()
         this._gameView = new GameView(canvas)
+        this._startView = new StartView(canvas)
         this.clicked = false
         this.planetList = [
             "./assets/images/temporary_textures/homeScreen_planet2.png",
@@ -32,40 +34,48 @@ class HomeView {
             400,
             200
         ]
-
     }
 
+    public renderScreen(): void {
 
-    public renderScreen() {
-        if (!this._rendered) {
+        const maxPlanets: number = 3;
 
-            const maxPlanets: number = 3;
-
-            for (let i = 0; i < maxPlanets; i++) {
-                this.CanvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 300, 300)
+        for (let i = 0; i < maxPlanets; i++) {
+            this.CanvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 300, 300)
 
 
-                this.CanvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310)
-            }
-
-            this.CanvasHelper.writeButtonToCanvas(0, 0, 150, 100, "BACK", 30);
-            this._rendered = true
+            this.CanvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310)
         }
+
+        this.CanvasHelper.createRect(0, 0, 150, 100)
+        this.CanvasHelper.writeTextToCanvas("BACK", 30, 75, 50, "black")
+        if (this.MouseHelper.getClick().x > 0 && this.MouseHelper.getClick().x < 150) {
+            if (this.MouseHelper.getClick().y > 0 && this.MouseHelper.getClick().y < 100) {
+                console.log("back")
+                this.CanvasHelper.clear()
+                BaseView.changeScreen("start")
+            }
+        }
+
+
         for (let i = 0; i < this.planetList.length; i++) {
 
             if (this.MouseHelper.getClick().click && !this.clicked) {
-               
-                if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 300) { 
-                    if(this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 300){
+
+                if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 300) {
+                    if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 300) {
                         const nameWindow = window.prompt("Voer hier de naam van je planeet in", "")
 
-                        if (nameWindow == ""){
-                        this.renderScreen()}
-                        else{
-                            this.clicked = true
+                        if (nameWindow == null || nameWindow == "") {
+                            var timesClicked = 0
+                            window.alert("voer eerst een naam in");
+                            if (timesClicked == 0) {
+                                location.reload()
+                            }
+                        }
+                        else {
                             this.CanvasHelper.clear()
                             BaseView.changeScreen("game")
-
                         }
                     }
                 }
@@ -73,3 +83,4 @@ class HomeView {
         }
     }
 }
+
