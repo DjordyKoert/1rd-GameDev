@@ -34,17 +34,13 @@ class CanvasHelper {
      * @param xPos The X position of the image
      * @param yPos The Y position of the image
      */
-    public writeImageToCanvas(Src: string, xPos: number, yPos: number, imgWidth: number, imgHeight: number):boolean {
-        let image = new Image();
-        // add the listener so the waiting will not affect the change
-        image.addEventListener('load', () => {
-            //this.d_context.clip();
-            this._context.drawImage(image, xPos, yPos, imgWidth, imgHeight);
-        });
+    public writeImageToCanvas(image: CanvasImageSource, xPos: number, yPos: number, imgWidth: number, imgHeight: number): CanvasImageSource {
 
-        // load the source in the image.
-        image.src = Src;
-        return true
+        this._context.save()
+        this._context.translate(xPos, yPos)
+        this._context.drawImage(image, -image.width / 2, -image.height / 2)
+        this._context.restore()
+        return image
     }
     /**
      * Clears screen
@@ -137,11 +133,11 @@ class CanvasHelper {
 
         barProgress: string = "green",
         barLeft: string = "red",
-    ) {   
+    ) {
         //Red bar
         this.createRect(rectXPos + 10, rectYPos + 10, rectWidth, rectHeight, barLeft)
         //Green bar
-        this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value/ maxNumber), rectHeight, barProgress)
+        this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value / maxNumber), rectHeight, barProgress)
 
     }
 
