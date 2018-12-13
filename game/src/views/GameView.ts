@@ -33,7 +33,7 @@ class GameView {
         }
         this.tileImages = [
             "./assets/images/foliage/tree.png",
-            "./assets/images/houses/house.png",
+            "./assets/images/houses/house2.png",
             null,
         ]
         this.tileInfo = [{}]
@@ -72,7 +72,7 @@ class GameView {
                 for (let i = 0; i < this.lines; i++) {
                     let imageSrc = this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)]
                     //Draw Grass
-                    this.CanvasHelper.writeImageToCanvas("./assets/images/earth_textures/grass.png", this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
+                    this.CanvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
                     this.CanvasHelper.writeImageToCanvas(imageSrc, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
                     //Try to create array with objects
                     let vr = { xStart: this.xCoord, xEnd: this.xCoord + this.sqSize, yStart: this.sqSize * i, yEnd: (this.sqSize * i) + this.sqSize, imageSrc: imageSrc }
@@ -92,7 +92,7 @@ class GameView {
                 if (ToolbarView.getTool() == "axe") {
                     let filter = this.tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     if (!filter) return;
-                    if (filter.imageSrc == "./assets/images/houses/house.png") {
+                    if (filter.imageSrc == "./assets/images/houses/house2.png") {
                         this.CanvasHelper.writeImageToCanvas(this.tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart)
                         let n = this.tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                         this.tileInfo.splice(n, 1)
