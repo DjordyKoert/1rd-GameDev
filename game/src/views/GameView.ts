@@ -32,14 +32,14 @@ class GameView {
             this.sqSize = this.CanvasHelper.getHeight() / this.lines
         }
         this.tileImages = [
-            "./assets/images/earth_textures/grass.png",
+            "./assets/images/foliage/tree.png",
             "./assets/images/houses/house.png",
+            null,
         ]
         this.tileInfo = [{}]
         // this.renderGrid()
     }
     public renderScreen() {
-        console.log("da")
         this.renderGrid()
         this._ToolbarView.renderToolbar()
         this._UIView.renderScreen()
@@ -71,7 +71,8 @@ class GameView {
                 //this.CanvasHelper.createRect(this.xCoord, 0, this.sqSize, this.sqSize)
                 for (let i = 0; i < this.lines; i++) {
                     let imageSrc = this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)]
-                    console.log("da")
+                    //Draw Grass
+                    this.CanvasHelper.writeImageToCanvas("./assets/images/earth_textures/grass.png", this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
                     this.CanvasHelper.writeImageToCanvas(imageSrc, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
                     //Try to create array with objects
                     let vr = { xStart: this.xCoord, xEnd: this.xCoord + this.sqSize, yStart: this.sqSize * i, yEnd: (this.sqSize * i) + this.sqSize, imageSrc: imageSrc }
