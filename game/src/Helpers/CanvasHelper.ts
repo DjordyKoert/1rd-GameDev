@@ -45,7 +45,7 @@ class CanvasHelper {
         // load the source in the image.
         image.src = Src;
         return true
-    }
+}
     /**
      * Clears screen
      */
@@ -142,11 +142,11 @@ class CanvasHelper {
 
         barProgress: string = "green",
         barLeft: string = "red",
-    ) {   
+    ) {
         //Red bar
         this.createRect(rectXPos + 10, rectYPos + 10, rectWidth, rectHeight, barLeft)
         //Green bar
-        this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value/ maxNumber), rectHeight, barProgress)
+        this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value / maxNumber), rectHeight, barProgress)
 
     }
 

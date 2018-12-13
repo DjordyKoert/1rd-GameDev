@@ -72,7 +72,38 @@ class App {
     gameLoop() {
         this._canvas.render();
     }
+    static updateWood(num) {
+        this._wood += num;
+    }
+    static getWood() {
+        return this._wood;
+    }
+    static updateGold(num) {
+        this._gold += num;
+    }
+    static getGold() {
+        return this._gold;
+    }
+    static updateStone(num) {
+        this._stone += num;
+    }
+    static getStone() {
+        return this._stone;
+    }
+    static updateKlimaat(num) {
+        this._klimaat += num;
+        if (this._klimaat >= 75) {
+            this._klimaat = 75;
+        }
+    }
+    static getKlimaat() {
+        return this._klimaat;
+    }
 }
+App._gold = 0;
+App._wood = 0;
+App._stone = 0;
+App._klimaat = 0;
 let init = function () {
     const Game = new App(document.getElementById('canvas'));
     window.setInterval(() => Game.gameLoop(), 1000 / 60);
@@ -81,7 +112,7 @@ window.addEventListener('load', init);
 class BaseView {
     constructor(canvas) {
         this._canvasHelper = new CanvasHelper(canvas);
-        BaseView.changeScreen("home");
+        BaseView.changeScreen("start");
         this._StartView = new StartView(this._canvasHelper);
         this._homeView = new HomeView(this._canvasHelper);
         this._GameView = new GameView(this._canvasHelper);
@@ -91,6 +122,9 @@ class BaseView {
             this._homeView.renderScreen();
         if (BaseView.getScreen() == "game")
             this._GameView.renderScreen();
+        if (BaseView.getScreen() == "start")
+            this._StartView.renderScreen();
+        console.log(BaseView.getScreen());
     }
     static changeScreen(screen) {
         this.curScreen = screen;
@@ -183,6 +217,7 @@ class GameView {
         this.gridsRendered = false;
         this.xCoord = this.yCoord = 0;
         this.lines = 10;
+        this.BuilderViewOn = false;
         if (this.CanvasHelper.getWidth() > this.CanvasHelper.getHeight()) {
             this.sqSize = this.CanvasHelper.getWidth() / this.lines;
         }
@@ -201,52 +236,72 @@ class GameView {
             this.gridsRendered = true;
         }
         this._ToolbarView.renderToolbar();
-        this._UIView.renderScreen();
-        this.CanvasHelper.writeTextToCanvas("Djordy was hier ;), ik heb gekut met een muziekje", 90, this.CanvasHelper.getCenter().X, this.CanvasHelper.getCenter().Y, "red", "center");
-        this.CanvasHelper.loadingBar(400, 300, 100, 20, App._klimaat, 100);
     }
     renderGrid() {
-        let music = new Audio("./assets/sounds/yeet2.mp3");
-        music.play();
-        setTimeout(() => {
-            let music2 = new Audio("./assets/sounds/yeet.mp3");
-            music2.play();
-        }, 15000);
-        for (let line = 0; line < this.lines; line++) {
-            this.CanvasHelper.moveTo(0, this.yCoord);
-            this.CanvasHelper.lineTo(this.CanvasHelper.getWidth(), this.yCoord);
-            this.CanvasHelper.moveTo(this.xCoord, 0);
-            this.CanvasHelper.lineTo(this.xCoord, this.CanvasHelper.getHeight());
-            for (let i = 0; i < this.lines; i++) {
-                let imageSrc = this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)];
-                this.CanvasHelper.writeImageToCanvas(imageSrc, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize);
-                let vr = { xStart: this.xCoord, xEnd: this.xCoord + this.sqSize, yStart: this.sqSize * i, yEnd: (this.sqSize * i) + this.sqSize, imageSrc: imageSrc };
-                this.tileInfo.push(vr);
+        this.CanvasHelper._context.beginPath();
+        if (this.gridsRendered) {
+            this.xCoord = 0;
+            this.yCoord = 0;
+            for (let line = 0; line < this.lines; line++) {
+                this.CanvasHelper.moveTo(0, this.yCoord);
+                this.CanvasHelper.lineTo(this.CanvasHelper.getWidth(), this.yCoord);
+                this.CanvasHelper.moveTo(this.xCoord, 0);
+                this.CanvasHelper.lineTo(this.xCoord, this.CanvasHelper.getHeight());
+                this.tileInfo.forEach(tile => {
+                    this.CanvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart);
+                });
             }
-            this.xCoord += this.sqSize;
-            this.yCoord += this.sqSize;
         }
-        this.tileInfo = this.tileInfo.filter(x => x.xStart <= this.CanvasHelper.getWidth() && x.yStart <= this.CanvasHelper.getHeight());
-        let allHouses = this.tileInfo.filter(x => x.imageSrc == this.tileImages[1]);
-        allHouses.forEach(() => {
-            App._klimaat += 1;
-        });
-        window.addEventListener("mousedown", e => {
-            if (ToolbarView.getTool() == "axe") {
-                let filter = this.tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
-                if (!filter)
-                    return;
-                if (filter.imageSrc == "./assets/images/houses/house.png") {
-                    this.CanvasHelper.writeImageToCanvas(this.tileImages[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart);
-                    let n = this.tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
-                    this.tileInfo.splice(n, 1);
-                    let vr = { xStart: filter.xStart, xEnd: filter.xEnd - filter.xStart + this.sqSize, yStart: filter.yStart, yEnd: filter.yEnd - filter.yStart, imageSrc: this.tileImages[0] };
+        else {
+            for (let line = 0; line < this.lines; line++) {
+                this.CanvasHelper.moveTo(0, this.yCoord);
+                this.CanvasHelper.lineTo(this.CanvasHelper.getWidth(), this.yCoord);
+                this.CanvasHelper.moveTo(this.xCoord, 0);
+                this.CanvasHelper.lineTo(this.xCoord, this.CanvasHelper.getHeight());
+                for (let i = 0; i < this.lines; i++) {
+                    let imageSrc = this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)];
+                    console.log("da");
+                    this.CanvasHelper.writeImageToCanvas(imageSrc, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize);
+                    let vr = { xStart: this.xCoord, xEnd: this.xCoord + this.sqSize, yStart: this.sqSize * i, yEnd: (this.sqSize * i) + this.sqSize, imageSrc: imageSrc };
                     this.tileInfo.push(vr);
-                    App._gold += 6;
-                    App._klimaat -= 1;
                 }
+                this.xCoord += this.sqSize;
+                this.yCoord += this.sqSize;
             }
-        });
+            this.tileInfo = this.tileInfo.filter(x => x.xStart <= this.CanvasHelper.getWidth() && x.yStart <= this.CanvasHelper.getHeight());
+            let allHouses = this.tileInfo.filter(x => x.imageSrc == this.tileImages[1]);
+            allHouses.forEach(() => {
+                App._klimaat += 1;
+            });
+            window.addEventListener("mousedown", e => {
+                if (ToolbarView.getTool() == "axe") {
+                    let filter = this.tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
+                    if (!filter)
+                        return;
+                    if (filter.imageSrc == "./assets/images/houses/house.png") {
+                        this.CanvasHelper.writeImageToCanvas(this.tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart);
+                        let n = this.tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
+                        this.tileInfo.splice(n, 1);
+                        let vr = { xStart: filter.xStart, xEnd: filter.xEnd - filter.xStart + this.sqSize, yStart: filter.yStart, yEnd: filter.yEnd - filter.yStart, imageSrc: this.tileImages[0] };
+                        this.tileInfo.push(vr);
+                        App._gold += 6;
+                        App._klimaat -= 1;
+                    }
+                }
+            });
+            window.addEventListener("keypress", press => {
+                if (press.key == " ") {
+                    if (this.BuilderViewOn) {
+                        this.BuilderViewOn = false;
+                        this.CanvasHelper.clear();
+                    }
+                    else
+                        this.BuilderViewOn = true;
+                }
+            });
+            this.gridsRendered = true;
+        }
+        this._UIView.renderScreen();
     }
 }
 class ToolbarView {
@@ -255,36 +310,32 @@ class ToolbarView {
         this.CanvasHelper = canvas;
         this.clicked = this.rendered = false;
         this._mouseHelper = new MouseHelper();
-        ToolbarView.setTool(undefined);
     }
     renderToolbar() {
-        this.CanvasHelper.createRect(this.CanvasHelper.getWidth() * 0.2, this.CanvasHelper.getHeight() * 0.8, this.CanvasHelper.getWidth() * 0.6, this.CanvasHelper.getHeight() * 0.2);
-        this.CanvasHelper.createRect(this.CanvasHelper.getWidth() * 0.21, this.CanvasHelper.getHeight() * 0.81, this.CanvasHelper.getWidth() * 0.1, this.CanvasHelper.getHeight() * 0.18, "red");
-        this.rendered = true;
-        this.toolBarClick();
+        if (!this.rendered) {
+            this.CanvasHelper.createRect(this.CanvasHelper.getWidth() * 0.2, this.CanvasHelper.getHeight() * 0.8, this.CanvasHelper.getWidth() * 0.6, this.CanvasHelper.getHeight() * 0.2);
+            this.CanvasHelper.createRect(this.CanvasHelper.getWidth() * 0.21, this.CanvasHelper.getHeight() * 0.81, this.CanvasHelper.getWidth() * 0.1, this.CanvasHelper.getHeight() * 0.18, "red");
+            this.rendered = true;
+        }
+        this.setTool();
+        console.log(this.curTool);
     }
-    toolBarClick() {
+    setTool() {
         if (this._mouseHelper.getClick().click && !this.clicked) {
             if (this._mouseHelper.getClick().x >= this.CanvasHelper.getWidth() * 0.21 && this._mouseHelper.getClick().x <= (this.CanvasHelper.getWidth() * 0.21 + this.CanvasHelper.getWidth() * 0.1)) {
                 if (this._mouseHelper.getClick().y >= this.CanvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this.CanvasHelper.getHeight() * 0.81 + this.CanvasHelper.getHeight() * 0.18)) {
-                    if (ToolbarView.getTool() == "axe") {
+                    if (this.curTool == "axe") {
                         this.clicked = true;
-                        ToolbarView.setTool(undefined);
+                        this.curTool = undefined;
                         return;
                     }
                     this.clicked = true;
-                    ToolbarView.setTool("axe");
+                    this.curTool = "axe";
                 }
             }
         }
         if (!this._mouseHelper.getClick().click)
             this.clicked = false;
-    }
-    static setTool(tool) {
-        this.curTool = tool;
-    }
-    static getTool() {
-        return this.curTool;
     }
 }
 class UIView {
@@ -304,7 +355,7 @@ class UIView {
             this.CanvasHelper._context.drawImage(image4, 400, 2, 50, 50);
             this.CanvasHelper._context.font = "40px Minecraft";
             this.CanvasHelper._context.fillStyle = "#ff00ff";
-            this.CanvasHelper._context.fillText(`${App._gold}`, 80, 46);
+            this.CanvasHelper._context.fillText(`${App.getGold()}`, 80, 46);
         });
         image.src = "./assets/images/backgrounds/UIBackground.png";
         image2.src = "./assets/images/resources/woodResource.png";
@@ -319,6 +370,7 @@ class HomeView {
         this.CanvasHelper = canvas;
         this.MouseHelper = new MouseHelper();
         this._gameView = new GameView(canvas);
+        this._startView = new StartView(canvas);
         this.clicked = false;
         this.planetList = [
             "./assets/images/temporary_textures/homeScreen_planet2.png",
@@ -337,25 +389,33 @@ class HomeView {
         ];
     }
     renderScreen() {
-        if (!this._rendered) {
-            const maxPlanets = 3;
-            for (let i = 0; i < maxPlanets; i++) {
-                this.CanvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 300, 300);
-                this.CanvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310);
+        const maxPlanets = 3;
+        for (let i = 0; i < maxPlanets; i++) {
+            this.CanvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 300, 300);
+            this.CanvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310);
+        }
+        this.CanvasHelper.createRect(0, 0, 150, 100);
+        this.CanvasHelper.writeTextToCanvas("BACK", 30, 75, 50, "black");
+        if (this.MouseHelper.getClick().x > 0 && this.MouseHelper.getClick().x < 150) {
+            if (this.MouseHelper.getClick().y > 0 && this.MouseHelper.getClick().y < 100) {
+                console.log("back");
+                this.CanvasHelper.clear();
+                BaseView.changeScreen("start");
             }
-            this.CanvasHelper.writeButtonToCanvas(0, 0, 150, 100, "BACK", 30);
-            this._rendered = true;
         }
         for (let i = 0; i < this.planetList.length; i++) {
             if (this.MouseHelper.getClick().click && !this.clicked) {
                 if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 300) {
                     if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 300) {
                         const nameWindow = window.prompt("Voer hier de naam van je planeet in", "");
-                        if (nameWindow == "") {
-                            this.renderScreen();
+                        if (nameWindow == null || nameWindow == "") {
+                            var timesClicked = 0;
+                            window.alert("voer eerst een naam in");
+                            if (timesClicked == 0) {
+                                location.reload();
+                            }
                         }
                         else {
-                            this.clicked = true;
                             this.CanvasHelper.clear();
                             BaseView.changeScreen("game");
                         }
@@ -367,10 +427,23 @@ class HomeView {
 }
 class StartView {
     constructor(canvas) {
+        this._rendered = false;
         this.CanvasHelper = canvas;
+        this._mouseHelper = new MouseHelper();
     }
     renderScreen() {
-        this.CanvasHelper.writeButtonToCanvas(200, 200, 200, 200, "START GAME", 50);
+        this.CanvasHelper.clear();
+        this.CanvasHelper.writeTextToCanvas("PLANEGER", 50, (this.CanvasHelper.getWidth() / 2), 100, "white");
+        this.CanvasHelper.createRect((this.CanvasHelper.getWidth() / 2) - 150, (this.CanvasHelper.getHeight() / 2) - 100, 300, 200);
+        this.CanvasHelper.writeTextToCanvas("START SPEL", 30, this.CanvasHelper.getWidth() / 2, this.CanvasHelper.getHeight() / 2, "black");
+        if (this._mouseHelper.getClick().x > (this.CanvasHelper.getWidth() / 2) - 150 && this._mouseHelper.getClick().x < (this.CanvasHelper.getWidth() / 2) + 150) {
+            if (this._mouseHelper.getClick().y > (this.CanvasHelper.getHeight() / 2) - 100 && this._mouseHelper.getClick().y < (this.CanvasHelper.getHeight() / 2) + 100) {
+                this.CanvasHelper.clear();
+                BaseView.changeScreen("home");
+                location.reload();
+            }
+        }
+        this.CanvasHelper.createRect((this.CanvasHelper.getWidth() / 2) - 150, (this.CanvasHelper.getHeight() / 2) + 500, 300, 200);
     }
 }
 //# sourceMappingURL=app.js.map
