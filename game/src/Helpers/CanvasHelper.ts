@@ -49,9 +49,14 @@ class CanvasHelper {
     /**
      * Clears screen
      */
-    public clear(): void {
+    public clear(
+        xpos: number = 0,
+        ypos: number = 0,
+        width: number = this._canvas.width,
+        height: number = this._canvas.height
+    ): void {
         //clear the screen
-        this._context.clearRect(0, 0, this._canvas.width, this._canvas.height)
+        this._context.clearRect(xpos, ypos, width, height)
     }
 
     /**
