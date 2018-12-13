@@ -92,7 +92,7 @@ class GameView {
                 if (ToolbarView.getTool() == "axe") {
                     let filter = this.tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     if (!filter) return;
-                    if (filter.imageSrc == "./assets/images/houses/house2.png") {
+                    if (filter.imageSrc == "./assets/images/foliage/tree.png") {
                         this.CanvasHelper.writeImageToCanvas(this.tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart)
                         let n = this.tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                         this.tileInfo.splice(n, 1)
