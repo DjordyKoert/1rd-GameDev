@@ -1,8 +1,8 @@
-class UIView {
+class UIView extends BaseView{
     protected _screen: string = "homeScreen";
     protected CanvasHelper: CanvasHelper
-    public constructor(canvas: CanvasHelper, ) {
-        this.CanvasHelper = canvas
+    public constructor(canvas: HTMLCanvasElement) {
+        super(canvas, "UI")
 
     }
 

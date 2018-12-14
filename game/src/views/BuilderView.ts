@@ -1,23 +1,17 @@
-class BuilderView {
-
-    protected _canvasHelper: CanvasHelper
-    protected _mouseHelper: MouseHelper
-
+/// <reference path="./GameView.ts" />
+class BuilderView extends GameView{
     private _viewWidth: number
     private _yPosLine1: number = 70
     private _yPosLine2: number = 155
     private _rendered: boolean = false
     private _clicked: boolean = false
-    private _folded: boolean = true
+    public _folded: boolean = true
 
-    public constructor(canvas: CanvasHelper) {
-        this._canvasHelper = canvas
-        this._mouseHelper = new MouseHelper
-
+    public constructor(canvas: HTMLCanvasElement) {
+        super(canvas)
     }
 
     public renderScreen() {
-
         if (this._folded) {
             this._viewWidth = 50
             if (!this._rendered) {
