@@ -36,8 +36,13 @@ class HomeView {
         ]
     }
 
-    public renderScreen(): void {
+    public renderScreen(): void { 
+        this.drawPlanets();
+        this.drawBackButton();
+        this.screenClick();
+    }
 
+    public drawPlanets() {
         const maxPlanets: number = 3;
 
         for (let i = 0; i < maxPlanets; i++) {
@@ -46,36 +51,43 @@ class HomeView {
 
             this.CanvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310)
         }
-
-        this.CanvasHelper.createRect(0, 0, 150, 100)
+    }
+        
+    public drawBackButton(){
+    
+    this.CanvasHelper.createRect(0, 0, 150, 100)
         this.CanvasHelper.writeTextToCanvas("BACK", 30, 75, 50, "black")
         if (this.MouseHelper.getClick().x > 0 && this.MouseHelper.getClick().x < 150) {
             if (this.MouseHelper.getClick().y > 0 && this.MouseHelper.getClick().y < 100) {
-                console.log("back")
-                this.CanvasHelper.clear()
                 BaseView.changeScreen("start")
+                this.CanvasHelper.clear()
             }
         }
+    }
+    
+    public screenClick() {
+        if (this.MouseHelper.getClick().click && !this.clicked) {
+            // received a mouse down event
+            this.clicked = true;
+        }
 
-
-        for (let i = 0; i < this.planetList.length; i++) {
-
-            if (this.MouseHelper.getClick().click && !this.clicked) {
-
+        if (!this.MouseHelper.getClick().click && this.clicked) {
+            // receive a mouse up event after mouse down
+            this.clicked = false;
+            for (let i = 0; i < this.planetList.length; i++) {
+                console.log(this.clicked);
                 if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 300) {
                     if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 300) {
-                        const nameWindow = window.prompt("Voer hier de naam van je planeet in", "")
+                        var person = prompt("Please enter your name", "");
+                        if (person == null || person == "") {
+                            window.alert("voer eerst een naam in")
 
-                        if (nameWindow == null || nameWindow == "") {
-                            var timesClicked = 0
-                            window.alert("voer eerst een naam in");
-                            if (timesClicked == 0) {
-                                location.reload()
-                            }
+
                         }
                         else {
-                            this.CanvasHelper.clear()
-                            BaseView.changeScreen("game")
+                            this.CanvasHelper._context.clearRect(0, 0, this.CanvasHelper.getWidth(), this.CanvasHelper.getHeight())
+                            this._gameView.renderScreen();
+
                         }
                     }
                 }
@@ -83,4 +95,6 @@ class HomeView {
         }
     }
 }
+
+
 

@@ -15,7 +15,7 @@ class BaseView {
     public render() {
         if (BaseView.getScreen() == "home") this._homeView.renderScreen()
         if (BaseView.getScreen() == "game") this._GameView.renderScreen()
-        
+        if (BaseView.getScreen() == "start") this._StartView.renderScreen()
     }
 
     public static changeScreen(screen: string) {
