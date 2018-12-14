@@ -96,7 +96,7 @@ class GameView {
                         this.CanvasHelper.writeImageToCanvas(this.tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart)
                         let n = this.tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                         this.tileInfo.splice(n, 1)
-                        let vr = { xStart: filter.xStart, xEnd: filter.xEnd - filter.xStart + this.sqSize, yStart: filter.yStart, yEnd: filter.yEnd - filter.yStart, imageSrc: this.tileImages[0] }
+                        let vr = { xStart: filter.xStart, xEnd: filter.xEnd - filter.xStart, yStart: filter.yStart, yEnd: filter.yEnd - filter.yStart, imageSrc: this.tileImages[0] }
                         this.tileInfo.push(vr)
                         App._gold += 6
                         App._klimaat -= 1
@@ -105,7 +105,7 @@ class GameView {
             })
             window.addEventListener("keypress", press => {
                 if (press.key == " ") {
-                    if (this.BuilderViewOn) { this.BuilderViewOn = false; this.CanvasHelper.clear() }
+                    if (this.BuilderViewOn) { this.BuilderViewOn = false;}
                     else this.BuilderViewOn = true
                 }
             })
