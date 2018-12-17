@@ -1,48 +1,46 @@
 class GameView extends BaseView {
     protected _screen: string = "gameScreen";
     protected _mouseHelper: MouseHelper
-    protected xCoord: number
-    protected yCoord: number
-    protected lines: number
-    protected sqSize: number
-    private gridsRendered: boolean
-    private tileImages: Array<string>
-    private tileInfo: Array<any>
+    protected _xCoord: number
+    protected _yCoord: number
+    protected _lines: number
+    protected _sqSize: number
+    private _gridsRendered: boolean
+    private _tileImages: Array<string>
+    private _tileInfo: Array<any>
     //BuilderView
     private _viewWidth: number
-    private _yPosLine1: number = 70
-    private _yPosLine2: number = 155
-    private _rendered: boolean = false
-    private _clicked: boolean = false
-    public _folded: boolean = true
+    private _renderedBuilderView: boolean = false
+    private _clickedBuilderView: boolean = false
+    private _folded: boolean = true
     //ToolBarView
-    private clicked: boolean
-    private curTool: string
-    private rendered: boolean
+    private _clickedToolbar: boolean
+    private _curTool: string
+    private _renderedToolBar: boolean
 
     public constructor(canvas: HTMLCanvasElement) {
         super(canvas, "game")
         this._mouseHelper = new MouseHelper()
-        this.gridsRendered = false
-        this.xCoord = this.yCoord = 0
-        this.lines = 10
+        this._gridsRendered = false
+        this._xCoord = this._yCoord = 0
+        this._lines = 10
         //Check screen size to make grids fit
         if (this._canvasHelper.getWidth() > this._canvasHelper.getHeight()) {
-            this.sqSize = this._canvasHelper.getWidth() / this.lines
+            this._sqSize = this._canvasHelper.getWidth() / this._lines
         }
         else {
-            this.sqSize = this._canvasHelper.getHeight() / this.lines
+            this._sqSize = this._canvasHelper.getHeight() / this._lines
         }
-        this.tileImages = [
+        this._tileImages = [
             "./assets/images/foliage/tree.png",
             "./assets/images/earth_textures/earth.png",
         ]
-        this.tileInfo = [{}]
-        this.clicked = this.rendered = false
+        this._tileInfo = [{}]
+        this._clickedToolbar = this._renderedToolBar = false
     }
     public renderScreen() {
-        console.log(this.curTool)
-        if (!this.gridsRendered) this.renderNewGrid()
+        console.log(this._curTool)
+        if (!this._gridsRendered) this.renderNewGrid()
         this.renderBuilderView()
         this.renderToolbarView()
         this.renderUIView()
@@ -51,14 +49,14 @@ class GameView extends BaseView {
     }
     public renderOldGrid() {
         this._canvasHelper._context.beginPath()
-        this.xCoord = 0
-        this.yCoord = 0
-        for (let line = 0; line < this.lines; line++) {
-            this._canvasHelper.moveTo(0, this.yCoord)
-            this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this.yCoord)
-            this._canvasHelper.moveTo(this.xCoord, 0)
-            this._canvasHelper.lineTo(this.xCoord, this._canvasHelper.getHeight())
-            this.tileInfo.forEach(tile => {
+        this._xCoord = 0
+        this._yCoord = 0
+        for (let line = 0; line < this._lines; line++) {
+            this._canvasHelper.moveTo(0, this._yCoord)
+            this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this._yCoord)
+            this._canvasHelper.moveTo(this._xCoord, 0)
+            this._canvasHelper.lineTo(this._xCoord, this._canvasHelper.getHeight())
+            this._tileInfo.forEach(tile => {
                 this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
                 this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
             });
@@ -67,39 +65,39 @@ class GameView extends BaseView {
     public renderNewGrid() {
         this._canvasHelper._context.beginPath()
 
-        for (let line = 0; line < this.lines; line++) {
-            this._canvasHelper.moveTo(0, this.yCoord)
-            this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this.yCoord)
-            this._canvasHelper.moveTo(this.xCoord, 0)
-            this._canvasHelper.lineTo(this.xCoord, this._canvasHelper.getHeight())
+        for (let line = 0; line < this._lines; line++) {
+            this._canvasHelper.moveTo(0, this._yCoord)
+            this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this._yCoord)
+            this._canvasHelper.moveTo(this._xCoord, 0)
+            this._canvasHelper.lineTo(this._xCoord, this._canvasHelper.getHeight())
             //this.CanvasHelper.createRect(this.xCoord, 0, this.sqSize, this.sqSize)
-            for (let i = 0; i < this.lines; i++) {
-                let imageSrc = this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)]
+            for (let i = 0; i < this._lines; i++) {
+                let imageSrc = this._tileImages[MathHelper.randomNumber(0, this._tileImages.length - 1)]
                 //Draw Grass
-                this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
-                this._canvasHelper.writeImageToCanvas(imageSrc, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize)
+                this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", this._xCoord, this._sqSize * i, this._sqSize, this._sqSize)
+                this._canvasHelper.writeImageToCanvas(imageSrc, this._xCoord, this._sqSize * i, this._sqSize, this._sqSize)
                 //Try to create array with objects
-                let vr = { xStart: this.xCoord, xEnd: this.xCoord + this.sqSize, yStart: this.sqSize * i, yEnd: (this.sqSize * i) + this.sqSize, imageSrc: imageSrc }
-                this.tileInfo.push(vr)
+                let vr = { xStart: this._xCoord, xEnd: this._xCoord + this._sqSize, yStart: this._sqSize * i, yEnd: (this._sqSize * i) + this._sqSize, imageSrc: imageSrc }
+                this._tileInfo.push(vr)
             }
 
-            this.xCoord += this.sqSize
-            this.yCoord += this.sqSize
+            this._xCoord += this._sqSize
+            this._yCoord += this._sqSize
         }
-        //Clean this.tileInfo so it only contains info about things INSIDE the screen
-        this.tileInfo = this.tileInfo.filter(x => x.xStart <= this._canvasHelper.getWidth() && x.yStart <= this._canvasHelper.getHeight())
-        let allHouses = this.tileInfo.filter(x => x.imageSrc == this.tileImages[1])
+        //Clean this._tileInfo so it only contains info about things INSIDE the screen
+        this._tileInfo = this._tileInfo.filter(x => x.xStart <= this._canvasHelper.getWidth() && x.yStart <= this._canvasHelper.getHeight())
+        let allHouses = this._tileInfo.filter(x => x.imageSrc == this._tileImages[1])
         allHouses.forEach(() => {
             App._klimaat += 1
         });
         window.addEventListener("mousedown", e => {
-            if (this.curTool == "axe") {
-                let filter = this.tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+            if (this._curTool == "axe") {
+                let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
                 if (filter.imageSrc == "./assets/images/foliage/tree.png") {
-                    this._canvasHelper.writeImageToCanvas(this.tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart)
-                    let n = this.tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
-                    this.tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
+                    this._canvasHelper.writeImageToCanvas(this._tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart)
+                    let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+                    this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
                     App._gold += 6
                     App._klimaat -= 1
@@ -107,67 +105,69 @@ class GameView extends BaseView {
             }
         })
 
-        this.gridsRendered = true
+        this._gridsRendered = true
     }
 
 
     //BuilderView
     public renderBuilderView() {
+        let _yPosLine1: number = 70
+        let _yPosLine2: number = 155
         if (this._folded) {
             this._viewWidth = 50
 
             this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
             this._canvasHelper.writeTextToCanvas('<--', 20, this._canvasHelper.getWidth() - 10, 10, 'black', 'right')
-            this._rendered = true
+            this._renderedBuilderView = true
 
 
-            if (this._mouseHelper.getClick().click && !this._clicked) {
+            if (this._mouseHelper.getClick().click && !this._clickedBuilderView) {
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth && this._mouseHelper.getClick().x < this._canvasHelper.getWidth()) {
                     if (this._mouseHelper.getClick().y > 0 && this._mouseHelper.getClick().y < 20) {
-                        this._clicked = true
+                        this._clickedBuilderView = true
                     }
                 }
             }
-            if (!this._mouseHelper.getClick().click && this._clicked) {
-                this._clicked = false
+            if (!this._mouseHelper.getClick().click && this._clickedBuilderView) {
+                this._clickedBuilderView = false
                 this._canvasHelper.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
                 this._folded = false
-                this._rendered = false
+                this._renderedBuilderView = false
             }
         }
         if (!this._folded) {
             this._viewWidth = 300
-            if (!this._rendered) {
+            if (!this._renderedBuilderView) {
                 this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
                 this._canvasHelper.writeTextToCanvas('GEBOUWEN', 48, (this._canvasHelper.getWidth() - this._viewWidth / 2), 40)
-                this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, this._yPosLine1)
-                this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this._yPosLine1)
+                this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1)
+                this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine1)
                 this._canvasHelper.writeTextToCanvas('HUIS', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 100, undefined, 'left')
                 this._canvasHelper.writeTextToCanvas(`DOEKOE: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
                 this._canvasHelper.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 80, 90, 64)
-                this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, this._yPosLine2)
-                this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this._yPosLine2)
-                this._rendered = true
+                this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2)
+                this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine2)
+                this._renderedBuilderView = true
             }
 
-            if (this._mouseHelper.getClick().click && !this._clicked) {
+            if (this._mouseHelper.getClick().click && !this._clickedBuilderView) {
 
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
                     if (this._mouseHelper.getClick().y > 80 && this._mouseHelper.getClick().y < 80 + 64) {
-                        this._clicked = true
+                        this._clickedBuilderView = true
                     }
                 }
             }
-            if (!this._mouseHelper.getClick().click && this._clicked) {
-                this._clicked = false
+            if (!this._mouseHelper.getClick().click && this._clickedBuilderView) {
+                this._clickedBuilderView = false
                 this._canvasHelper.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
                 this._folded = true
-                this._rendered = false
+                this._renderedBuilderView = false
                 console.log('Image Released')
-                let releasedTile = this.tileInfo.findIndex(x => x.xStart <= this._mouseHelper.getClick().x && x.xEnd >= this._mouseHelper.getClick().x && x.yStart <= this._mouseHelper.getClick().y && x.yEnd >= this._mouseHelper.getClick().y)
-                if (this.tileInfo[releasedTile].imageSrc == "./assets/images/foliage/tree.png") console.log("nee")
+                let releasedTile = this._tileInfo.findIndex(x => x.xStart <= this._mouseHelper.getClick().x && x.xEnd >= this._mouseHelper.getClick().x && x.yStart <= this._mouseHelper.getClick().y && x.yEnd >= this._mouseHelper.getClick().y)
+                if (this._tileInfo[releasedTile].imageSrc == "./assets/images/foliage/tree.png") console.log("nee")
                 else {
-                    this.tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png"
+                    this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png"
                 }
                 this.renderOldGrid()
             }
@@ -177,22 +177,22 @@ class GameView extends BaseView {
     public renderToolbarView() {
         this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.2, this._canvasHelper.getHeight() * 0.8, this._canvasHelper.getWidth() * 0.6, this._canvasHelper.getHeight() * 0.2)
         this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "red")
-        this.rendered = true
+        this._renderedToolBar = true
 
         this.toolBarClick()
     }
 
     public toolBarClick(): void {
-        if (this._mouseHelper.getClick().click && !this.clicked) {
+        if (this._mouseHelper.getClick().click && !this._clickedToolbar) {
             if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.21 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.21 + this._canvasHelper.getWidth() * 0.1)) {
                 if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getHeight() * 0.18)) {
-                    if (this.curTool == "axe") { this.clicked = true; this.curTool = undefined; return }
-                    this.clicked = true
-                    this.curTool = "axe"
+                    if (this._curTool == "axe") { this._clickedToolbar = true; this._curTool = undefined; return }
+                    this._clickedToolbar = true
+                    this._curTool = "axe"
                 }
             }
         }
-        if (!this._mouseHelper.getClick().click) this.clicked = false
+        if (!this._mouseHelper.getClick().click) this._clickedToolbar = false
     }
 
     //UIView
