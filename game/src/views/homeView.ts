@@ -32,6 +32,7 @@ class HomeView extends BaseView {
             400,
             200
         ]
+    this.renderScreen()
     }
 
     public renderScreen(): void { 
@@ -79,13 +80,10 @@ class HomeView extends BaseView {
                         var person = prompt("Please enter your name", "");
                         if (person == null || person == "") {
                             window.alert("voer eerst een naam in")
-
-
                         }
                         else {
                             this._canvasHelper._context.clearRect(0, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
                             this._gameView.renderScreen();
-
                         }
                     }
                 }
