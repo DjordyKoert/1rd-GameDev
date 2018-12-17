@@ -11,7 +11,6 @@ class GameView extends BaseView {
     private BuilderViewOn: boolean
     private _UIView: UIView
     private _ToolbarView: ToolbarView
-    protected tileInfo: Array<any>
 
     public constructor(canvas: HTMLCanvasElement) {
         super(canvas, "game")
@@ -34,8 +33,6 @@ class GameView extends BaseView {
             null,
         ]
         this.tileInfo = [{}]
-        // this.renderGrid()
-        this.renderScreen()
     }
     public renderScreen(){
         if (!this.gridsRendered) this.renderGrid()
