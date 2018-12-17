@@ -1,5 +1,5 @@
 /// <reference path="./GameView.ts" />
-class BuilderView extends GameView{
+class BuilderView extends BaseView{
     private _viewWidth: number
     private _yPosLine1: number = 70
     private _yPosLine2: number = 155
@@ -8,7 +8,7 @@ class BuilderView extends GameView{
     public _folded: boolean = true
 
     public constructor(canvas: HTMLCanvasElement) {
-        super(canvas)
+        super(canvas, "builder")
     }
 
     public renderScreen() {

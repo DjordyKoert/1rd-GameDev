@@ -7,17 +7,17 @@ class GameView extends BaseView {
     protected sqSize: number
     private gridsRendered: boolean
     protected tileImages: Array<string>
-    // private _BuilderView: BuilderView
-    // private BuilderViewOn: boolean
-    // private _UIView: UIView
-    // private _ToolbarView: ToolbarView
+    private _BuilderView: BuilderView
+    private BuilderViewOn: boolean
+    private _UIView: UIView
+    private _ToolbarView: ToolbarView
     protected tileInfo: Array<any>
 
     public constructor(canvas: HTMLCanvasElement) {
         super(canvas, "game")
         
         this._mouseHelper = new MouseHelper()
-        //this._BuilderView = new BuilderView(canvas)
+        this._BuilderView = new BuilderView(canvas)
         this.gridsRendered = false
         this.xCoord = this.yCoord = 0
         this.lines = 10
@@ -38,7 +38,8 @@ class GameView extends BaseView {
         this.renderScreen()
     }
     public renderScreen(){
-        this.renderGrid()
+        if (!this.gridsRendered) this.renderGrid()
+        this._BuilderView.renderScreen()
         // this._ToolbarView.renderToolbar()
         // this._UIView.renderScreen()
         // if (this.BuilderViewOn) this._BuilderView.renderScreen()
