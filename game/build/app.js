@@ -62,15 +62,16 @@ class CanvasHelper {
 }
 class App {
     constructor(canvasElem) {
-        this._canvas = new BaseView(canvasElem);
-        BaseView.changeScreen("home");
+        this._homeView = new HomeView(canvasElem);
+        this._startView = new StartView(canvasElem);
+        this._gameView = new GameView(canvasElem);
         App._klimaat = 0;
         App._gold = 0;
         App._wood = 0;
         App._stone = 0;
     }
     gameLoop() {
-        this._canvas.render();
+        console.log(this._startView.curScreen);
     }
 }
 let init = function () {
@@ -79,26 +80,9 @@ let init = function () {
 };
 window.addEventListener('load', init);
 class BaseView {
-    constructor(canvas) {
+    constructor(canvas, screen) {
         this._canvasHelper = new CanvasHelper(canvas);
-        BaseView.changeScreen("home");
-        this._StartView = new StartView(this._canvasHelper);
-        this._homeView = new HomeView(this._canvasHelper);
-        this._GameView = new GameView(this._canvasHelper);
-    }
-    render() {
-        if (BaseView.getScreen() == "home")
-            this._homeView.renderScreen();
-        if (BaseView.getScreen() == "game")
-            this._GameView.renderScreen();
-        if (BaseView.getScreen() == "start")
-            this._StartView.renderScreen();
-    }
-    static changeScreen(screen) {
         this.curScreen = screen;
-    }
-    static getScreen() {
-        return this.curScreen;
     }
 }
 class MathHelper {
@@ -129,15 +113,99 @@ class MouseHelper {
         return { click: this.mDown, x: this.mX, y: this.mY };
     }
 }
-class BuilderView {
+class GameView extends BaseView {
     constructor(canvas) {
+        super(canvas, "game");
+        this._screen = "gameScreen";
+        this._mouseHelper = new MouseHelper();
+        this.gridsRendered = false;
+        this.xCoord = this.yCoord = 0;
+        this.lines = 10;
+        if (this._canvasHelper.getWidth() > this._canvasHelper.getHeight()) {
+            this.sqSize = this._canvasHelper.getWidth() / this.lines;
+        }
+        else {
+            this.sqSize = this._canvasHelper.getHeight() / this.lines;
+        }
+        this.tileImages = [
+            "./assets/images/foliage/tree.png",
+            "./assets/images/houses/house.png",
+            null,
+        ];
+        this.tileInfo = [{}];
+        this.renderScreen();
+    }
+    renderScreen() {
+        this.renderGrid();
+    }
+    renderGrid() {
+        this._canvasHelper._context.beginPath();
+        if (this.gridsRendered) {
+            this.xCoord = 0;
+            this.yCoord = 0;
+            for (let line = 0; line < this.lines; line++) {
+                this._canvasHelper.moveTo(0, this.yCoord);
+                this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this.yCoord);
+                this._canvasHelper.moveTo(this.xCoord, 0);
+                this._canvasHelper.lineTo(this.xCoord, this._canvasHelper.getHeight());
+                this.tileInfo.forEach(tile => {
+                    this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart);
+                });
+            }
+        }
+        else {
+            for (let line = 0; line < this.lines; line++) {
+                this._canvasHelper.moveTo(0, this.yCoord);
+                this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this.yCoord);
+                this._canvasHelper.moveTo(this.xCoord, 0);
+                this._canvasHelper.lineTo(this.xCoord, this._canvasHelper.getHeight());
+                for (let i = 0; i < this.lines; i++) {
+                    let imageSrc = this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)];
+                    this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", this.xCoord, this.sqSize * i, this.sqSize, this.sqSize);
+                    this._canvasHelper.writeImageToCanvas(imageSrc, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize);
+                    let vr = { xStart: this.xCoord, xEnd: this.xCoord + this.sqSize, yStart: this.sqSize * i, yEnd: (this.sqSize * i) + this.sqSize, imageSrc: imageSrc };
+                    this.tileInfo.push(vr);
+                }
+                this.xCoord += this.sqSize;
+                this.yCoord += this.sqSize;
+            }
+            this.tileInfo = this.tileInfo.filter(x => x.xStart <= this._canvasHelper.getWidth() && x.yStart <= this._canvasHelper.getHeight());
+            let allHouses = this.tileInfo.filter(x => x.imageSrc == this.tileImages[1]);
+            allHouses.forEach(() => {
+                App._klimaat += 1;
+            });
+            window.addEventListener("mousedown", e => {
+                if (ToolbarView.getTool() == "axe") {
+                    let filter = this.tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
+                    if (!filter)
+                        return;
+                    if (filter.imageSrc == "./assets/images/foliage/tree.png") {
+                        this._canvasHelper.writeImageToCanvas(this.tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart);
+                        let n = this.tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
+                        this.tileInfo.splice(n, 1);
+                        let vr = { xStart: filter.xStart, xEnd: filter.xEnd - filter.xStart, yStart: filter.yStart, yEnd: filter.yEnd - filter.yStart, imageSrc: this.tileImages[0] };
+                        this.tileInfo.push(vr);
+                        App._gold += 6;
+                        App._klimaat -= 1;
+                    }
+                }
+            });
+            window.addEventListener("keypress", press => {
+                if (press.key == " ") {
+                }
+            });
+            this.gridsRendered = true;
+        }
+    }
+}
+class BuilderView extends GameView {
+    constructor(canvas) {
+        super(canvas);
         this._yPosLine1 = 70;
         this._yPosLine2 = 155;
         this._rendered = false;
         this._clicked = false;
         this._folded = true;
-        this._canvasHelper = canvas;
-        this._mouseHelper = new MouseHelper;
     }
     renderScreen() {
         if (this._folded) {
@@ -195,121 +263,23 @@ class BuilderView {
         }
     }
 }
-class GameView {
+class ToolbarView extends GameView {
     constructor(canvas) {
-        this._screen = "gameScreen";
-        this.CanvasHelper = canvas;
-        this._mouseHelper = new MouseHelper();
-        this._UIView = new UIView(canvas);
-        this._ToolbarView = new ToolbarView(canvas);
-        this.gridsRendered = false;
-        this.xCoord = this.yCoord = 0;
-        this.lines = 10;
-        this.BuilderViewOn = false;
-        if (this.CanvasHelper.getWidth() > this.CanvasHelper.getHeight()) {
-            this.sqSize = this.CanvasHelper.getWidth() / this.lines;
-        }
-        else {
-            this.sqSize = this.CanvasHelper.getHeight() / this.lines;
-        }
-        this.tileImages = [
-            "./assets/images/foliage/tree.png",
-            "./assets/images/houses/house2.png",
-            null,
-        ];
-        this.tileInfo = [{}];
-    }
-    renderScreen() {
-        this.renderGrid();
-        this._ToolbarView.renderToolbar();
-        this._UIView.renderScreen();
-        if (this.BuilderViewOn)
-            this._BuilderView.renderScreen();
-        this.CanvasHelper.loadingBar(400, 300, 100, 20, App._klimaat, 100);
-    }
-    renderGrid() {
-        this.CanvasHelper._context.beginPath();
-        if (this.gridsRendered) {
-            this.xCoord = 0;
-            this.yCoord = 0;
-            for (let line = 0; line < this.lines; line++) {
-                this.CanvasHelper.moveTo(0, this.yCoord);
-                this.CanvasHelper.lineTo(this.CanvasHelper.getWidth(), this.yCoord);
-                this.CanvasHelper.moveTo(this.xCoord, 0);
-                this.CanvasHelper.lineTo(this.xCoord, this.CanvasHelper.getHeight());
-                this.tileInfo.forEach(tile => {
-                    this.CanvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart);
-                });
-            }
-        }
-        else {
-            for (let line = 0; line < this.lines; line++) {
-                this.CanvasHelper.moveTo(0, this.yCoord);
-                this.CanvasHelper.lineTo(this.CanvasHelper.getWidth(), this.yCoord);
-                this.CanvasHelper.moveTo(this.xCoord, 0);
-                this.CanvasHelper.lineTo(this.xCoord, this.CanvasHelper.getHeight());
-                for (let i = 0; i < this.lines; i++) {
-                    let imageSrc = this.tileImages[MathHelper.randomNumber(0, this.tileImages.length - 1)];
-                    this.CanvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", this.xCoord, this.sqSize * i, this.sqSize, this.sqSize);
-                    this.CanvasHelper.writeImageToCanvas(imageSrc, this.xCoord, this.sqSize * i, this.sqSize, this.sqSize);
-                    let vr = { xStart: this.xCoord, xEnd: this.xCoord + this.sqSize, yStart: this.sqSize * i, yEnd: (this.sqSize * i) + this.sqSize, imageSrc: imageSrc };
-                    this.tileInfo.push(vr);
-                }
-                this.xCoord += this.sqSize;
-                this.yCoord += this.sqSize;
-            }
-            this.tileInfo = this.tileInfo.filter(x => x.xStart <= this.CanvasHelper.getWidth() && x.yStart <= this.CanvasHelper.getHeight());
-            let allHouses = this.tileInfo.filter(x => x.imageSrc == this.tileImages[1]);
-            allHouses.forEach(() => {
-                App._klimaat += 1;
-            });
-            window.addEventListener("mousedown", e => {
-                if (ToolbarView.getTool() == "axe") {
-                    let filter = this.tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
-                    if (!filter)
-                        return;
-                    if (filter.imageSrc == "./assets/images/foliage/tree.png") {
-                        this.CanvasHelper.writeImageToCanvas(this.tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart);
-                        let n = this.tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
-                        this.tileInfo.splice(n, 1);
-                        let vr = { xStart: filter.xStart, xEnd: filter.xEnd - filter.xStart, yStart: filter.yStart, yEnd: filter.yEnd - filter.yStart, imageSrc: this.tileImages[0] };
-                        this.tileInfo.push(vr);
-                        App._gold += 6;
-                        App._klimaat -= 1;
-                    }
-                }
-            });
-            window.addEventListener("keypress", press => {
-                if (press.key == " ") {
-                    if (this.BuilderViewOn) {
-                        this.BuilderViewOn = false;
-                    }
-                    else
-                        this.BuilderViewOn = true;
-                }
-            });
-            this.gridsRendered = true;
-        }
-    }
-}
-class ToolbarView {
-    constructor(canvas) {
+        super(canvas);
         this._screen = "homeScreen";
-        this.CanvasHelper = canvas;
         this.clicked = this.rendered = false;
-        this._mouseHelper = new MouseHelper();
         ToolbarView.setTool(undefined);
     }
     renderToolbar() {
-        this.CanvasHelper.createRect(this.CanvasHelper.getWidth() * 0.2, this.CanvasHelper.getHeight() * 0.8, this.CanvasHelper.getWidth() * 0.6, this.CanvasHelper.getHeight() * 0.2);
-        this.CanvasHelper.createRect(this.CanvasHelper.getWidth() * 0.21, this.CanvasHelper.getHeight() * 0.81, this.CanvasHelper.getWidth() * 0.1, this.CanvasHelper.getHeight() * 0.18, "red");
+        this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.2, this._canvasHelper.getHeight() * 0.8, this._canvasHelper.getWidth() * 0.6, this._canvasHelper.getHeight() * 0.2);
+        this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "red");
         this.rendered = true;
         this.toolBarClick();
     }
     toolBarClick() {
         if (this._mouseHelper.getClick().click && !this.clicked) {
-            if (this._mouseHelper.getClick().x >= this.CanvasHelper.getWidth() * 0.21 && this._mouseHelper.getClick().x <= (this.CanvasHelper.getWidth() * 0.21 + this.CanvasHelper.getWidth() * 0.1)) {
-                if (this._mouseHelper.getClick().y >= this.CanvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this.CanvasHelper.getHeight() * 0.81 + this.CanvasHelper.getHeight() * 0.18)) {
+            if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.21 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.21 + this._canvasHelper.getWidth() * 0.1)) {
+                if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getHeight() * 0.18)) {
                     if (ToolbarView.getTool() == "axe") {
                         this.clicked = true;
                         ToolbarView.setTool(undefined);
@@ -330,10 +300,10 @@ class ToolbarView {
         return this.curTool;
     }
 }
-class UIView {
+class UIView extends BaseView {
     constructor(canvas) {
+        super(canvas, "UI");
         this._screen = "homeScreen";
-        this.CanvasHelper = canvas;
     }
     renderScreen() {
         let image = new Image();
@@ -357,14 +327,12 @@ class UIView {
         image4.src = "./assets/images/resources/goldResource.png";
     }
 }
-class HomeView {
+class HomeView extends BaseView {
     constructor(canvas) {
+        super(canvas, "home");
         this._screen = "homeScreen";
         this._rendered = false;
-        this.CanvasHelper = canvas;
         this.MouseHelper = new MouseHelper();
-        this._gameView = new GameView(canvas);
-        this._startView = new StartView(canvas);
         this.clicked = false;
         this.planetList = [
             "./assets/images/temporary_textures/homeScreen_planet2.png",
@@ -372,9 +340,9 @@ class HomeView {
             "./assets/images/temporary_textures/homeScreen_planet2.png",
         ];
         this.planetXCoords = [
-            this.CanvasHelper.getWidth() / 6 - 150,
-            this.CanvasHelper.getWidth() / 2 - 150,
-            this.CanvasHelper.getWidth() / 1.25 - 150,
+            this._canvasHelper.getWidth() / 6 - 150,
+            this._canvasHelper.getWidth() / 2 - 150,
+            this._canvasHelper.getWidth() / 1.25 - 150,
         ];
         this.planetYCoords = [
             300,
@@ -390,17 +358,17 @@ class HomeView {
     drawPlanets() {
         const maxPlanets = 3;
         for (let i = 0; i < maxPlanets; i++) {
-            this.CanvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 300, 300);
-            this.CanvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310);
+            this._canvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 300, 300);
+            this._canvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310);
         }
     }
     drawBackButton() {
-        this.CanvasHelper.createRect(0, 0, 150, 100);
-        this.CanvasHelper.writeTextToCanvas("BACK", 30, 75, 50, "black");
+        this._canvasHelper.createRect(0, 0, 150, 100);
+        this._canvasHelper.writeTextToCanvas("BACK", 30, 75, 50, "black");
         if (this.MouseHelper.getClick().x > 0 && this.MouseHelper.getClick().x < 150) {
             if (this.MouseHelper.getClick().y > 0 && this.MouseHelper.getClick().y < 100) {
-                BaseView.changeScreen("start");
-                this.CanvasHelper.clear();
+                this.curScreen = "start";
+                this._canvasHelper.clear();
             }
         }
     }
@@ -419,7 +387,7 @@ class HomeView {
                             window.alert("voer eerst een naam in");
                         }
                         else {
-                            this.CanvasHelper._context.clearRect(0, 0, this.CanvasHelper.getWidth(), this.CanvasHelper.getHeight());
+                            this._canvasHelper._context.clearRect(0, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight());
                             this._gameView.renderScreen();
                         }
                     }
@@ -428,11 +396,11 @@ class HomeView {
         }
     }
 }
-class StartView {
+class StartView extends BaseView {
     constructor(canvas) {
+        super(canvas, "start");
         this._rendered = false;
         this._clicked = false;
-        this.CanvasHelper = canvas;
         this._mouseHelper = new MouseHelper();
     }
     renderScreen() {
@@ -452,7 +420,7 @@ class StartView {
             console.log("a");
             this._clicked = false;
             this.CanvasHelper.clear();
-            BaseView.changeScreen("home");
+            this.curScreen = "home";
             event.preventDefault();
         }
         this.CanvasHelper.createRect((this.CanvasHelper.getWidth() / 2) - 150, (this.CanvasHelper.getHeight() / 2) + 500, 300, 200);

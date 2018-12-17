@@ -30,7 +30,7 @@ class GameView extends BaseView {
         }
         this.tileImages = [
             "./assets/images/foliage/tree.png",
-            "./assets/images/houses/house2.png",
+            "./assets/images/houses/house.png",
             null,
         ]
         this.tileInfo = [{}]
