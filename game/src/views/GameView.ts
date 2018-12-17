@@ -221,6 +221,7 @@ class GameView extends BaseView {
             this._canvasHelper._context.fillText(`${App._gold}`, 80, 33)
             this._canvasHelper._context.fillText(`${App._stone}`, 290, 33)
             this._canvasHelper._context.fillText(`${App._gold}`, 480, 33)
+            this._canvasHelper.loadingBar(500, 33, 50, 20, App._klimaat, 100)
         });
         image.src = "./assets/images/backgrounds/UIBackground.png"
         image2.src = "./assets/images/resources/woodResource.png"
