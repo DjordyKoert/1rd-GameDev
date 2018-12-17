@@ -7,6 +7,7 @@ class App {
     public static _wood: number
     public static _stone: number
     public static _klimaat: number
+    public static _screen: string
 
     constructor(canvasElem: HTMLCanvasElement) {
         this._homeView = new HomeView(canvasElem)
@@ -16,10 +17,16 @@ class App {
         App._gold = 0
         App._wood = 0
         App._stone = 0
+        App._screen = "start"
     }
 
     public gameLoop(): void {
-        this._gameView.renderScreen()
+        if (App._screen == "start") this._startView.renderScreen()
+        if (App._screen == "home") this._homeView.renderScreen()
+        if (App._screen == "game") this._gameView.renderScreen()
+
+
+
     }
 
 
