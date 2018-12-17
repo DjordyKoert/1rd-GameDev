@@ -2,6 +2,7 @@ class BaseView {
     public curScreen: string
     protected _canvasHelper: CanvasHelper
     protected _mouseHelper: MouseHelper
+    public tileInfo: Array<any>
     public constructor(canvas: HTMLCanvasElement, screen:string){
         this._canvasHelper = new CanvasHelper(canvas)
         this._mouseHelper = new MouseHelper()
