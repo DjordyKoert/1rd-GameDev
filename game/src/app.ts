@@ -1,7 +1,7 @@
 /// <reference path="./Helpers/CanvasHelper.ts" />
 class App {
     private _homeView: HomeView
-    private _startView:StartView
+    private _startView: StartView
     private _gameView: GameView
     public static _gold: number
     public static _wood: number
@@ -19,7 +19,7 @@ class App {
     }
 
     public gameLoop(): void {
-        console.log(this._startView.curScreen)
+        this._gameView.renderScreen()
     }
 
 
@@ -29,14 +29,14 @@ class App {
     // public static getWood() {
     //     return this._wood
     // }
-    
+
     // public static updateGold(num: number) {
     //     this._gold += num
     // }
     // public static getGold() {
     //     return this._gold
     // }
-    
+
     // public static updateStone(num: number) {
     //     this._stone += num
     // }
