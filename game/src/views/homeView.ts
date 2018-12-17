@@ -1,6 +1,5 @@
-class HomeView {
+class HomeView extends BaseView {
     protected _screen: string = "homeScreen";
-    protected CanvasHelper: CanvasHelper;
     protected imageCenter: number;
     private _rendered: boolean = false;
     private MouseHelper: MouseHelper
@@ -11,11 +10,9 @@ class HomeView {
     private _startView: StartView
     private clicked: boolean
 
-    public constructor(canvas: CanvasHelper) {
-        this.CanvasHelper = canvas;
+    public constructor(canvas: HTMLCanvasElement) {
+        super(canvas, "home")
         this.MouseHelper = new MouseHelper()
-        this._gameView = new GameView(canvas)
-        this._startView = new StartView(canvas)
         this.clicked = false
         this.planetList = [
             "./assets/images/temporary_textures/homeScreen_planet2.png",
@@ -24,9 +21,9 @@ class HomeView {
         ]
 
         this.planetXCoords = [
-            this.CanvasHelper.getWidth() / 6 - 150,
-            this.CanvasHelper.getWidth() / 2 - 150,
-            this.CanvasHelper.getWidth() / 1.25 - 150,
+            this._canvasHelper.getWidth() / 6 - 150,
+            this._canvasHelper.getWidth() / 2 - 150,
+            this._canvasHelper.getWidth() / 1.25 - 150,
         ]
 
         this.planetYCoords = [
@@ -46,21 +43,21 @@ class HomeView {
         const maxPlanets: number = 3;
 
         for (let i = 0; i < maxPlanets; i++) {
-            this.CanvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 300, 300)
+            this._canvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 300, 300)
 
 
-            this.CanvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310)
+            this._canvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310)
         }
     }
         
     public drawBackButton(){
     
-    this.CanvasHelper.createRect(0, 0, 150, 100)
-        this.CanvasHelper.writeTextToCanvas("BACK", 30, 75, 50, "black")
+    this._canvasHelper.createRect(0, 0, 150, 100)
+        this._canvasHelper.writeTextToCanvas("BACK", 30, 75, 50, "black")
         if (this.MouseHelper.getClick().x > 0 && this.MouseHelper.getClick().x < 150) {
             if (this.MouseHelper.getClick().y > 0 && this.MouseHelper.getClick().y < 100) {
-                BaseView.changeScreen("start")
-                this.CanvasHelper.clear()
+                this.curScreen = "start"
+                this._canvasHelper.clear()
             }
         }
     }
@@ -85,7 +82,7 @@ class HomeView {
 
                         }
                         else {
-                            this.CanvasHelper._context.clearRect(0, 0, this.CanvasHelper.getWidth(), this.CanvasHelper.getHeight())
+                            this._canvasHelper._context.clearRect(0, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
                             this._gameView.renderScreen();
 
                         }

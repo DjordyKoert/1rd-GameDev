@@ -1,11 +1,11 @@
-class StartView {
+class StartView extends BaseView {
     private CanvasHelper: CanvasHelper
     private _mouseHelper: MouseHelper
     private _rendered: boolean = false;
     private _clicked: boolean = false;
 
-    public constructor(canvas: CanvasHelper) {
-        this.CanvasHelper = canvas
+    public constructor(canvas: HTMLCanvasElement) {
+        super(canvas, "start")
         this._mouseHelper = new MouseHelper()
     }
 
@@ -32,7 +32,7 @@ class StartView {
             console.log("a")
             this._clicked = false
             this.CanvasHelper.clear();
-            BaseView.changeScreen("home")
+            this.curScreen = "home"
             event.preventDefault()
 
         }
