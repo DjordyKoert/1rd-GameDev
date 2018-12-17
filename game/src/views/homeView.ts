@@ -13,6 +13,7 @@ class HomeView extends BaseView {
     public constructor(canvas: HTMLCanvasElement) {
         super(canvas, "home")
         this.MouseHelper = new MouseHelper()
+        this._gameView = new GameView(canvas)
         this.clicked = false
         this.planetList = [
             "./assets/images/temporary_textures/homeScreen_planet2.png",
