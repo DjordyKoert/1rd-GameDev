@@ -56,11 +56,16 @@ class GameView extends BaseView {
             this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this._yCoord)
             this._canvasHelper.moveTo(this._xCoord, 0)
             this._canvasHelper.lineTo(this._xCoord, this._canvasHelper.getHeight())
-            this._tileInfo.forEach(tile => {
-                this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
-                this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
-            });
         }
+        this._tileInfo.forEach(tile => {
+            if (tile.imageSrc == "./assets/images/houses/house.png") {
+                this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/buildingEarth.png", tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
+            }
+            else {
+                this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
+            }
+            this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
+        });
     }
     public renderNewGrid() {
         this._canvasHelper._context.beginPath()
