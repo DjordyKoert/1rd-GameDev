@@ -56,11 +56,16 @@ class GameView extends BaseView {
             this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this._yCoord)
             this._canvasHelper.moveTo(this._xCoord, 0)
             this._canvasHelper.lineTo(this._xCoord, this._canvasHelper.getHeight())
-            this._tileInfo.forEach(tile => {
-                this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
-                this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
-            });
         }
+        this._tileInfo.forEach(tile => {
+            if (tile.imageSrc == "./assets/images/houses/house.png") {
+                this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/buildingEarth.png", tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
+            }
+            else {
+                this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
+            }
+            this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
+        });
     }
     public renderNewGrid() {
         this._canvasHelper._context.beginPath()
@@ -204,27 +209,28 @@ class GameView extends BaseView {
         // this.CanvasHelper.writeImageToCanvas("./assets/images/resources/stoneResource.png", 210, 2, 50, 50)
         // this.CanvasHelper.writeImageToCanvas("./assets/images/resources/goldResource.png", 400, 2, 50, 50)
         // //this.CanvasHelper.writeTextToCanvas(`${App.getGold()}`, 50, 100, 30, "white", "center")  
-        let image = new Image();
-        let image2 = new Image();
-        let image3 = new Image();
-        let image4 = new Image();
+        let imageUIBackground = new Image();
+        let imageWoodResource = new Image();
+        let imageStoneResource = new Image();
+        let imageGoldResource = new Image();
         // add the listener so the waiting will not affect the change
-        image.addEventListener('load', () => {
-            this._canvasHelper._context.drawImage(image, 0, 0, 1650, 1080);
-            this._canvasHelper._context.drawImage(image2, 5, 2, 50, 50);
-            this._canvasHelper._context.drawImage(image3, 210, 2, 50, 50);
-            this._canvasHelper._context.drawImage(image4, 400, 2, 50, 50);
+        imageUIBackground.addEventListener('load', () => {
+            this._canvasHelper._context.drawImage(imageUIBackground, 0, 0, 1650, 1080);
+            this._canvasHelper._context.drawImage(imageWoodResource, 5, 2, 50, 50);
+            this._canvasHelper._context.drawImage(imageStoneResource, 210, 2, 50, 50);
+            this._canvasHelper._context.drawImage(imageGoldResource, 400, 2, 50, 50);
 
             //this.d_context.clip();
             this._canvasHelper._context.font = "40px Minecraft";
             this._canvasHelper._context.fillStyle = "#ff00ff";
-            this._canvasHelper._context.fillText(`${App._gold}`, 80, 33)
-            this._canvasHelper._context.fillText(`${App._stone}`, 290, 33)
-            this._canvasHelper._context.fillText(`${App._gold}`, 480, 33)
+            this._canvasHelper._context.fillText(`${App._gold}`, 130, 33)
+            this._canvasHelper._context.fillText(`${App._stone}`, 340, 33)
+            this._canvasHelper._context.fillText(`${App._gold}`, 530, 33)
+            this._canvasHelper.loadingBar(-11, 53, 590, 15, App._klimaat, 100)
         });
-        image.src = "./assets/images/backgrounds/UIBackground.png"
-        image2.src = "./assets/images/resources/woodResource.png"
-        image3.src = "./assets/images/resources/stoneResource.png"
-        image4.src = "./assets/images/resources/goldResource.png"
+        imageUIBackground.src = "./assets/images/backgrounds/UIBackground.png"
+        imageWoodResource.src = "./assets/images/resources/woodResource.png"
+        imageStoneResource.src = "./assets/images/resources/stoneResource.png"
+        imageGoldResource.src = "./assets/images/resources/goldResource.png"
     }
 }
