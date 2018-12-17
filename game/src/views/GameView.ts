@@ -218,9 +218,16 @@ class GameView extends BaseView {
             //this.d_context.clip();
             this._canvasHelper._context.font = "40px Minecraft";
             this._canvasHelper._context.fillStyle = "#ff00ff";
+<<<<<<< HEAD
             this._canvasHelper._context.fillText(`${App._gold}`, 130, 33)
             this._canvasHelper._context.fillText(`${App._stone}`, 340, 33)
             this._canvasHelper._context.fillText(`${App._gold}`, 530, 33)
+=======
+            this._canvasHelper._context.fillText(`${App._gold}`, 80, 33)
+            this._canvasHelper._context.fillText(`${App._stone}`, 290, 33)
+            this._canvasHelper._context.fillText(`${App._gold}`, 480, 33)
+            this._canvasHelper.loadingBar(500, 33, 50, 20, App._klimaat, 100)
+>>>>>>> d1dae3cf918017f9f12fb19a14b25d7dd34f3513
         });
         imageUIBackground.src = "./assets/images/backgrounds/UIBackground.png"
         imageWoodResource.src = "./assets/images/resources/woodResource.png"
