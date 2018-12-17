@@ -19,7 +19,7 @@ class GameView extends BaseView {
     private _renderedToolBar: boolean
 
     public constructor(canvas: HTMLCanvasElement) {
-        super(canvas, "game")
+        super(canvas)
         this._mouseHelper = new MouseHelper()
         this._gridsRendered = false
         this._xCoord = this._yCoord = 0
