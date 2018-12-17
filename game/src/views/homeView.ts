@@ -7,7 +7,6 @@ class HomeView extends BaseView {
     private planetXCoords: Array<number>
     private planetYCoords: Array<number>
     private _gameView: GameView
-    private _startView: StartView
     private clicked: boolean
 
     public constructor(canvas: HTMLCanvasElement) {
@@ -32,13 +31,13 @@ class HomeView extends BaseView {
             400,
             200
         ]
-    this.renderScreen()
     }
 
-    public renderScreen(): void { 
+    public renderScreen(): void {
         this.drawPlanets();
         this.drawBackButton();
         this.screenClick();
+        console.log("home rendered")
     }
 
     public drawPlanets() {
@@ -51,10 +50,10 @@ class HomeView extends BaseView {
             this._canvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310)
         }
     }
-        
-    public drawBackButton(){
-    
-    this._canvasHelper.createRect(0, 0, 150, 100)
+
+    public drawBackButton() {
+
+        this._canvasHelper.createRect(0, 0, 150, 100)
         this._canvasHelper.writeTextToCanvas("BACK", 30, 75, 50, "black")
         if (this.MouseHelper.getClick().x > 0 && this.MouseHelper.getClick().x < 150) {
             if (this.MouseHelper.getClick().y > 0 && this.MouseHelper.getClick().y < 100) {
@@ -63,7 +62,7 @@ class HomeView extends BaseView {
             }
         }
     }
-    
+
     public screenClick() {
         if (this.MouseHelper.getClick().click && !this.clicked) {
             // received a mouse down event
@@ -82,7 +81,7 @@ class HomeView extends BaseView {
                             window.alert("voer eerst een naam in")
                         }
                         else {
-                            this._canvasHelper._context.clearRect(0, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
+                            this._canvasHelper.clear();
                             this._gameView.renderScreen();
                         }
                     }
