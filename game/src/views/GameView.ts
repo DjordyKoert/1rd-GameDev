@@ -17,6 +17,7 @@ class GameView extends BaseView {
     private _clickedToolbar: boolean
     private _curTool: string
     private _renderedToolBar: boolean
+    private _renderedtoolbarIcons: boolean = false
 
     public constructor(canvas: HTMLCanvasElement) {
         super(canvas)
@@ -38,7 +39,7 @@ class GameView extends BaseView {
         this._tileInfo = [{}]
         this._clickedToolbar = this._renderedToolBar = false
     }
-    public renderScreen() {
+    public renderScreen(): void {
         console.log(this._curTool)
         if (!this._gridsRendered) this.renderNewGrid()
         this.renderBuilderView()
@@ -47,7 +48,7 @@ class GameView extends BaseView {
         // if (this.BuilderViewOn) this._BuilderView.renderScreen()
         // this._canvasHelper.loadingBar(400, 300, 100, 20, App._klimaat, 100)
     }
-    public renderOldGrid() {
+    public renderOldGrid(): void {
         this._canvasHelper._context.beginPath()
         this._xCoord = 0
         this._yCoord = 0
@@ -67,7 +68,7 @@ class GameView extends BaseView {
             this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
         });
     }
-    public renderNewGrid() {
+    public renderNewGrid(): void {
         this._canvasHelper._context.beginPath()
 
         for (let line = 0; line < this._lines; line++) {
@@ -108,14 +109,27 @@ class GameView extends BaseView {
                     App._klimaat -= 1
                 }
             }
+            if (this._curTool == "hammer") {
+                let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+                if (!filter) return;
+                if (filter.imageSrc == "./assets/images/houses/house.png") {
+                    this._canvasHelper.writeImageToCanvas(this._tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart)
+                    let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+                    this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
+                    this.renderOldGrid()
+                    App._gold += 4
+                    App._klimaat += 1
+                }
+            }
         })
+
 
         this._gridsRendered = true
     }
 
 
     //BuilderView
-    public renderBuilderView() {
+    public renderBuilderView(): void {
         let _yPosLine1: number = 70
         let _yPosLine2: number = 155
         if (this._folded) {
@@ -179,21 +193,32 @@ class GameView extends BaseView {
         }
     }
     //ToolBar
-    public renderToolbarView() {
-        this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.2, this._canvasHelper.getHeight() * 0.8, this._canvasHelper.getWidth() * 0.6, this._canvasHelper.getHeight() * 0.2)
-        this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "red")
-        this._renderedToolBar = true
+    public renderToolbarView(): void {
+            this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.2, this._canvasHelper.getHeight() * 0.8, this._canvasHelper.getWidth() * 0.6, this._canvasHelper.getHeight() * 0.2)
+            this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "red")
+            this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.32, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "blue")
+            this._renderedToolBar = true
+
+
 
         this.toolBarClick()
     }
 
     public toolBarClick(): void {
         if (this._mouseHelper.getClick().click && !this._clickedToolbar) {
+
             if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.21 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.21 + this._canvasHelper.getWidth() * 0.1)) {
                 if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getHeight() * 0.18)) {
                     if (this._curTool == "axe") { this._clickedToolbar = true; this._curTool = undefined; return }
                     this._clickedToolbar = true
                     this._curTool = "axe"
+                }
+            }
+            if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.32 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.32 + this._canvasHelper.getWidth() * 0.1)) {
+                if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getWidth() * 0.18)) {
+                    if (this._curTool == "hammer") { this._clickedToolbar = true; this._curTool = undefined; return }
+                    this._clickedToolbar = true
+                    this._curTool = "hammer"
                 }
             }
         }
