@@ -35,6 +35,7 @@ class GameView extends BaseView {
         this._tileImages = [
             "./assets/images/foliage/tree.png",
             "./assets/images/earth_textures/earth.png",
+            "./assets/images/earth_textures/mountain.png"
         ]
         this._tileInfo = [{}]
         this._clickedToolbar = this._renderedToolBar = false
@@ -49,7 +50,6 @@ class GameView extends BaseView {
         // this._canvasHelper.loadingBar(400, 300, 100, 20, App._klimaat, 100)
     }
     public renderOldGrid(): void {
-        this._canvasHelper._context.beginPath()
         this._xCoord = 0
         this._yCoord = 0
         for (let line = 0; line < this._lines; line++) {
@@ -69,8 +69,6 @@ class GameView extends BaseView {
         });
     }
     public renderNewGrid(): void {
-        this._canvasHelper._context.beginPath()
-
         for (let line = 0; line < this._lines; line++) {
             this._canvasHelper.moveTo(0, this._yCoord)
             this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this._yCoord)
@@ -101,7 +99,6 @@ class GameView extends BaseView {
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
                 if (filter.imageSrc == "./assets/images/foliage/tree.png") {
-                    this._canvasHelper.writeImageToCanvas(this._tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart)
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
@@ -113,7 +110,6 @@ class GameView extends BaseView {
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
                 if (filter.imageSrc == "./assets/images/houses/house.png") {
-                    this._canvasHelper.writeImageToCanvas(this._tileInfo[0], filter.xStart, filter.yStart, filter.xEnd - filter.xStart, filter.yEnd - filter.yStart)
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
@@ -121,6 +117,19 @@ class GameView extends BaseView {
                     App._klimaat += 1
                 }
             }
+            if (this._curTool == "pickaxe") {
+                let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+                if (!filter) return;
+                if (filter.imageSrc == "./assets/images/earth_textures/mountain.png") {
+                    let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+                    this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
+                    this.renderOldGrid()
+                    App._gold += 4
+                    App._klimaat -= 1
+                    App._stone += 5
+                }
+            }
+
         })
 
 
@@ -197,6 +206,7 @@ class GameView extends BaseView {
             this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.2, this._canvasHelper.getHeight() * 0.8, this._canvasHelper.getWidth() * 0.6, this._canvasHelper.getHeight() * 0.2)
             this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "red")
             this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.32, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "blue")
+            this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.43, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "yellow")
             this._renderedToolBar = true
 
 
@@ -219,6 +229,13 @@ class GameView extends BaseView {
                     if (this._curTool == "hammer") { this._clickedToolbar = true; this._curTool = undefined; return }
                     this._clickedToolbar = true
                     this._curTool = "hammer"
+                }
+            }
+            if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.43 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.43 + this._canvasHelper.getWidth() * 0.1)) {
+                if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getWidth() * 0.18)) {
+                    if (this._curTool == "pickaxe") { this._clickedToolbar = true; this._curTool = undefined; return }
+                    this._clickedToolbar = true
+                    this._curTool = "pickaxe"
                 }
             }
         }
