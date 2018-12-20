@@ -133,7 +133,6 @@ class GameView extends BaseView {
                     App._gold -= 10
                     App._klimaat -= 1
                     App._stone += 5
-                    App._wood += 5
                 }
             }
 
