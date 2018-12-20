@@ -24,7 +24,7 @@ class GameView extends BaseView {
         this._mouseHelper = new MouseHelper()
         this._gridsRendered = false
         this._xCoord = this._yCoord = 0
-        this._lines = 10
+        this._lines = 20
         //Check screen size to make grids fit
         if (this._canvasHelper.getWidth() > this._canvasHelper.getHeight()) {
             this._sqSize = this._canvasHelper.getWidth() / this._lines
@@ -35,7 +35,9 @@ class GameView extends BaseView {
         this._tileImages = [
             "./assets/images/foliage/tree.png",
             "./assets/images/earth_textures/earth.png",
-            "./assets/images/earth_textures/mountain.png"
+            "./assets/images/earth_textures/mountain.png",
+            "./assets/images/water/lake1.png",
+            "./assets/images/water/lake2.png"
         ]
         this._tileInfo = [{}]
         this._clickedToolbar = this._renderedToolBar = false
@@ -321,10 +323,24 @@ class GameView extends BaseView {
         // this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1)
         // this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine1)
         this._canvasHelper.writeTextToCanvas('HUIS', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 100, undefined, 'left')
-        this._canvasHelper.writeTextToCanvas(`DOEKOE: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
+        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
         this._canvasHelper.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 80, 90, 64)
         this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2)
         // this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2)
         // this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine2)
+        this._canvasHelper.writeTextToCanvas('FABRIEK', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 200, undefined, 'left')
+        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 235, undefined, 'left')
+        this._canvasHelper.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 180, 90, 64)
+
+        this._canvasHelper.writeTextToCanvas('LUMBERJACK', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 300, undefined, 'left')
+        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 335, undefined, 'left')
+        this._canvasHelper.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 320, 90, 64)
+        
+        this._canvasHelper.writeTextToCanvas('Miner', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 400, undefined, 'left')
+        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
+        this._canvasHelper.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 380, 90, 64)
+        
+        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2)
+        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2)
     }
 }
