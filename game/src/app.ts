@@ -17,7 +17,7 @@ class App {
         App._gold = 0
         App._wood = 0
         App._stone = 0
-        App._screen = "start"
+        App._screen = "game"
     }
 
     public gameLoop(): void {
@@ -29,7 +29,11 @@ class App {
 
     }
 
-
+    public static ResourceCheck(wood:number, stone:number, gold:number): boolean {
+        if (App._wood >= wood && App._stone >= stone && App._gold >= gold) return true
+        else return false
+        
+    }
     // public static updateWood(num: number) {
     //     this._wood += num
     // }

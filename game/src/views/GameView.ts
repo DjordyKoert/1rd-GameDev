@@ -102,31 +102,35 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._gold += 6
+                    App._gold += 15
                     App._klimaat -= 1
+                    App._wood += 10
                 }
             }
-            if (this._curTool == "hammer") {
+           
+            if (this._curTool == "hammer" && App.ResourceCheck(0, 0, 4)) {
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
                 if (filter.imageSrc == "./assets/images/houses/house.png") {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._gold += 4
+                    App._gold -= 5
                     App._klimaat += 1
                 }
             }
-            if (this._curTool == "pickaxe") {
+        
+            if (this._curTool == "pickaxe" && App.ResourceCheck(0, 0, 10)) {
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
                 if (filter.imageSrc == "./assets/images/earth_textures/mountain.png") {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._gold += 4
+                    App._gold -= 10
                     App._klimaat -= 1
                     App._stone += 5
+                    App._wood += 5
                 }
             }
 
@@ -198,7 +202,7 @@ class GameView extends BaseView {
             let DiamondPickaxe = new Image();
             DiamondAxe.addEventListener('load', () => {
                 this._canvasHelper._context.drawImage(DiamondAxe, this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18)
-                this._canvasHelper._context.drawImage(DiamondHammer, this._canvasHelper.getWidth() * 0.31, this._canvasHelper.getHeight() * 0.79, this._canvasHelper.getWidth() * 0.12, this._canvasHelper.getHeight() * 0.20)
+                this._canvasHelper._context.drawImage(DiamondHammer, this._canvasHelper.getWidth() * 0.3057, this._canvasHelper.getHeight() * 0.79, this._canvasHelper.getWidth() * 0.12, this._canvasHelper.getHeight() * 0.20)
                 this._canvasHelper._context.drawImage(DiamondPickaxe, this._canvasHelper.getWidth() * 0.43, this._canvasHelper.getHeight() * 0.83, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.15)
             });
             DiamondAxe.src = "./assets/images/toolBar_textures/Diamond_Axe.png"
@@ -259,7 +263,7 @@ class GameView extends BaseView {
             //this.d_context.clip();
             this._canvasHelper._context.font = "40px Minecraft";
             this._canvasHelper._context.fillStyle = "#ff00ff";
-            this._canvasHelper._context.fillText(`${App._gold}`, 130, 33)
+            this._canvasHelper._context.fillText(`${App._wood}`, 130, 33)
             this._canvasHelper._context.fillText(`${App._stone}`, 340, 33)
             this._canvasHelper._context.fillText(`${App._gold}`, 530, 33)
             this._canvasHelper.loadingBar(-11, 53, 590, 15, App._klimaat, 100)
