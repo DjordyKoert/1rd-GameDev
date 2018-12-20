@@ -103,31 +103,35 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._gold += 6
+                    App._gold += 15
                     App._klimaat -= 1
+                    App._wood += 10
                 }
             }
-            if (this._curTool == "hammer") {
+           
+            if (this._curTool == "hammer" && App.ResourceCheck(0, 0, 4)) {
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
                 if (filter.imageSrc == "./assets/images/houses/house.png") {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._gold += 4
+                    App._gold -= 5
                     App._klimaat += 1
                 }
             }
-            if (this._curTool == "pickaxe") {
+        
+            if (this._curTool == "pickaxe" && App.ResourceCheck(0, 0, 10)) {
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
                 if (filter.imageSrc == "./assets/images/earth_textures/mountain.png") {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._gold += 4
+                    App._gold -= 10
                     App._klimaat -= 1
                     App._stone += 5
+                    App._wood += 5
                 }
             }
 
@@ -200,9 +204,17 @@ class GameView extends BaseView {
             this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "red")
             this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.32, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "blue")
             this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.43, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "yellow")
-            this._renderedToolBar = true
-
-
+            let DiamondAxe = new Image();
+            let DiamondHammer = new Image();
+            let DiamondPickaxe = new Image();
+            DiamondAxe.addEventListener('load', () => {
+                this._canvasHelper._context.drawImage(DiamondAxe, this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18)
+                this._canvasHelper._context.drawImage(DiamondHammer, this._canvasHelper.getWidth() * 0.3057, this._canvasHelper.getHeight() * 0.79, this._canvasHelper.getWidth() * 0.12, this._canvasHelper.getHeight() * 0.20)
+                this._canvasHelper._context.drawImage(DiamondPickaxe, this._canvasHelper.getWidth() * 0.43, this._canvasHelper.getHeight() * 0.83, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.15)
+            });
+            DiamondAxe.src = "./assets/images/toolBar_textures/Diamond_Axe.png"
+            DiamondHammer.src = "./assets/images/toolBar_textures/Diamond_Hammer.png"
+            DiamondPickaxe.src = "./assets/images/toolBar_textures/Diamond_Pickaxe.png"
 
         this.toolBarClick()
     }
@@ -264,7 +276,7 @@ class GameView extends BaseView {
             //this.d_context.clip();
             this._canvasHelper._context.font = "40px Minecraft";
             this._canvasHelper._context.fillStyle = "#ff00ff";
-            this._canvasHelper._context.fillText(`${App._gold}`, 130, 33)
+            this._canvasHelper._context.fillText(`${App._wood}`, 130, 33)
             this._canvasHelper._context.fillText(`${App._stone}`, 340, 33)
             this._canvasHelper._context.fillText(`${App._gold}`, 530, 33)
             this._canvasHelper.loadingBar(-11, 53, 590, 15, App._klimaat, 100)
@@ -275,24 +287,24 @@ class GameView extends BaseView {
         imageGoldResource.src = "./assets/images/resources/goldResource.png"
     }
     //UnfoldedBuilderView
-    private renderFoldedBuilderView() : void {
+    private renderFoldedBuilderView(): void {
         this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
         this._canvasHelper.writeTextToCanvas('<--', 20, this._canvasHelper.getWidth() - 10, 10, 'black', 'right')
     }
     //FoldedBuilderView
-    private renderUnFoldedBuilderView(): void{
+    private renderUnFoldedBuilderView(): void {
         let _yPosLine1: number = 70
         let _yPosLine2: number = 155
         let _yposLine3: number = 250
         this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
         this._canvasHelper.writeTextToCanvas('GEBOUWEN', 48, (this._canvasHelper.getWidth() - this._viewWidth / 2), 40)
-        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1,this._canvasHelper.getWidth(), _yPosLine1)
+        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1, this._canvasHelper.getWidth(), _yPosLine1)
         // this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1)
         // this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine1)
         this._canvasHelper.writeTextToCanvas('HUIS', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 100, undefined, 'left')
         this._canvasHelper.writeTextToCanvas(`DOEKOE: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
         this._canvasHelper.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 80, 90, 64)
-        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2,this._canvasHelper.getWidth(), _yPosLine2)
+        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2)
         // this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2)
         // this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine2)
     }
