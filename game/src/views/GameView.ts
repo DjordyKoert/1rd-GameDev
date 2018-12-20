@@ -139,16 +139,10 @@ class GameView extends BaseView {
 
     //BuilderView
     public renderBuilderView(): void {
-        let _yPosLine1: number = 70
-        let _yPosLine2: number = 155
         if (this._folded) {
             this._viewWidth = 50
-
-            this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
-            this._canvasHelper.writeTextToCanvas('<--', 20, this._canvasHelper.getWidth() - 10, 10, 'black', 'right')
+            this.renderFoldedBuilderView()
             this._renderedBuilderView = true
-
-
             if (this._mouseHelper.getClick().click && !this._clickedBuilderView) {
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth && this._mouseHelper.getClick().x < this._canvasHelper.getWidth()) {
                     if (this._mouseHelper.getClick().y > 0 && this._mouseHelper.getClick().y < 20) {
@@ -166,15 +160,7 @@ class GameView extends BaseView {
         if (!this._folded) {
             this._viewWidth = 300
             if (!this._renderedBuilderView) {
-                this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
-                this._canvasHelper.writeTextToCanvas('GEBOUWEN', 48, (this._canvasHelper.getWidth() - this._viewWidth / 2), 40)
-                this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1)
-                this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine1)
-                this._canvasHelper.writeTextToCanvas('HUIS', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 100, undefined, 'left')
-                this._canvasHelper.writeTextToCanvas(`DOEKOE: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
-                this._canvasHelper.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 80, 90, 64)
-                this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2)
-                this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine2)
+                this.renderUnFoldedBuilderView()
                 this._renderedBuilderView = true
             }
 
@@ -274,5 +260,27 @@ class GameView extends BaseView {
         imageWoodResource.src = "./assets/images/resources/woodResource.png"
         imageStoneResource.src = "./assets/images/resources/stoneResource.png"
         imageGoldResource.src = "./assets/images/resources/goldResource.png"
+    }
+    //UnfoldedBuilderView
+    private renderFoldedBuilderView() : void {
+        this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
+        this._canvasHelper.writeTextToCanvas('<--', 20, this._canvasHelper.getWidth() - 10, 10, 'black', 'right')
+    }
+    //FoldedBuilderView
+    private renderUnFoldedBuilderView(): void{
+        let _yPosLine1: number = 70
+        let _yPosLine2: number = 155
+        let _yposLine3: number = 250
+        this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
+        this._canvasHelper.writeTextToCanvas('GEBOUWEN', 48, (this._canvasHelper.getWidth() - this._viewWidth / 2), 40)
+        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1,this._canvasHelper.getWidth(), _yPosLine1)
+        // this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1)
+        // this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine1)
+        this._canvasHelper.writeTextToCanvas('HUIS', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 100, undefined, 'left')
+        this._canvasHelper.writeTextToCanvas(`DOEKOE: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
+        this._canvasHelper.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 80, 90, 64)
+        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2,this._canvasHelper.getWidth(), _yPosLine2)
+        // this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2)
+        // this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine2)
     }
 }
