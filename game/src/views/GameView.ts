@@ -96,6 +96,7 @@ class GameView extends BaseView {
         });
         window.addEventListener("mousedown", e => {
             if (this._curTool == "axe") {
+                document.body.style.cursor = "url('assets/cursors/Diamond_axeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
                 if (filter.imageSrc == "./assets/images/foliage/tree.png") {
@@ -130,6 +131,12 @@ class GameView extends BaseView {
                 }
             }
 
+        })
+
+        window.addEventListener("mouseup", e => {
+            if (this._curTool == "axe") {
+                document.body.style.cursor = "url('assets/cursors/Diamond_axe.png'), auto";
+            }
         })
 
 
@@ -202,11 +209,17 @@ class GameView extends BaseView {
 
     public toolBarClick(): void {
         if (this._mouseHelper.getClick().click && !this._clickedToolbar) {
-
             if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.21 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.21 + this._canvasHelper.getWidth() * 0.1)) {
                 if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getHeight() * 0.18)) {
-                    if (this._curTool == "axe") { this._clickedToolbar = true; this._curTool = undefined; return }
+                    if (this._curTool == "axe") {
+                        this._clickedToolbar = true 
+                        this._curTool = undefined 
+                        document.body.style.cursor = 'default'
+                        return }
+
+                    
                     this._clickedToolbar = true
+                    document.body.style.cursor = "url('assets/cursors/Diamond_axe.png'), auto";
                     this._curTool = "axe"
                 }
             }
