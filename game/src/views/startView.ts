@@ -6,7 +6,7 @@ class StartView extends BaseView {
 
 
     public constructor(canvas: HTMLCanvasElement) {
-        super(canvas, "start")
+        super(canvas)
         this._homeView = new HomeView(canvas)
     }
 
@@ -41,7 +41,7 @@ class StartView extends BaseView {
                 if (this._mouseHelper.getClick().x > (this._canvasHelper.getWidth() / 2) - 150 && this._mouseHelper.getClick().x < (this._canvasHelper.getWidth() / 2) + 150) {
                     if (this._mouseHelper.getClick().y > (this._canvasHelper.getHeight() / 2) - 100 && this._mouseHelper.getClick().y < (this._canvasHelper.getHeight() / 2) + 100) {
                         this._canvasHelper.clear()
-                        this._homeView.renderScreen();
+                        App._screen = "home"
                 }
             }
         }

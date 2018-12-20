@@ -149,11 +149,27 @@ class CanvasHelper {
         this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value / maxNumber), rectHeight, barProgress)
 
     }
+    /**
+     * Makes a black line
+     * @param beginXpos Begin X coordinate of the line
+     * @param beginYpos begin Y coordinate of the line
+     * @param endXpos end X coordinate of the line
+     * @param endYpos end Y coordinate of the line
+     */
+    public makeLine(
+        beginXpos: number,
+        beginYpos: number,
+        endXpos: number,
+        endYpos: number) : void {
+            this.moveTo(beginXpos,beginYpos)
+            this.lineTo(endXpos,endYpos)
+        }
 
     public moveTo(xPos: number, yPos: number): void {
         this._context.moveTo(xPos, yPos)
     }
     public lineTo(xPos: number, yPos: number): void {
+        this._context.beginPath()
         this._context.lineTo(xPos, yPos)
         this._context.stroke()
     }

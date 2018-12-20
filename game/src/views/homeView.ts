@@ -10,7 +10,7 @@ class HomeView extends BaseView {
     private clicked: boolean
 
     public constructor(canvas: HTMLCanvasElement) {
-        super(canvas, "home")
+        super(canvas)
         this.MouseHelper = new MouseHelper()
         this._gameView = new GameView(canvas)
         this.clicked = false
@@ -57,7 +57,7 @@ class HomeView extends BaseView {
         this._canvasHelper.writeTextToCanvas("BACK", 30, 75, 50, "black")
         if (this.MouseHelper.getClick().x > 0 && this.MouseHelper.getClick().x < 150) {
             if (this.MouseHelper.getClick().y > 0 && this.MouseHelper.getClick().y < 100) {
-                this.curScreen = "start"
+                //this.curScreen = "start"
                 this._canvasHelper.clear()
             }
         }
@@ -76,13 +76,13 @@ class HomeView extends BaseView {
                 console.log(this.clicked);
                 if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 300) {
                     if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 300) {
-                        var person = prompt("Please enter your name", "");
+                        let person = prompt("Please enter your name", "");
                         if (person == null || person == "") {
                             window.alert("voer eerst een naam in")
                         }
                         else {
                             this._canvasHelper.clear();
-                            this._gameView.renderScreen();
+                            App._screen = "game"
                         }
                     }
                 }
