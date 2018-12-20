@@ -110,6 +110,7 @@ class GameView extends BaseView {
             }
            
             if (this._curTool == "hammer" && App.ResourceCheck(0, 0, 4)) {
+                document.body.style.cursor = "url('assets/cursors/Diamond_hammerChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
                 if (filter.imageSrc == "./assets/images/houses/house.png") {
@@ -122,6 +123,7 @@ class GameView extends BaseView {
             }
         
             if (this._curTool == "pickaxe" && App.ResourceCheck(0, 0, 10)) {
+                document.body.style.cursor = "url('assets/cursors/Diamond_PickaxeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
                 if (filter.imageSrc == "./assets/images/earth_textures/mountain.png") {
@@ -141,6 +143,13 @@ class GameView extends BaseView {
             if (this._curTool == "axe") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_axe.png'), auto";
             }
+            if (this._curTool == "pickaxe") {
+                document.body.style.cursor = "url('assets/cursors/Diamond_pickaxe.png'), auto";
+            }
+            if (this._curTool == "hammer") {
+                document.body.style.cursor = "url('assets/cursors/Diamond_hammer.png'), auto";
+            }
+
         })
 
 
@@ -237,15 +246,26 @@ class GameView extends BaseView {
             }
             if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.32 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.32 + this._canvasHelper.getWidth() * 0.1)) {
                 if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getWidth() * 0.18)) {
-                    if (this._curTool == "hammer") { this._clickedToolbar = true; this._curTool = undefined; return }
+                    if (this._curTool == "hammer") { 
+                        this._clickedToolbar = true 
+                        this._curTool = undefined
+                        document.body.style.cursor = 'default'
+                         return }
                     this._clickedToolbar = true
+                    document.body.style.cursor = "url('assets/cursors/Diamond_hammer.png'), auto";
                     this._curTool = "hammer"
                 }
             }
             if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.43 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.43 + this._canvasHelper.getWidth() * 0.1)) {
                 if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getWidth() * 0.18)) {
-                    if (this._curTool == "pickaxe") { this._clickedToolbar = true; this._curTool = undefined; return }
+                    if (this._curTool == "pickaxe") { 
+                        this._clickedToolbar = true 
+                        this._curTool = undefined 
+                        document.body.style.cursor = 'default'
+                        return }
+
                     this._clickedToolbar = true
+                    document.body.style.cursor = "url('assets/cursors/Diamond_Pickaxe.png'), auto";
                     this._curTool = "pickaxe"
                 }
             }
