@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,21 @@
     <link rel="stylesheet" href="./assets/css/style.css">
     <title>PLACEHOLDER NAME</title>
 </head>
+
 <body>
-    <canvas id="canvas"></canvas>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+        <canvas id="canvasOverlay"></canvas>
+    </div>
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
     <script>
         WebFont.load({
-            custom:{
+            custom: {
                 families: ['Minecraft']
             }
         });
     </script>
     <script src="./build/app.js"></script>
 </body>
+
 </html>
