@@ -31,4 +31,13 @@ class MouseHelper {
         return {click: this.mDown, x: this.mX, y: this.mY}
     }
 
+    public ClickCheck(xStart: number, xEnd: number, yStart: number, yEnd: number): boolean {
+        if (this.getClick().x >= xStart && this.getClick().x <= xEnd) {
+            if (this.getClick().y >= yStart && this.getClick().y <= yEnd) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
