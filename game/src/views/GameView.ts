@@ -106,7 +106,7 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._klimaat -= 1
+                    App._klimaat -= 5
                     App._wood += 10
                 }
             }
