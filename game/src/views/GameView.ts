@@ -16,8 +16,6 @@ class GameView extends BaseView {
     //ToolBarView
     private _clickedToolbar: boolean
     private _curTool: string
-    private _renderedToolBar: boolean
-    private _renderedtoolbarIcons: boolean = false
 
     public constructor(canvas: HTMLCanvasElement) {
         super(canvas)
@@ -40,16 +38,18 @@ class GameView extends BaseView {
             "./assets/images/water/lake2.png"
         ]
         this._tileInfo = [{}]
-        this._clickedToolbar = this._renderedToolBar = false
+        this._clickedToolbar = false
+        this._curTool = ""
     }
+
     public renderScreen(): void {
-        console.log(this._curTool)
-        if (!this._gridsRendered) this.renderNewGrid()
+        if (!this._gridsRendered) {
+            this.renderNewGrid()
+            setInterval(() => this.BuildingCheck(), 1000)
+        }
         this.renderBuilderView()
         this.renderToolbarView()
         this.renderUIView()
-        // if (this.BuilderViewOn) this._BuilderView.renderScreen()
-        // this._canvasHelper.loadingBar(400, 300, 100, 20, App._klimaat, 100)
     }
     public renderOldGrid(): void {
         this._xCoord = 0
@@ -200,7 +200,7 @@ class GameView extends BaseView {
                 this._renderedBuilderView = false
                 console.log('Image Released')
                 let releasedTile = this._tileInfo.findIndex(x => x.xStart <= this._mouseHelper.getClick().x && x.xEnd >= this._mouseHelper.getClick().x && x.yStart <= this._mouseHelper.getClick().y && x.yEnd >= this._mouseHelper.getClick().y)
-                if (this._tileInfo[releasedTile].imageSrc == "./assets/images/foliage/tree.png") console.log("nee")
+                if (this._tileInfo[releasedTile].imageSrc == "./assets/images/foliage/tree.png") this._canvasHelper.writeWarning("er staat hier een boom")
                 else {
                     this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png"
                 }

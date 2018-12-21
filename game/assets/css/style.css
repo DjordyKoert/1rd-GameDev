@@ -5,3 +5,10 @@ body {
 * {
     margin: 0
 }
+
+#container {
+    position: relative;
+  }
+  #container canvas, #canvasOverlay {
+    position: absolute;
+  }

@@ -34,7 +34,7 @@ class CanvasHelper {
      * @param xPos The X position of the image
      * @param yPos The Y position of the image
      */
-    public writeImageToCanvas(Src: string, xPos: number, yPos: number, imgWidth: number, imgHeight: number):boolean {
+    public writeImageToCanvas(Src: string, xPos: number, yPos: number, imgWidth: number, imgHeight: number): boolean {
         let image = new Image();
         // add the listener so the waiting will not affect the change
         image.addEventListener('load', () => {
@@ -45,7 +45,7 @@ class CanvasHelper {
         // load the source in the image.
         image.src = Src;
         return true
-}
+    }
     /**
      * Clears screen
      */
@@ -160,17 +160,28 @@ class CanvasHelper {
         beginXpos: number,
         beginYpos: number,
         endXpos: number,
-        endYpos: number) : void {
-            this.moveTo(beginXpos,beginYpos)
-            this.lineTo(endXpos,endYpos)
-        }
+        endYpos: number): void {
+        this.moveTo(beginXpos, beginYpos)
+        this.lineTo(endXpos, endYpos)
+    }
 
     public moveTo(xPos: number, yPos: number): void {
         this._context.moveTo(xPos, yPos)
     }
+
     public lineTo(xPos: number, yPos: number): void {
         this._context.beginPath()
         this._context.lineTo(xPos, yPos)
         this._context.stroke()
+    }
+
+    public writeWarning(warnMessage: string) {
+        let warnCanvas = new CanvasHelper(<HTMLCanvasElement>document.getElementById("canvasOverlay"))
+        let msgWidth = this._context.measureText(warnMessage).width
+        warnCanvas.createRect(warnCanvas.getCenter().X - msgWidth / 2, warnCanvas.getCenter().Y- 15, msgWidth, 30, "black")
+        warnCanvas.writeTextToCanvas(warnMessage, 30, warnCanvas.getCenter().X, warnCanvas.getCenter().Y, "red", "center")
+        setTimeout(() => {
+            warnCanvas.clear()
+        }, 2000)
     }
 }
