@@ -111,7 +111,7 @@ class GameView extends BaseView {
                     App._wood += 10
                 }
             }
-           
+
             if (this._curTool == "hammer" && App.ResourceCheck(0, 0, 4)) {
                 document.body.style.cursor = "url('assets/cursors/Diamond_hammerChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
@@ -124,7 +124,7 @@ class GameView extends BaseView {
                     App._klimaat += 1
                 }
             }
-        
+
             if (this._curTool == "pickaxe" && App.ResourceCheck(0, 0, 10)) {
                 document.body.style.cursor = "url('assets/cursors/Diamond_PickaxeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
@@ -238,12 +238,13 @@ class GameView extends BaseView {
             if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.21 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.21 + this._canvasHelper.getWidth() * 0.1)) {
                 if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getHeight() * 0.18)) {
                     if (this._curTool == "axe") {
-                        this._clickedToolbar = true 
-                        this._curTool = undefined 
+                        this._clickedToolbar = true
+                        this._curTool = undefined
                         document.body.style.cursor = 'default'
-                        return }
+                        return
+                    }
 
-                    
+
                     this._clickedToolbar = true
                     document.body.style.cursor = "url('assets/cursors/Diamond_axe.png'), auto";
                     this._curTool = "axe"
@@ -251,11 +252,12 @@ class GameView extends BaseView {
             }
             if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.32 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.32 + this._canvasHelper.getWidth() * 0.1)) {
                 if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getWidth() * 0.18)) {
-                    if (this._curTool == "hammer") { 
-                        this._clickedToolbar = true 
+                    if (this._curTool == "hammer") {
+                        this._clickedToolbar = true
                         this._curTool = undefined
                         document.body.style.cursor = 'default'
-                         return }
+                        return
+                    }
                     this._clickedToolbar = true
                     document.body.style.cursor = "url('assets/cursors/Diamond_hammer.png'), auto";
                     this._curTool = "hammer"
@@ -263,11 +265,12 @@ class GameView extends BaseView {
             }
             if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.43 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.43 + this._canvasHelper.getWidth() * 0.1)) {
                 if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getWidth() * 0.18)) {
-                    if (this._curTool == "pickaxe") { 
-                        this._clickedToolbar = true 
-                        this._curTool = undefined 
+                    if (this._curTool == "pickaxe") {
+                        this._clickedToolbar = true
+                        this._curTool = undefined
                         document.body.style.cursor = 'default'
-                        return }
+                        return
+                    }
 
                     this._clickedToolbar = true
                     document.body.style.cursor = "url('assets/cursors/Diamond_Pickaxe.png'), auto";
@@ -339,12 +342,19 @@ class GameView extends BaseView {
         this._canvasHelper.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 300, undefined, 'left')
         this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 335, undefined, 'left')
         this._canvasHelper.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 320, 90, 64)
-        
+
         this._canvasHelper.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 400, undefined, 'left')
         this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
         this._canvasHelper.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 380, 90, 64)
-        
+
         this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2)
         this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2)
+    }
+
+    private BuildingCheck() {
+        let Houses = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/house.png")
+        Houses.forEach(house => {
+            App._gold += 1
+        })
     }
 }
