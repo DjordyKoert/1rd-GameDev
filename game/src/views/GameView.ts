@@ -332,11 +332,11 @@ class GameView extends BaseView {
         this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 235, undefined, 'left')
         this._canvasHelper.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 180, 90, 64)
 
-        this._canvasHelper.writeTextToCanvas('LUMBERJACK', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 300, undefined, 'left')
+        this._canvasHelper.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 300, undefined, 'left')
         this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 335, undefined, 'left')
         this._canvasHelper.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 320, 90, 64)
         
-        this._canvasHelper.writeTextToCanvas('Miner', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 400, undefined, 'left')
+        this._canvasHelper.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 400, undefined, 'left')
         this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
         this._canvasHelper.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 380, 90, 64)
         
