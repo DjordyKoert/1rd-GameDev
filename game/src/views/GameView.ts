@@ -211,24 +211,6 @@ class GameView extends BaseView {
     }
     //ToolBar
     public renderToolbarView(): void {
-<<<<<<< HEAD
-=======
-            this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.2, this._canvasHelper.getHeight() * 0.8, this._canvasHelper.getWidth() * 0.6, this._canvasHelper.getHeight() * 0.2)
-            this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "red")
-            this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.32, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "blue")
-            this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.43, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "yellow")
-            let DiamondAxe = new Image();
-            let DiamondHammer = new Image();
-            let DiamondPickaxe = new Image();
-            DiamondAxe.addEventListener('load', () => {
-                this._canvasHelper._context.drawImage(DiamondAxe, this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18)
-                this._canvasHelper._context.drawImage(DiamondHammer, this._canvasHelper.getWidth() * 0.3057, this._canvasHelper.getHeight() * 0.79, this._canvasHelper.getWidth() * 0.12, this._canvasHelper.getHeight() * 0.20)
-                this._canvasHelper._context.drawImage(DiamondPickaxe, this._canvasHelper.getWidth() * 0.43, this._canvasHelper.getHeight() * 0.83, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.15)
-            });
-            DiamondAxe.src = "./assets/images/toolBar_textures/Diamond_Axe.png"
-            DiamondHammer.src = "./assets/images/toolBar_textures/Diamond_Hammer.png"
-            DiamondPickaxe.src = "./assets/images/toolBar_textures/Diamond_Pickaxe.png"
->>>>>>> 00934432e6acadd8621ba2196cd2158afbdb1c88
 
         if (!this._renderedToolbar) {
             this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.2, this._canvasHelperOverlay.getHeight() * 0.8, this._canvasHelperOverlay.getWidth() * 0.6, this._canvasHelperOverlay.getHeight() * 0.2)
