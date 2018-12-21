@@ -34,23 +34,25 @@ class GameView extends BaseView {
         this._tileImages = [
             "./assets/images/foliage/tree.png",
             "./assets/images/earth_textures/earth.png",
+            "./assets/images/earth_textures/earth.png",
             "./assets/images/earth_textures/mountain.png",
-            "./assets/images/water/lake1.png",
-            "./assets/images/water/lake2.png"
+            "./assets/images/water/lake[n].png",
         ]
         this._tileInfo = [{}]
         this._clickedToolbar = this._renderedToolbar = false
         this._curTool = ""
     }
-
+    private renderOverlay() {
+        this.renderBuilderView()
+        this.renderToolbarView()
+        this.renderUIView()
+    }
     public renderScreen(): void {
         if (!this._gridsRendered) {
             this.renderNewGrid()
             setInterval(() => this.BuildingCheck(), 1000)
         }
-        this.renderBuilderView()
-        this.renderToolbarView()
-        this.renderUIView()
+        this.renderOverlay()
     }
     public renderOldGrid(): void {
         this._xCoord = 0
@@ -80,6 +82,8 @@ class GameView extends BaseView {
             //this.CanvasHelper.createRect(this.xCoord, 0, this.sqSize, this.sqSize)
             for (let i = 0; i < this._lines; i++) {
                 let imageSrc = this._tileImages[MathHelper.randomNumber(0, this._tileImages.length - 1)]
+                imageSrc = imageSrc.replace("[n]", `${MathHelper.randomNumber(1, 2)}`)
+                console.log(imageSrc)
                 //Draw Grass
                 this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", this._xCoord, this._sqSize * i, this._sqSize, this._sqSize)
                 this._canvasHelper.writeImageToCanvas(imageSrc, this._xCoord, this._sqSize * i, this._sqSize, this._sqSize)
@@ -106,7 +110,6 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._gold += 15
                     App._klimaat -= 1
                     App._wood += 10
                 }
@@ -296,18 +299,18 @@ class GameView extends BaseView {
         let imageGoldResource = new Image();
         // add the listener so the waiting will not affect the change
         imageUIBackground.addEventListener('load', () => {
-            this._canvasHelper._context.drawImage(imageUIBackground, 0, 0, 1650, 1080);
-            this._canvasHelper._context.drawImage(imageWoodResource, 5, 2, 50, 50);
-            this._canvasHelper._context.drawImage(imageStoneResource, 210, 2, 50, 50);
-            this._canvasHelper._context.drawImage(imageGoldResource, 400, 2, 50, 50);
+            this._canvasHelperOverlay._context.drawImage(imageUIBackground, 0, 0, 1650, 1080);
+            this._canvasHelperOverlay._context.drawImage(imageWoodResource, 5, 2, 50, 50);
+            this._canvasHelperOverlay._context.drawImage(imageStoneResource, 210, 2, 50, 50);
+            this._canvasHelperOverlay._context.drawImage(imageGoldResource, 400, 2, 50, 50);
 
             //this.d_context.clip();
-            this._canvasHelper._context.font = "40px Minecraft";
-            this._canvasHelper._context.fillStyle = "#ff00ff";
-            this._canvasHelper._context.fillText(`${App._wood}`, 130, 33)
-            this._canvasHelper._context.fillText(`${App._stone}`, 340, 33)
-            this._canvasHelper._context.fillText(`${App._gold}`, 530, 33)
-            this._canvasHelper.loadingBar(-11, 53, 590, 15, App._klimaat, 100)
+            this._canvasHelperOverlay._context.font = "40px Minecraft";
+            this._canvasHelperOverlay._context.fillStyle = "#ff00ff";
+            this._canvasHelperOverlay._context.fillText(`${App._wood}`, 130, 33)
+            this._canvasHelperOverlay._context.fillText(`${App._stone}`, 340, 33)
+            this._canvasHelperOverlay._context.fillText(`${App._gold}`, 530, 33)
+            this._canvasHelperOverlay.loadingBar(-11, 53, 590, 15, App._klimaat, 100)
         });
         imageUIBackground.src = "./assets/images/backgrounds/UIBackground.png"
         imageWoodResource.src = "./assets/images/resources/woodResource.png"
