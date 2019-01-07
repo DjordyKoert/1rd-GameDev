@@ -16,19 +16,14 @@ class HomeView extends BaseView {
         this.clicked = false
         this.planetList = [
             "./assets/images/temporary_textures/homeScreen_planet2.png",
-            "./assets/images/temporary_textures/homeScreen_planet2.png",
-            "./assets/images/temporary_textures/homeScreen_planet2.png",
+
         ]
 
         this.planetXCoords = [
-            this._canvasHelper.getWidth() / 6 - 150,
-            this._canvasHelper.getWidth() / 2 - 150,
-            this._canvasHelper.getWidth() / 1.25 - 150,
+            this._canvasHelper.getWidth() / 2 - 250,
         ]
 
         this.planetYCoords = [
-            300,
-            400,
             200
         ]
     }
@@ -37,17 +32,17 @@ class HomeView extends BaseView {
         this.drawPlanets();
         this.drawBackButton();
         this.screenClick();
-        console.log("home rendered")
+        // console.log("home rendered")
     }
 
     public drawPlanets() {
         const maxPlanets: number = 3;
 
         for (let i = 0; i < maxPlanets; i++) {
-            this._canvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 300, 300)
+            this._canvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 500, 500)
 
 
-            this._canvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310)
+            this._canvasHelper.writeTextToCanvas("new world", 50, this.planetXCoords[i] + 250, this.planetYCoords[i] + 540)
         }
     }
 
@@ -73,7 +68,7 @@ class HomeView extends BaseView {
             // receive a mouse up event after mouse down
             this.clicked = false;
             for (let i = 0; i < this.planetList.length; i++) {
-                console.log(this.clicked);
+                // console.log(this.clicked);
                 if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 300) {
                     if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 300) {
                         let person = prompt("Please enter your name", "");
@@ -81,8 +76,13 @@ class HomeView extends BaseView {
                             window.alert("voer eerst een naam in")
                         }
                         else {
+                            if(person.length > 10 ){
+                                window.alert("je naam mag maximaal 10 letters lang zijn");
+                                return
+                            }
                             this._canvasHelper.clear();
                             App._screen = "game"
+                            App._name = person
                         }
                     }
                 }

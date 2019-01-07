@@ -8,6 +8,7 @@ class GameView extends BaseView {
     private _gridsRendered: boolean
     private _tileImages: Array<string>
     private _tileInfo: Array<any>
+    protected _homeView: HomeView
     //BuilderView
     private _viewWidth: number
     private _renderedBuilderView: boolean = false
@@ -23,7 +24,7 @@ class GameView extends BaseView {
         this._mouseHelper = new MouseHelper()
         this._gridsRendered = false
         this._xCoord = this._yCoord = 0
-        this._lines = 20
+        this._lines = 15
         //Check screen size to make grids fit
         if (this._canvasHelper.getWidth() > this._canvasHelper.getHeight()) {
             this._sqSize = this._canvasHelper.getWidth() / this._lines
@@ -46,6 +47,7 @@ class GameView extends BaseView {
         this.renderBuilderView()
         this.renderToolbarView()
         this.renderUIView()
+        this.nameBox()
     }
     public renderScreen(): void {
         if (!this._gridsRendered) {
@@ -83,7 +85,7 @@ class GameView extends BaseView {
             for (let i = 0; i < this._lines; i++) {
                 let imageSrc = this._tileImages[MathHelper.randomNumber(0, this._tileImages.length - 1)]
                 imageSrc = imageSrc.replace("[n]", `${MathHelper.randomNumber(1, 2)}`)
-                console.log(imageSrc)
+                //console.log(imageSrc)
                 //Draw Grass
                 this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", this._xCoord, this._sqSize * i, this._sqSize, this._sqSize)
                 this._canvasHelper.writeImageToCanvas(imageSrc, this._xCoord, this._sqSize * i, this._sqSize, this._sqSize)
@@ -202,7 +204,7 @@ class GameView extends BaseView {
                 this._canvasHelper.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
                 this._folded = true
                 this._renderedBuilderView = false
-                console.log('Image Released')
+                //console.log('Image Released')
                 let releasedTile = this._tileInfo.findIndex(x => x.xStart <= this._mouseHelper.getClick().x && x.xEnd >= this._mouseHelper.getClick().x && x.yStart <= this._mouseHelper.getClick().y && x.yEnd >= this._mouseHelper.getClick().y)
                 if (this._tileInfo[releasedTile].imageSrc == "./assets/images/foliage/tree.png") this._canvasHelper.writeWarning("er staat hier een boom")
                 else {
@@ -359,5 +361,16 @@ class GameView extends BaseView {
         Houses.forEach(house => {
             App._gold += 1
         })
+    }
+    //nameBox
+    public nameBox() {
+
+        let nameBoxBackground = new Image();
+
+        nameBoxBackground.addEventListener('load', () => {
+            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth()/2 -220, 0);
+            this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
+        })
+        nameBoxBackground.src = "assets/images/backgrounds/nameBoxBackground.png"
     }
 }
