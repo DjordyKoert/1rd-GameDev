@@ -50,8 +50,12 @@ class GameView extends BaseView {
         this.renderBuilderView()
         this.renderToolbarView()
         this.renderUIView()
-        this.nameBox()
+
     }
+<<<<<<< HEAD
+
+=======
+>>>>>>> fa34f4394d0542145fa72ed6064ab847a42d146f
     public renderScreen(): void {
         if (!this._gridsRendered) {
             this.renderNewGrid()
@@ -63,6 +67,7 @@ class GameView extends BaseView {
         if (this._renderOverlay) {
             this.renderToolbarView()
             this.renderUIView()
+            this.nameBox()
         }
 
     }
