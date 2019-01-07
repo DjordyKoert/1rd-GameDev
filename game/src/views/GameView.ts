@@ -230,7 +230,9 @@ class GameView extends BaseView {
                     this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake1.png" ||
                     this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake2.png") this._canvasHelper.writeWarning("verwijder eerst wat hier staat")
                 else {
+                    if(App.ResourceCheck(40, 0, 0)) {
                     this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png"
+                    }
                 }
                 this.renderOldGrid()
             }
