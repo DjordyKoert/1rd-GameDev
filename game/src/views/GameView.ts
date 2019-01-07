@@ -123,11 +123,11 @@ class GameView extends BaseView {
 
             }
 
-            if (this._curTool == "hammer" && App.ResourceCheck(0, 0, 4)) {
+            if (this._curTool == "hammer") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_hammerChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-                if (filter.imageSrc == "./assets/images/houses/house.png") {
+                if (filter.imageSrc == "./assets/images/houses/house.png" && App.ResourceCheck(0, 0, 4)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
@@ -135,24 +135,23 @@ class GameView extends BaseView {
                 }
             }
 
-            if (this._curTool == "pickaxe" && App.ResourceCheck(0, 0, 20)) {
+            if (this._curTool == "pickaxe") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_PickaxeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-                if (filter.imageSrc == "./assets/images/earth_textures/mountain.png") {
+                if (filter.imageSrc == "./assets/images/earth_textures/mountain.png" && App.ResourceCheck(0, 0, 20)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._klimaat -= 1
-                    App._stone += 5
+                    App._klimaat -= 2
                 }
             }
 
-            if (this._curTool == "bucket" && App.ResourceCheck(0, 0, 15)) {
+            if (this._curTool == "bucket") {
                 document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor_Blub.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-                if (filter.imageSrc == "./assets/images/water/lake1.png" || "./assets/images/water/lake2.png") {
+                if ((filter.imageSrc == "./assets/images/water/lake1.png" || filter.imageSrc == "./assets/images/water/lake2.png") && App.ResourceCheck(0, 0, 15)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
