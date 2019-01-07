@@ -233,8 +233,8 @@ class GameView extends BaseView {
                     this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake1.png" ||
                     this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake2.png") this._canvasHelper.writeWarning("verwijder eerst wat hier staat")
                 else {
-                    if(App.ResourceCheck(40, 0, 0)) {
-                    this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png"
+                    if (App.ResourceCheck(40, 0, 0)) {
+                        this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png"
                     }
                 }
                 this.renderOldGrid()
@@ -429,7 +429,7 @@ class GameView extends BaseView {
         let nameBoxBackground = new Image();
 
         nameBoxBackground.addEventListener('load', () => {
-            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth()/2 -220, 0);
+            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth() / 2 - 220, 0);
             this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
         })
         nameBoxBackground.src = "assets/images/backgrounds/nameBoxBackground.png"
@@ -439,7 +439,7 @@ class GameView extends BaseView {
         setTimeout(() => {
             this._renderedToolbar = false
             this._canvasHelperOverlay.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin")
-            setTimeout(() => {this._canvasHelperOverlay.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); this._renderedToolbar = false; setTimeout(() => {this._renderedToolbar = false}, 3000)}, 3000)
+            setTimeout(() => { this._canvasHelperOverlay.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); this._renderedToolbar = false; setTimeout(() => { this._renderedToolbar = false }, 3000) }, 3000)
         }, 3000)
     }
 }
