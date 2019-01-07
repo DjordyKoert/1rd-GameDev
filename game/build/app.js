@@ -64,6 +64,15 @@ class CanvasHelper {
         this._context.lineTo(xPos, yPos);
         this._context.stroke();
     }
+    writeWarning(warnMessage) {
+        let warnCanvas = new CanvasHelper(document.getElementById("canvasOverlay"));
+        let msgWidth = this._context.measureText(warnMessage).width;
+        warnCanvas.createRect(warnCanvas.getCenter().X - msgWidth * 1.5, warnCanvas.getCenter().Y - 15, msgWidth * 3, 30, "black");
+        warnCanvas.writeTextToCanvas(warnMessage, 30, warnCanvas.getCenter().X, warnCanvas.getCenter().Y, "red", "center");
+        setTimeout(() => {
+            warnCanvas.clear();
+        }, 3000);
+    }
 }
 class App {
     constructor(canvasElem) {
@@ -74,7 +83,7 @@ class App {
         App._gold = 0;
         App._wood = 0;
         App._stone = 0;
-        App._screen = "game";
+        App._screen = "home";
     }
     gameLoop() {
         if (App._screen == "start")
@@ -85,8 +94,12 @@ class App {
             this._gameView.renderScreen();
     }
     static ResourceCheck(wood, stone, gold) {
-        if (App._wood >= wood && App._stone >= stone && App._gold >= gold)
+        if (App._wood >= wood && App._stone >= stone && App._gold >= gold) {
+            App._wood -= wood;
+            App._stone -= stone;
+            App._gold -= gold;
             return true;
+        }
         else
             return false;
     }
@@ -99,6 +112,7 @@ window.addEventListener('load', init);
 class BaseView {
     constructor(canvas) {
         this._canvasHelper = new CanvasHelper(canvas);
+        this._canvasHelperOverlay = new CanvasHelper(document.getElementById("canvasOverlay"));
         this._mouseHelper = new MouseHelper();
     }
 }
@@ -129,6 +143,14 @@ class MouseHelper {
     getClick() {
         return { click: this.mDown, x: this.mX, y: this.mY };
     }
+    ClickCheck(xStart, xEnd, yStart, yEnd) {
+        if (this.getClick().x >= xStart && this.getClick().x <= xEnd) {
+            if (this.getClick().y >= yStart && this.getClick().y <= yEnd) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 class GameView extends BaseView {
     constructor(canvas) {
@@ -137,11 +159,10 @@ class GameView extends BaseView {
         this._renderedBuilderView = false;
         this._clickedBuilderView = false;
         this._folded = true;
-        this._renderedtoolbarIcons = false;
         this._mouseHelper = new MouseHelper();
         this._gridsRendered = false;
         this._xCoord = this._yCoord = 0;
-        this._lines = 20;
+        this._lines = 18;
         if (this._canvasHelper.getWidth() > this._canvasHelper.getHeight()) {
             this._sqSize = this._canvasHelper.getWidth() / this._lines;
         }
@@ -151,20 +172,33 @@ class GameView extends BaseView {
         this._tileImages = [
             "./assets/images/foliage/tree.png",
             "./assets/images/earth_textures/earth.png",
+            "./assets/images/earth_textures/earth.png",
             "./assets/images/earth_textures/mountain.png",
-            "./assets/images/water/lake1.png",
-            "./assets/images/water/lake2.png"
+            "./assets/images/water/lake[n].png",
         ];
         this._tileInfo = [{}];
-        this._clickedToolbar = this._renderedToolBar = false;
+        this._clickedToolbar = this._renderedToolbar = false;
+        this._renderOverlay = true;
+        this._curTool = "";
     }
-    renderScreen() {
-        console.log(this._curTool);
-        if (!this._gridsRendered)
-            this.renderNewGrid();
+    renderOverlay() {
         this.renderBuilderView();
         this.renderToolbarView();
         this.renderUIView();
+    }
+    renderScreen() {
+        if (!this._gridsRendered) {
+            this.renderNewGrid();
+            this.renderTutorial();
+            setInterval(() => this.BuildingCheck(), 1000);
+        }
+        this.renderOverlayToggle();
+        this.renderBuilderView();
+        if (this._renderOverlay) {
+            this.renderToolbarView();
+            this.renderUIView();
+            this.nameBox();
+        }
     }
     renderOldGrid() {
         this._xCoord = 0;
@@ -193,6 +227,7 @@ class GameView extends BaseView {
             this._canvasHelper.lineTo(this._xCoord, this._canvasHelper.getHeight());
             for (let i = 0; i < this._lines; i++) {
                 let imageSrc = this._tileImages[MathHelper.randomNumber(0, this._tileImages.length - 1)];
+                imageSrc = imageSrc.replace("[n]", `${MathHelper.randomNumber(1, 2)}`);
                 this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", this._xCoord, this._sqSize * i, this._sqSize, this._sqSize);
                 this._canvasHelper.writeImageToCanvas(imageSrc, this._xCoord, this._sqSize * i, this._sqSize, this._sqSize);
                 let vr = { xStart: this._xCoord, xEnd: this._xCoord + this._sqSize, yStart: this._sqSize * i, yEnd: (this._sqSize * i) + this._sqSize, imageSrc: imageSrc };
@@ -216,7 +251,6 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
                     this.renderOldGrid();
-                    App._gold += 15;
                     App._klimaat -= 1;
                     App._wood += 10;
                 }
@@ -230,11 +264,10 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
                     this.renderOldGrid();
-                    App._gold -= 5;
                     App._klimaat += 1;
                 }
             }
-            if (this._curTool == "pickaxe" && App.ResourceCheck(0, 0, 10)) {
+            if (this._curTool == "pickaxe" && App.ResourceCheck(0, 0, 20)) {
                 document.body.style.cursor = "url('assets/cursors/Diamond_PickaxeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                 if (!filter)
@@ -243,9 +276,20 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
                     this.renderOldGrid();
-                    App._gold -= 10;
                     App._klimaat -= 1;
                     App._stone += 5;
+                }
+            }
+            if (this._curTool == "bucket" && App.ResourceCheck(0, 0, 15)) {
+                document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor_Blub.png'), auto";
+                let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
+                if (!filter)
+                    return;
+                if (filter.imageSrc == "./assets/images/water/lake1.png" || "./assets/images/water/lake2.png") {
+                    let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
+                    this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
+                    this.renderOldGrid();
+                    App._klimaat += 1;
                 }
             }
         });
@@ -258,6 +302,9 @@ class GameView extends BaseView {
             }
             if (this._curTool == "hammer") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_hammer.png'), auto";
+            }
+            if (this._curTool == "bucket") {
+                document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor.png'), auto";
             }
         });
         this._gridsRendered = true;
@@ -299,33 +346,44 @@ class GameView extends BaseView {
                 this._canvasHelper.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight());
                 this._folded = true;
                 this._renderedBuilderView = false;
-                console.log('Image Released');
                 let releasedTile = this._tileInfo.findIndex(x => x.xStart <= this._mouseHelper.getClick().x && x.xEnd >= this._mouseHelper.getClick().x && x.yStart <= this._mouseHelper.getClick().y && x.yEnd >= this._mouseHelper.getClick().y);
-                if (this._tileInfo[releasedTile].imageSrc == "./assets/images/foliage/tree.png")
-                    console.log("nee");
+                if (this._tileInfo[releasedTile].imageSrc == "./assets/images/foliage/tree.png" ||
+                    this._tileInfo[releasedTile].imageSrc == "./assets/images/earth_textures/mountain.png" ||
+                    this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake1.png" ||
+                    this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake2.png")
+                    this._canvasHelper.writeWarning("verwijder eerst wat hier staat");
                 else {
-                    this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png";
+                    if (App.ResourceCheck(40, 0, 0)) {
+                        this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png";
+                    }
                 }
                 this.renderOldGrid();
             }
         }
     }
     renderToolbarView() {
-        this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.2, this._canvasHelper.getHeight() * 0.8, this._canvasHelper.getWidth() * 0.6, this._canvasHelper.getHeight() * 0.2);
-        this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "red");
-        this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.32, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "blue");
-        this._canvasHelper.createRect(this._canvasHelper.getWidth() * 0.43, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18, "yellow");
-        let DiamondAxe = new Image();
-        let DiamondHammer = new Image();
-        let DiamondPickaxe = new Image();
-        DiamondAxe.addEventListener('load', () => {
-            this._canvasHelper._context.drawImage(DiamondAxe, this._canvasHelper.getWidth() * 0.21, this._canvasHelper.getHeight() * 0.81, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.18);
-            this._canvasHelper._context.drawImage(DiamondHammer, this._canvasHelper.getWidth() * 0.3057, this._canvasHelper.getHeight() * 0.79, this._canvasHelper.getWidth() * 0.12, this._canvasHelper.getHeight() * 0.20);
-            this._canvasHelper._context.drawImage(DiamondPickaxe, this._canvasHelper.getWidth() * 0.43, this._canvasHelper.getHeight() * 0.83, this._canvasHelper.getWidth() * 0.1, this._canvasHelper.getHeight() * 0.15);
-        });
-        DiamondAxe.src = "./assets/images/toolBar_textures/Diamond_Axe.png";
-        DiamondHammer.src = "./assets/images/toolBar_textures/Diamond_Hammer.png";
-        DiamondPickaxe.src = "./assets/images/toolBar_textures/Diamond_Pickaxe.png";
+        if (!this._renderedToolbar) {
+            this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.2, this._canvasHelperOverlay.getHeight() * 0.8, this._canvasHelperOverlay.getWidth() * 0.6, this._canvasHelperOverlay.getHeight() * 0.2);
+            this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.21, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "red");
+            this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.32, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "purple");
+            this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.43, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "yellow");
+            this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.54, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "blue");
+            let DiamondAxe = new Image();
+            let DiamondHammer = new Image();
+            let DiamondPickaxe = new Image();
+            let IronBucket = new Image();
+            DiamondAxe.addEventListener('load', () => {
+                this._canvasHelperOverlay._context.drawImage(DiamondAxe, this._canvasHelperOverlay.getWidth() * 0.21, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18);
+                this._canvasHelperOverlay._context.drawImage(DiamondHammer, this._canvasHelperOverlay.getWidth() * 0.3057, this._canvasHelperOverlay.getHeight() * 0.79, this._canvasHelperOverlay.getWidth() * 0.12, this._canvasHelperOverlay.getHeight() * 0.20);
+                this._canvasHelperOverlay._context.drawImage(DiamondPickaxe, this._canvasHelperOverlay.getWidth() * 0.43, this._canvasHelperOverlay.getHeight() * 0.83, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.15);
+                this._canvasHelperOverlay._context.drawImage(IronBucket, this._canvasHelperOverlay.getWidth() * 0.54, this._canvasHelperOverlay.getHeight() * 0.795, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.20);
+            });
+            DiamondAxe.src = "./assets/images/toolBar_textures/Diamond_Axe.png";
+            DiamondHammer.src = "./assets/images/toolBar_textures/Diamond_Hammer.png";
+            DiamondPickaxe.src = "./assets/images/toolBar_textures/Diamond_Pickaxe.png";
+            IronBucket.src = "./assets/images/toolBar_textures/Iron_Bucket.png";
+            this._renderedToolbar = true;
+        }
         this.toolBarClick();
     }
     toolBarClick() {
@@ -369,6 +427,19 @@ class GameView extends BaseView {
                     this._curTool = "pickaxe";
                 }
             }
+            if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.54 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.54 + this._canvasHelper.getWidth() * 0.1)) {
+                if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getWidth() * 0.18)) {
+                    if (this._curTool == "bucket") {
+                        this._clickedToolbar = true;
+                        this._curTool = undefined;
+                        document.body.style.cursor = 'default';
+                        return;
+                    }
+                    this._clickedToolbar = true;
+                    document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor.png'), auto";
+                    this._curTool = "bucket";
+                }
+            }
         }
         if (!this._mouseHelper.getClick().click)
             this._clickedToolbar = false;
@@ -379,16 +450,16 @@ class GameView extends BaseView {
         let imageStoneResource = new Image();
         let imageGoldResource = new Image();
         imageUIBackground.addEventListener('load', () => {
-            this._canvasHelper._context.drawImage(imageUIBackground, 0, 0, 1650, 1080);
-            this._canvasHelper._context.drawImage(imageWoodResource, 5, 2, 50, 50);
-            this._canvasHelper._context.drawImage(imageStoneResource, 210, 2, 50, 50);
-            this._canvasHelper._context.drawImage(imageGoldResource, 400, 2, 50, 50);
-            this._canvasHelper._context.font = "40px Minecraft";
-            this._canvasHelper._context.fillStyle = "#ff00ff";
-            this._canvasHelper._context.fillText(`${App._wood}`, 130, 33);
-            this._canvasHelper._context.fillText(`${App._stone}`, 340, 33);
-            this._canvasHelper._context.fillText(`${App._gold}`, 530, 33);
-            this._canvasHelper.loadingBar(-11, 53, 590, 15, App._klimaat, 100);
+            this._canvasHelperOverlay._context.drawImage(imageUIBackground, 0, 0, 1650, 1080);
+            this._canvasHelperOverlay._context.drawImage(imageWoodResource, 5, 2, 50, 50);
+            this._canvasHelperOverlay._context.drawImage(imageStoneResource, 210, 2, 50, 50);
+            this._canvasHelperOverlay._context.drawImage(imageGoldResource, 400, 2, 50, 50);
+            this._canvasHelperOverlay._context.font = "40px Minecraft";
+            this._canvasHelperOverlay._context.fillStyle = "#ff00ff";
+            this._canvasHelperOverlay._context.fillText(`${App._wood}`, 130, 33);
+            this._canvasHelperOverlay._context.fillText(`${App._stone}`, 340, 33);
+            this._canvasHelperOverlay._context.fillText(`${App._gold}`, 530, 33);
+            this._canvasHelperOverlay.loadingBar(-11, 53, 590, 15, App._klimaat, 100);
         });
         imageUIBackground.src = "./assets/images/backgrounds/UIBackground.png";
         imageWoodResource.src = "./assets/images/resources/woodResource.png";
@@ -413,14 +484,54 @@ class GameView extends BaseView {
         this._canvasHelper.writeTextToCanvas('FABRIEK', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 200, undefined, 'left');
         this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 235, undefined, 'left');
         this._canvasHelper.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 180, 90, 64);
-        this._canvasHelper.writeTextToCanvas('LUMBERJACK', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 300, undefined, 'left');
+        this._canvasHelper.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 300, undefined, 'left');
         this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 335, undefined, 'left');
         this._canvasHelper.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 320, 90, 64);
-        this._canvasHelper.writeTextToCanvas('Miner', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 400, undefined, 'left');
+        this._canvasHelper.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 400, undefined, 'left');
         this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 435, undefined, 'left');
         this._canvasHelper.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 380, 90, 64);
         this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2);
         this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2);
+    }
+    renderOverlayToggle() {
+        this._canvasHelperOverlay.writeImageToCanvas("./assets/images/toolBar_textures/eye.png", 0, this._canvasHelper.getHeight() - 40, 40, 40);
+        if (this._mouseHelper.getClick().click && !this._clickedOverlayToggle) {
+            if (this._mouseHelper.ClickCheck(0, 40, this._canvasHelper.getHeight() - 40, this._canvasHelper.getHeight())) {
+                if (this._renderOverlay) {
+                    this._renderOverlay = false;
+                    this._clickedOverlayToggle = true;
+                    this._canvasHelperOverlay.clear();
+                    return;
+                }
+                this._clickedOverlayToggle = true;
+                this._renderOverlay = true;
+                this._renderedToolbar = false;
+            }
+        }
+        if (!this._mouseHelper.getClick().click)
+            this._clickedOverlayToggle = false;
+    }
+    BuildingCheck() {
+        let Houses = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/house.png");
+        Houses.forEach(house => {
+            App._gold += 1;
+        });
+    }
+    nameBox() {
+        let nameBoxBackground = new Image();
+        nameBoxBackground.addEventListener('load', () => {
+            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth() / 2 - 220, 0);
+            this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
+        });
+        nameBoxBackground.src = "assets/images/backgrounds/nameBoxBackground.png";
+    }
+    renderTutorial() {
+        this._canvasHelperOverlay.writeWarning(`Welkom {App._name}`);
+        setTimeout(() => {
+            this._renderedToolbar = false;
+            this._canvasHelperOverlay.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin");
+            setTimeout(() => { this._canvasHelperOverlay.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); this._renderedToolbar = false; setTimeout(() => { this._renderedToolbar = false; }, 3000); }, 3000);
+        }, 3000);
     }
 }
 class HomeView extends BaseView {
@@ -433,17 +544,11 @@ class HomeView extends BaseView {
         this.clicked = false;
         this.planetList = [
             "./assets/images/temporary_textures/homeScreen_planet2.png",
-            "./assets/images/temporary_textures/homeScreen_planet2.png",
-            "./assets/images/temporary_textures/homeScreen_planet2.png",
         ];
         this.planetXCoords = [
-            this._canvasHelper.getWidth() / 6 - 150,
-            this._canvasHelper.getWidth() / 2 - 150,
-            this._canvasHelper.getWidth() / 1.25 - 150,
+            this._canvasHelper.getWidth() / 2 - 250,
         ];
         this.planetYCoords = [
-            300,
-            400,
             200
         ];
     }
@@ -451,13 +556,12 @@ class HomeView extends BaseView {
         this.drawPlanets();
         this.drawBackButton();
         this.screenClick();
-        console.log("home rendered");
     }
     drawPlanets() {
         const maxPlanets = 3;
         for (let i = 0; i < maxPlanets; i++) {
-            this._canvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 300, 300);
-            this._canvasHelper.writeTextToCanvas("new world", 30, this.planetXCoords[i] + 150, this.planetYCoords[i] + 310);
+            this._canvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 500, 500);
+            this._canvasHelper.writeTextToCanvas("new world", 50, this.planetXCoords[i] + 250, this.planetYCoords[i] + 540);
         }
     }
     drawBackButton() {
@@ -476,16 +580,20 @@ class HomeView extends BaseView {
         if (!this.MouseHelper.getClick().click && this.clicked) {
             this.clicked = false;
             for (let i = 0; i < this.planetList.length; i++) {
-                console.log(this.clicked);
-                if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 300) {
-                    if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 300) {
+                if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 500) {
+                    if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 500) {
                         let person = prompt("Please enter your name", "");
                         if (person == null || person == "") {
                             window.alert("voer eerst een naam in");
                         }
                         else {
+                            if (person.length > 10) {
+                                window.alert("je naam mag maximaal 10 letters lang zijn");
+                                return;
+                            }
                             this._canvasHelper.clear();
                             App._screen = "game";
+                            App._name = person;
                         }
                     }
                 }

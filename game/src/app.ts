@@ -8,6 +8,7 @@ class App {
     public static _stone: number
     public static _klimaat: number
     public static _screen: string
+    public static _name: string
 
     constructor(canvasElem: HTMLCanvasElement) {
         this._homeView = new HomeView(canvasElem)
@@ -17,7 +18,7 @@ class App {
         App._gold = 0
         App._wood = 0
         App._stone = 0
-        App._screen = "start"
+        App._screen = "home"
     }
 
     public gameLoop(): void {
@@ -30,9 +31,13 @@ class App {
     }
 
     public static ResourceCheck(wood:number, stone:number, gold:number): boolean {
-        if (App._wood >= wood && App._stone >= stone && App._gold >= gold) return true
+        if (App._wood >= wood && App._stone >= stone && App._gold >= gold) {
+            App._wood -= wood
+            App._stone -= stone
+            App._gold -= gold
+            return true
+        }
         else return false
-        
     }
 }
 
