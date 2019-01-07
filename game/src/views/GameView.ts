@@ -46,16 +46,6 @@ class GameView extends BaseView {
         this._renderOverlay = true
         this._curTool = ""
     }
-    private renderOverlay() {
-        this.renderBuilderView()
-        this.renderToolbarView()
-        this.renderUIView()
-
-    }
-<<<<<<< HEAD
-
-=======
->>>>>>> fa34f4394d0542145fa72ed6064ab847a42d146f
     public renderScreen(): void {
         if (!this._gridsRendered) {
             this.renderNewGrid()
