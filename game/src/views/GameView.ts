@@ -429,7 +429,7 @@ class GameView extends BaseView {
         nameBoxBackground.src = "assets/images/backgrounds/nameBoxBackground.png"
     }
     private renderTutorial(): void {
-        this._canvasHelperOverlay.writeWarning(`Welkom {App._name}`)
+        this._canvasHelperOverlay.writeWarning(`Welkom ${App._name}`)
         setTimeout(() => {
             this._renderedToolbar = false
             this._canvasHelperOverlay.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin")
