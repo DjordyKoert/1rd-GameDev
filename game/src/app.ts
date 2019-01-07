@@ -18,7 +18,7 @@ class App {
         App._gold = 0
         App._wood = 0
         App._stone = 0
-        App._screen = "home"
+        App._screen = "start"
     }
 
     public gameLoop(): void {
