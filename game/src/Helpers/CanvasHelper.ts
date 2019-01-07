@@ -178,10 +178,10 @@ class CanvasHelper {
     public writeWarning(warnMessage: string) {
         let warnCanvas = new CanvasHelper(<HTMLCanvasElement>document.getElementById("canvasOverlay"))
         let msgWidth = this._context.measureText(warnMessage).width
-        warnCanvas.createRect(warnCanvas.getCenter().X - msgWidth / 2, warnCanvas.getCenter().Y- 15, msgWidth, 30, "black")
+        warnCanvas.createRect(warnCanvas.getCenter().X - msgWidth * 1.5, warnCanvas.getCenter().Y- 15, msgWidth * 3, 30, "black")
         warnCanvas.writeTextToCanvas(warnMessage, 30, warnCanvas.getCenter().X, warnCanvas.getCenter().Y, "red", "center")
         setTimeout(() => {
             warnCanvas.clear()
-        }, 2000)
+        }, 3000)
     }
 }
