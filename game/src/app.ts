@@ -32,7 +32,6 @@ class App {
     public static ResourceCheck(wood:number, stone:number, gold:number): boolean {
         if (App._wood >= wood && App._stone >= stone && App._gold >= gold) return true
         else return false
-        
     }
 }
 
