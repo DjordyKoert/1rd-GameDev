@@ -8,11 +8,8 @@ class GameView extends BaseView {
     private _gridsRendered: boolean
     private _tileImages: Array<string>
     private _tileInfo: Array<any>
-<<<<<<< HEAD
     protected _homeView: HomeView
-=======
     private _renderOverlay: boolean
->>>>>>> dde7a122b7c2edc229e4084f28b21d76175f277f
     //BuilderView
     private _viewWidth: number
     private _renderedBuilderView: boolean = false
@@ -29,11 +26,7 @@ class GameView extends BaseView {
         this._mouseHelper = new MouseHelper()
         this._gridsRendered = false
         this._xCoord = this._yCoord = 0
-<<<<<<< HEAD
-        this._lines = 15
-=======
         this._lines = 18
->>>>>>> dde7a122b7c2edc229e4084f28b21d76175f277f
         //Check screen size to make grids fit
         if (this._canvasHelper.getWidth() > this._canvasHelper.getHeight()) {
             this._sqSize = this._canvasHelper.getWidth() / this._lines
@@ -53,16 +46,13 @@ class GameView extends BaseView {
         this._renderOverlay = true
         this._curTool = ""
     }
-<<<<<<< HEAD
     private renderOverlay() {
         this.renderBuilderView()
         this.renderToolbarView()
         this.renderUIView()
-        this.nameBox()
-    }
-=======
 
->>>>>>> dde7a122b7c2edc229e4084f28b21d76175f277f
+    }
+
     public renderScreen(): void {
         if (!this._gridsRendered) {
             this.renderNewGrid()
@@ -74,6 +64,7 @@ class GameView extends BaseView {
         if (this._renderOverlay) {
             this.renderToolbarView()
             this.renderUIView()
+            this.nameBox()
         }
 
     }
@@ -434,7 +425,6 @@ class GameView extends BaseView {
             App._gold += 1
         })
     }
-<<<<<<< HEAD
     //nameBox
     public nameBox() {
 
@@ -445,8 +435,7 @@ class GameView extends BaseView {
             this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
         })
         nameBoxBackground.src = "assets/images/backgrounds/nameBoxBackground.png"
-=======
-
+    }
     private renderTutorial(): void {
         this._canvasHelperOverlay.writeWarning(`Welkom {App._name}`)
         setTimeout(() => {
@@ -454,6 +443,5 @@ class GameView extends BaseView {
             this._canvasHelperOverlay.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin")
             setTimeout(() => {this._canvasHelperOverlay.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); this._renderedToolbar = false; setTimeout(() => {this._renderedToolbar = false}, 3000)}, 3000)
         }, 3000)
->>>>>>> dde7a122b7c2edc229e4084f28b21d76175f277f
     }
 }

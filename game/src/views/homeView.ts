@@ -69,8 +69,8 @@ class HomeView extends BaseView {
             this.clicked = false;
             for (let i = 0; i < this.planetList.length; i++) {
                 // console.log(this.clicked);
-                if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 300) {
-                    if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 300) {
+                if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 500) {
+                    if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 500) {
                         let person = prompt("Please enter your name", "");
                         if (person == null || person == "") {
                             window.alert("voer eerst een naam in")
