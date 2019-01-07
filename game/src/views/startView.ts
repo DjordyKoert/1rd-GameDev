@@ -5,7 +5,7 @@ class StartView extends BaseView {
     protected _homeView: HomeView
     private _buttonDimension: Array<number>
 
-    private _gameName: string = 'PLACEHOLDER'
+    private _gameName: string = 'PLANEGER'
 
     public constructor(canvas: HTMLCanvasElement) {
         super(canvas)
@@ -22,7 +22,10 @@ class StartView extends BaseView {
 
 
     public drawTitle() {
+        this._canvasHelper.writeTextToCanvas(this._gameName, 50, (this._canvasHelper.getWidth() / 2)+ 2, 102, "black")
         this._canvasHelper.writeTextToCanvas(this._gameName, 50, (this._canvasHelper.getWidth() / 2), 100, "white")
+
+
     }
 
     public drawStartButton() {
@@ -47,6 +50,9 @@ class StartView extends BaseView {
             if (this._mouseHelper.getClick().x > (this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) && this._mouseHelper.getClick().x < (this._canvasHelper.getWidth() / 2) + (this._buttonDimension[0] / 2)) {
                 if (this._mouseHelper.getClick().y > (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2) && this._mouseHelper.getClick().y < (this._canvasHelper.getHeight() / 2) + (this._buttonDimension[1] / 2)) {
                     // console.log('pressed')
+                    this._canvasHelper.clear((this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) - 2, (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2)- 2, this._buttonDimension[0] + 4, this._buttonDimension[1] + 4)
+                    this._canvasHelper.createRect((this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) + 2, (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2) + 2, this._buttonDimension[0], this._buttonDimension[1])
+                    this._canvasHelper.writeTextToCanvas("START SPEL", 30, (this._canvasHelper.getWidth() / 2) +2, (this._canvasHelper.getHeight() / 2) +2, "black")
                 }
             }
         }
