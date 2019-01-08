@@ -31,9 +31,9 @@ class App {
 
         if (App._klimaat <= 0) App._screen = "gameover"
         if(App._klimaat >= 100){
-            if(App._wood == 500){
-                if(App._gold == 500){
-                    if(App._stone == 500){
+            if(App._wood >= 500){
+                if(App._gold >= 500){
+                    if(App._stone >= 500){
                         App._screen = "gameover"
                     }
                 }

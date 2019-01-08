@@ -147,18 +147,21 @@ class GameView extends BaseView {
                 document.body.style.cursor = "url('assets/cursors/Diamond_hammerChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-                if ((filter == "./assets/images/houses/house1.png" ||
-                    filter == "./assets/images/houses/houseLevel2.png" ||
-                    filter == "./assets/images/houses/lumberjack.png" ||
-                    filter == "./assets/images/houses/Fabriek1.png" ||
-                    filter == "./assets/images/houses/miner.png" ||
-                    filter == "./assets/images/houses/powerPlant.png")
+                if ((filter.imageSrc == "./assets/images/houses/house1.png" ||
+                    filter.imageSrc == "./assets/images/houses/houseLevel2.png" ||
+                    filter.imageSrc == "./assets/images/houses/lumberjack.png" ||
+                    filter.imageSrc == "./assets/images/houses/Fabriek1.png" ||
+                    filter.imageSrc == "./assets/images/houses/miner.png" ||
+                    filter.imageSrc == "./assets/images/houses/powerPlant.png")
                     && this.ResourceCheck(0, 0, 40)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
-                    this.renderOldGrid()
+                    this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, filter.imageSrc)
+                    console.log("clicked building")
                     App._klimaat += 1
+                    return
                 }
+                this._canvasWarning.writeWarning("klik op een gebouw om deze te verwijderen (kost 40 goud)")
             }
 
             else if (this._curTool == "pickaxe" && this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/miner.png").length > 0) {
@@ -510,6 +513,8 @@ class GameView extends BaseView {
                 }
                 this._clickedOverlayToggle = true
                 this._renderOverlay = true
+                this._renderedBuilderView = false
+                if (this._folded) this._folded = true
                 this._renderedToolbar = false
             }
         }
