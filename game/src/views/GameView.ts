@@ -11,7 +11,6 @@ class GameView extends BaseView {
     protected _homeView: HomeView
     private _renderOverlay: boolean
     private _canvasOverlay = document.getElementById("canvasOverlay")
-    private _canvasWarning = document.getElementById("canvasWarning")
     //BuilderView
     private _viewWidth: number
     private _renderedBuilderView: boolean = false
@@ -52,7 +51,7 @@ class GameView extends BaseView {
     public renderScreen(): void {
         if (!this._gridsRendered) {
             this.renderNewGrid()
-            //this.renderTutorial()
+            this.renderTutorial()
             setInterval(() => this.BuildingCheck(), 1000)
         }
 
@@ -151,7 +150,7 @@ class GameView extends BaseView {
                     filter == "./assets/images/houses/Fabriek1.png" ||
                     filter == "./assets/images/houses/miner.png" ||
                     filter == "./assets/images/houses/powerPlant.png")
-                 && App.ResourceCheck(0, 0, 40)) {
+                 && this.ResourceCheck(0, 0, 40)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
@@ -163,7 +162,7 @@ class GameView extends BaseView {
                 document.body.style.cursor = "url('assets/cursors/Diamond_PickaxeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-                if (filter.imageSrc == "./assets/images/earth_textures/mountain.png" && App.ResourceCheck(0, 0, 20)) {
+                if (filter.imageSrc == "./assets/images/earth_textures/mountain.png" && this.ResourceCheck(0, 0, 20)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
@@ -176,7 +175,7 @@ class GameView extends BaseView {
                 document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor_Blub.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-                if ((filter.imageSrc == "./assets/images/water/lake1.png" || filter.imageSrc == "./assets/images/water/lake2.png") && App.ResourceCheck(0, 0, 15)) {
+                if ((filter.imageSrc == "./assets/images/water/lake1.png" || filter.imageSrc == "./assets/images/water/lake2.png") && this.ResourceCheck(0, 0, 15)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
@@ -188,7 +187,7 @@ class GameView extends BaseView {
                 document.body.style.cursor = "url('assets/cursors/Seed_Cursor.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-                if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && App.ResourceCheck(0, 0, 5)) {
+                if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && this.ResourceCheck(0, 0, 5)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/foliage/tree.png"
                     this.renderOldGrid()
@@ -197,10 +196,10 @@ class GameView extends BaseView {
             }
             else {
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
-                if (filter.imageSrc == "./assets/images/houses/house1.png" && App.ResourceCheck(100, 200, 100)) {
+                if (filter.imageSrc == "./assets/images/houses/house1.png" && this.ResourceCheck(100, 200, 100)) {
                     filter.imageSrc = "./assets/images/houses/houseLevel2.png"
                 }
-                else if (filter.imageSrc == "./assets/images/houses/Fabriek1.png" && App.ResourceCheck(150, 400, 150)) {
+                else if (filter.imageSrc == "./assets/images/houses/Fabriek1.png" && this.ResourceCheck(150, 400, 150)) {
                     filter.imageSrc = "./assets/images/houses/powerPlant.png"
                 }
                 this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, filter.imageSrc)
@@ -299,19 +298,19 @@ class GameView extends BaseView {
                 if (!this.checkPlacement(this._tileInfo[releasedTile].imageSrc)) this._canvasHelperOverlay.writeWarning("verwijder eerst wat hier staat")
                 else {
                     if (this._selectedBuilding == "House") {
-                        if (App.ResourceCheck(40, 0, 0)) {
+                        if (this.ResourceCheck(40, 0, 0)) {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house1.png"
                         }
                     } else if (this._selectedBuilding == "Fabriek") {
-                        if (App.ResourceCheck(0, 0, 100)) {
+                        if (this.ResourceCheck(0, 0, 100)) {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/Fabriek1.png"
                         }
                     } else if (this._selectedBuilding == "Houthakker") {
-                        if (App.ResourceCheck(20, 0, 20)) {
+                        if (this.ResourceCheck(20, 0, 20)) {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/lumberjack.png"
                         }
                     } else if (this._selectedBuilding == "Mijnwerker") {
-                        if (App.ResourceCheck(10, 20, 40)) {
+                        if (this.ResourceCheck(10, 20, 40)) {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/miner.png"
                         }
                     }
@@ -551,11 +550,11 @@ class GameView extends BaseView {
         this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
     }
     private renderTutorial(): void {
-        this._canvasHelperOverlay.writeWarning(`Welkom ${App._name}`)
+        this._canvasWarning.writeWarning(`Welkom ${App._name}`)
         setTimeout(() => {
             this._renderedToolbar = false
-            this._canvasHelperOverlay.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin")
-            setTimeout(() => { this._canvasHelperOverlay.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); this._renderedToolbar = false; setTimeout(() => { this._renderedToolbar = false }, 3000) }, 3000)
+            this._canvasWarning.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin")
+            setTimeout(() => { this._canvasWarning.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); }, 3000)
         }, 3000)
     }
 
