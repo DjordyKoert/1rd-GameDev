@@ -15,6 +15,7 @@ class GameView extends BaseView {
     private _renderedBuilderView: boolean = false
     private _clickedBuilderView: boolean = false
     private _folded: boolean = true
+    private _selectedBuilding: string
     //ToolBarView
     private _clickedToolbar: boolean
     private _curTool: string
@@ -59,7 +60,7 @@ class GameView extends BaseView {
             this.renderUIView()
             this.nameBox()
         }
-
+        console.log(this._selectedBuilding)
     }
     public renderOldGrid(): void {
         this._xCoord = 0
@@ -117,7 +118,7 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._klimaat -= 1
+                    App._klimaat -= 5
                     App._wood += 10
                 }
 
@@ -144,6 +145,7 @@ class GameView extends BaseView {
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
                     App._klimaat -= 2
+                    App._stone += 10
                 }
             }
 
@@ -182,6 +184,7 @@ class GameView extends BaseView {
 
     //BuilderView
     public renderBuilderView(): void {
+        // open builderview
         if (this._folded) {
             this._viewWidth = 50
             this.renderFoldedBuilderView()
@@ -200,6 +203,7 @@ class GameView extends BaseView {
                 this._renderedBuilderView = false
             }
         }
+
         if (!this._folded) {
             this._viewWidth = 300
             if (!this._renderedBuilderView) {
@@ -212,23 +216,59 @@ class GameView extends BaseView {
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
                     if (this._mouseHelper.getClick().y > 80 && this._mouseHelper.getClick().y < 80 + 64) {
                         this._clickedBuilderView = true
+                        this._selectedBuilding = "House"
+                    }
+                }
+                if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
+                    if (this._mouseHelper.getClick().y > 180 && this._mouseHelper.getClick().y < 180 + 64) {
+                        this._clickedBuilderView = true
+                        this._selectedBuilding = "Fabriek";
+                    }
+                }
+                if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
+                    if (this._mouseHelper.getClick().y > 280 && this._mouseHelper.getClick().y < 280 + 64) {
+                        this._clickedBuilderView = true
+                        this._selectedBuilding = "Houthakker";
+                    }
+                }
+                if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
+                    if (this._mouseHelper.getClick().y > 380 && this._mouseHelper.getClick().y < 380 + 64) {
+                        this._clickedBuilderView = true
+                        this._selectedBuilding = "Mijnwerker";
                     }
                 }
             }
+
+
+
             if (!this._mouseHelper.getClick().click && this._clickedBuilderView) {
                 this._clickedBuilderView = false
                 this._canvasHelper.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
                 this._folded = true
                 this._renderedBuilderView = false
-                //console.log('Image Released')
+                console.log('Image Released')
                 let releasedTile = this._tileInfo.findIndex(x => x.xStart <= this._mouseHelper.getClick().x && x.xEnd >= this._mouseHelper.getClick().x && x.yStart <= this._mouseHelper.getClick().y && x.yEnd >= this._mouseHelper.getClick().y)
                 if (this._tileInfo[releasedTile].imageSrc == "./assets/images/foliage/tree.png" ||
                     this._tileInfo[releasedTile].imageSrc == "./assets/images/earth_textures/mountain.png" ||
                     this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake1.png" ||
                     this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake2.png") this._canvasHelper.writeWarning("verwijder eerst wat hier staat")
                 else {
-                    if (App.ResourceCheck(40, 0, 0)) {
-                        this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png"
+                    if (this._selectedBuilding == "House") {
+                        if (App.ResourceCheck(40, 0, 0)) {
+                            this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png"
+                        }
+                    } else if (this._selectedBuilding == "Fabriek") {
+                        if (App.ResourceCheck(40, 0, 0)) {
+                            this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/Fabriek1.png"
+                        }
+                    } else if (this._selectedBuilding == "Houthakker") {
+                        if (App.ResourceCheck(40, 0, 0)) {
+                            this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/lumberjack.png"
+                        }
+                    } else if (this._selectedBuilding == "Mijnwerker") {
+                        if (App.ResourceCheck(40, 0, 0)) {
+                            this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/miner.png"
+                        }
                     }
                 }
                 this.renderOldGrid()
