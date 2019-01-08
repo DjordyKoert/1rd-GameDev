@@ -12,3 +12,15 @@ body {
   #container canvas, #canvasOverlay {
     position: absolute;
   }
+
+.opacity_75{
+    background-image: url("../images/opacities/75percent.png") 
+    }
+
+.opacity_50{
+    background-image: url("../images/opacities/50percent.png") 
+    }
+
+.opacity_25{
+    background-image: url("../images/opacities/25percent.png") 
+    }

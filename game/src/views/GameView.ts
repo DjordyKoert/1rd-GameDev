@@ -10,6 +10,8 @@ class GameView extends BaseView {
     private _tileInfo: Array<any>
     protected _homeView: HomeView
     private _renderOverlay: boolean
+    private container = document.getElementById("container")
+    private canvasOverlay = document.getElementById("canvasOverlay")
     //BuilderView
     private _viewWidth: number
     private _renderedBuilderView: boolean = false
@@ -52,12 +54,32 @@ class GameView extends BaseView {
             this.renderTutorial()
             setInterval(() => this.BuildingCheck(), 1000)
         }
+
+        
+
+        if(App._klimaat < 75 && App._klimaat > 50){
+            this.canvasOverlay.classList.remove("opacity_50")
+            this.canvasOverlay.classList.add("opacity_25")
+        }
+
+        if(App._klimaat < 50 && App._klimaat > 25 ){
+            this.canvasOverlay.classList.remove("opacity_75")
+            this.canvasOverlay.classList.remove("opacity_25")
+            this.canvasOverlay.classList.add("opacity_50")
+        }
+
+        if (App._klimaat < 25) {
+            this.canvasOverlay.classList.remove("opacity_50")
+            this.canvasOverlay.classList.add("opacity_75")
+        }
+
         this.renderOverlayToggle()
         this.renderBuilderView()
         if (this._renderOverlay) {
             this.renderToolbarView()
             this.renderUIView()
             this.nameBox()
+            console.log(App._klimaat)
         }
 
     }
@@ -117,7 +139,7 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-                    App._klimaat -= 1
+                    App._klimaat -= 10
                     App._wood += 10
                 }
 
@@ -424,13 +446,13 @@ class GameView extends BaseView {
         let nameBoxBackground = new Image();
 
         nameBoxBackground.addEventListener('load', () => {
-            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth() / 2 - 220, 0);
+            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth() / 2 - 215, 0);
             this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
         })
         nameBoxBackground.src = "assets/images/backgrounds/nameBoxBackground.png"
     }
     private renderTutorial(): void {
-        this._canvasHelperOverlay.writeWarning(`Welkom {App._name}`)
+        this._canvasHelperOverlay.writeWarning(`Welkom ${App._name}`)
         setTimeout(() => {
             this._renderedToolbar = false
             this._canvasHelperOverlay.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin")

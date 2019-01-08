@@ -73,7 +73,7 @@ class HomeView extends BaseView {
                     if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 500) {
                         let person = prompt("Please enter your name", "");
                         if (person == null || person == "") {
-                            window.alert("voer eerst een naam in")
+                            window.alert("voer eerst een naam in (maximaal 10 letters)")
                         }
                         else {
                             if(person.length > 10 ){
