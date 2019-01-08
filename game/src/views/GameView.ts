@@ -80,9 +80,7 @@ class GameView extends BaseView {
             this.renderToolbarView()
             this.renderUIView()
             this.nameBox()
-            console.log(App._klimaat)
         }
-        console.log(this._selectedBuilding)
     }
     public renderOldGrid(): void {
         this._xCoord = 0
