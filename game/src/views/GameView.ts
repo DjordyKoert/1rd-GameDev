@@ -315,7 +315,6 @@ class GameView extends BaseView {
                         }
                     }
                 }
-                this._renderOverlay = true
                 this.renderSingleGrid(this._tileInfo[releasedTile].xStart, this._tileInfo[releasedTile].xEnd, this._tileInfo[releasedTile].yStart, this._tileInfo[releasedTile].yEnd, this._tileInfo[releasedTile].imageSrc)
             }
         }
