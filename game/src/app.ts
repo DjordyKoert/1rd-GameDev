@@ -29,16 +29,6 @@ class App {
 
 
     }
-
-    public static ResourceCheck(wood: number, stone: number, gold: number): boolean {
-        if (App._wood >= wood && App._stone >= stone && App._gold >= gold) {
-            App._wood -= wood
-            App._stone -= stone
-            App._gold -= gold
-            return true
-        }
-        else { console.log(`Je mist ${App._wood - wood} hout, ${App._stone - stone} steen en ${App._gold - gold} goud`); return false }
-    }
 }
 
 
