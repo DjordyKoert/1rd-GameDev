@@ -198,10 +198,8 @@ class GameView extends BaseView {
                 }
                 else if (filter.imageSrc == "./assets/images/houses/Fabriek1.png" && App.ResourceCheck(150, 400, 150)) {
                     filter.imageSrc = "./assets/images/houses/powerPlant.png"
-                    console.log("fabre")
                 }
                 this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, filter.imageSrc)
-                console.log(filter.imageSrc)
 
             }
         })
@@ -526,18 +524,7 @@ class GameView extends BaseView {
     }
     //nameBox
     public nameBox() {
-<<<<<<< HEAD
         this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
-=======
-
-        let nameBoxBackground = new Image();
-
-        nameBoxBackground.addEventListener('load', () => {
-            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth() / 2 - 215, 0);
-            this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
-        })
-        nameBoxBackground.src = "assets/images/backgrounds/nameBoxBackground.png"
->>>>>>> 9829b612396f9c34afdbf5f81a70824e0056e3f1
     }
     private renderTutorial(): void {
         this._canvasHelperOverlay.writeWarning(`Welkom ${App._name}`)
