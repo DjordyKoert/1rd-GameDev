@@ -67,6 +67,7 @@ class GameView extends BaseView {
             this.canvasOverlay.classList.remove("opacity_75")
             this.canvasOverlay.classList.remove("opacity_25")
             this.canvasOverlay.classList.add("opacity_50")
+            this._canvasHelper.writeWarning("Je klimaat zit op 50%")
         }
 
         if (App._klimaat < 25) {
