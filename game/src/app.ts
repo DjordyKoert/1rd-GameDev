@@ -15,7 +15,7 @@ class App {
         this._homeView = new HomeView(canvasElem)
         this._startView = new StartView(canvasElem)
         this._gameView = new GameView(canvasElem)
-        this._gameOverView = new GameOverView(canvasElem, this.newGame)
+        this._gameOverView = new GameOverView(canvasElem)
         App._klimaat = 1
         App._gold = 0
         App._wood = 0
@@ -30,6 +30,17 @@ class App {
         if (App._screen == "gameover") this._gameOverView.renderScreen()
 
         if (App._klimaat <= 0) App._screen = "gameover"
+        if(App._klimaat >= 100){
+            if(App._wood == 500){
+                if(App._gold == 500){
+                    if(App._stone == 500){
+                        App._screen = "gameover"
+                    }
+                }
+
+            }
+        }
+
     }
 }
 

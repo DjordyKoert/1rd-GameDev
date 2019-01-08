@@ -6,7 +6,7 @@ class BaseView {
     public constructor(canvas: HTMLCanvasElement){
         this._canvasHelper = new CanvasHelper(canvas)
         this._canvasHelperOverlay = new CanvasHelper(<HTMLCanvasElement>document.getElementById("canvasOverlay"))
-        this._canvasWarning = new CanvasHelper(<HTMLCanvasElement>document.getElementById("canvasOverlay"))
+        this._canvasWarning = new CanvasHelper(<HTMLCanvasElement>document.getElementById("canvasWarning"))
         this._mouseHelper = new MouseHelper()
         //this._homeView.homeScreen()
     }

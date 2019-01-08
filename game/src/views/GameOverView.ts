@@ -2,12 +2,10 @@ class GameOverView extends BaseView {
     protected _canvasHelper: CanvasHelper
     private _gameOver: boolean
     private _clicked: boolean = false;
-    private restartGame: Function
     private _buttonDimension: Array<number>
 
-    public constructor(canvas: HTMLCanvasElement, restartGame: Function) {
+    public constructor(canvas: HTMLCanvasElement) {
         super(canvas)
-        this.restartGame = restartGame
         this._gameOver = false
         this._buttonDimension = [225, 125]
     }
