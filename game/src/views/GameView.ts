@@ -52,7 +52,7 @@ class GameView extends BaseView {
     public renderScreen(): void {
         if (!this._gridsRendered) {
             this.renderNewGrid()
-            this.renderTutorial()
+            //this.renderTutorial()
             setInterval(() => this.BuildingCheck(), 1000)
         }
 
@@ -156,7 +156,7 @@ class GameView extends BaseView {
 
             }
 
-            if (this._curTool == "hammer") {
+            else if (this._curTool == "hammer") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_hammerChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
@@ -168,7 +168,7 @@ class GameView extends BaseView {
                 }
             }
 
-            if (this._curTool == "pickaxe") {
+            else if (this._curTool == "pickaxe" && this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/miner.png").length > 0) {
                 document.body.style.cursor = "url('assets/cursors/Diamond_PickaxeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
@@ -181,7 +181,7 @@ class GameView extends BaseView {
                 }
             }
 
-            if (this._curTool == "bucket") {
+            else if (this._curTool == "bucket") {
                 document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor_Blub.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
@@ -192,7 +192,17 @@ class GameView extends BaseView {
                     App._klimaat += 1
                 }
             }
+            else {
+                let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+                if (filter.imageSrc == "./assets/images/houses/house.png" && App.ResourceCheck(100, 200, 100)) {
+                    filter.imageSrc = "./assets/images/houses/houseLevel2.png"
+                }
+                else if (filter.imageSrc == "./assets/images/houses/Fabriek1.png" && App.ResourceCheck(150, 400, 150)) {
+                    filter.imageSrc = "./assets/images/houses/powerPlant.png"
+                }
+                this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, filter.imageSrc)
 
+            }
         })
 
         window.addEventListener("mouseup", e => {
@@ -288,15 +298,15 @@ class GameView extends BaseView {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png"
                         }
                     } else if (this._selectedBuilding == "Fabriek") {
-                        if (App.ResourceCheck(40, 0, 0)) {
+                        if (App.ResourceCheck(0, 0, 100)) {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/Fabriek1.png"
                         }
                     } else if (this._selectedBuilding == "Houthakker") {
-                        if (App.ResourceCheck(40, 0, 0)) {
+                        if (App.ResourceCheck(20, 0, 20)) {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/lumberjack.png"
                         }
                     } else if (this._selectedBuilding == "Mijnwerker") {
-                        if (App.ResourceCheck(40, 0, 0)) {
+                        if (App.ResourceCheck(10, 20, 40)) {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/miner.png"
                         }
                     }
@@ -443,21 +453,21 @@ class GameView extends BaseView {
         // this._canvasHelperOverlay.moveTo(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine1)
         // this._canvasHelperOverlay.lineTo(this._canvasHelperOverlay.getWidth(), _yPosLine1)
         this._canvasHelperOverlay.writeTextToCanvas('HUIS', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 100, undefined, 'left')
-        this._canvasHelperOverlay.writeTextToCanvas(`HOUT: 40`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:40`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 80, 90, 64)
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2)
         // this._canvasHelperOverlay.moveTo(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2)
         // this._canvasHelperOverlay.lineTo(this._canvasHelperOverlay.getWidth(), _yPosLine2)
         this._canvasHelperOverlay.writeTextToCanvas('FABRIEK', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 200, undefined, 'left')
-        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 235, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`GOUD:100`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 235, undefined, 'left')
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 180, 90, 64)
 
         this._canvasHelperOverlay.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 300, undefined, 'left')
-        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 335, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:20, GOUD: 20`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 335, undefined, 'left')
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 320, 90, 64)
 
         this._canvasHelperOverlay.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 400, undefined, 'left')
-        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:10,STONE:20,GOLD:40`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 380, 90, 64)
 
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2)
@@ -484,22 +494,38 @@ class GameView extends BaseView {
 
     private BuildingCheck() {
         let Houses = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/house.png")
-        Houses.forEach(house => {
+        let HousesLevel2 = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/houseLevel2.png")
+        let Fabrieken = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/Fabriek1.png")
+        let Powerplants = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/powerPlant.png")
+        let Houthakkers = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/lumberjack.png")
+        let Mijnwerkers = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/miner.png")
+        Houses.forEach(House => {
             App._gold += 1
-            let canvas = document.getElementById("canvasOverlay")
-            canvas.style.backgroundImage = "../images/opacities/25percent.png"
         })
+        Fabrieken.forEach(Fabriek => {
+            App._stone += 2
+            App._klimaat -= 2
+        });
+        Powerplants.forEach(Fabriek => {
+            App._stone += 5
+            App._klimaat -= 5
+        });
+        Houthakkers.forEach(Fabriek => {
+            App._wood += 1
+            App._klimaat += 1
+        });
+        Mijnwerkers.forEach(Fabriek => {
+            App._stone += 2
+            App._klimaat -= 1
+        });
+        HousesLevel2.forEach(Fabriek => {
+            App._gold += 3
+            App._klimaat -= 3
+        });
     }
     //nameBox
     public nameBox() {
-
-        let nameBoxBackground = new Image();
-
-        nameBoxBackground.addEventListener('load', () => {
-            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth() / 2 - 215, 0);
-            this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
-        })
-        nameBoxBackground.src = "assets/images/backgrounds/nameBoxBackground.png"
+        this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
     }
     private renderTutorial(): void {
         this._canvasHelperOverlay.writeWarning(`Welkom ${App._name}`)
@@ -513,7 +539,7 @@ class GameView extends BaseView {
     private checkPlacement(image: string): boolean {
         if (image == "./assets/images/houses/house.png" ||
             image == "./assets/images/houses/lumberjack.png" ||
-            image == "./assets/images/houses/fabriek1.png" ||
+            image == "./assets/images/houses/Fabriek1.png" ||
             image == "./assets/images/houses/house.png" ||
             image == "./assets/images/earth_textures/mountain.png" ||
             image == "./assets/images/earth_textures/water.png" ||
