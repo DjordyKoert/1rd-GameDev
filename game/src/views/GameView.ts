@@ -80,6 +80,15 @@ class GameView extends BaseView {
             this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart)
         });
     }
+    private renderSingleGrid(xStart: number, xEnd: number, yStart: number, yEnd: number, imageSrc: string): void {
+        if (imageSrc == "./assets/images/houses/house.png") {
+            this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/buildingEarth.png", xStart, yStart, xEnd - xStart, yEnd - yStart)
+        }
+        else {
+            this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", xStart, yStart, xEnd - xStart, yEnd - yStart)
+        }
+        this._canvasHelper.writeImageToCanvas(imageSrc, xStart, yStart, xEnd - xStart, yEnd - yStart)
+    }
     public renderNewGrid(): void {
         for (let line = 0; line < this._lines; line++) {
             this._canvasHelper.moveTo(0, this._yCoord)
@@ -151,7 +160,7 @@ class GameView extends BaseView {
                 document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor_Blub.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-                if ((filter.imageSrc == "./assets/images/water/lake1.png" || "./assets/images/water/lake2.png")  && App.ResourceCheck(0, 0, 15)) {
+                if ((filter.imageSrc == "./assets/images/water/lake1.png" || "./assets/images/water/lake2.png") && App.ResourceCheck(0, 0, 15)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
@@ -195,7 +204,7 @@ class GameView extends BaseView {
             }
             if (!this._mouseHelper.getClick().click && this._clickedBuilderView) {
                 this._clickedBuilderView = false
-                this._canvasHelper.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
+                this._canvasHelperOverlay.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
                 this._folded = false
                 this._renderedBuilderView = false
             }
@@ -212,26 +221,25 @@ class GameView extends BaseView {
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
                     if (this._mouseHelper.getClick().y > 80 && this._mouseHelper.getClick().y < 80 + 64) {
                         this._clickedBuilderView = true
+                        this._renderOverlay = false
                     }
                 }
             }
             if (!this._mouseHelper.getClick().click && this._clickedBuilderView) {
                 this._clickedBuilderView = false
-                this._canvasHelper.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
+                this._canvasHelperOverlay.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight())
                 this._folded = true
                 this._renderedBuilderView = false
                 //console.log('Image Released')
                 let releasedTile = this._tileInfo.findIndex(x => x.xStart <= this._mouseHelper.getClick().x && x.xEnd >= this._mouseHelper.getClick().x && x.yStart <= this._mouseHelper.getClick().y && x.yEnd >= this._mouseHelper.getClick().y)
-                if (this._tileInfo[releasedTile].imageSrc == "./assets/images/foliage/tree.png" ||
-                    this._tileInfo[releasedTile].imageSrc == "./assets/images/earth_textures/mountain.png" ||
-                    this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake1.png" ||
-                    this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake2.png") this._canvasHelper.writeWarning("verwijder eerst wat hier staat")
+                if (!this.checkPlacement(this._tileInfo[releasedTile].imageSrc)) this._canvasHelperOverlay.writeWarning("verwijder eerst wat hier staat")
                 else {
                     if (App.ResourceCheck(40, 0, 0)) {
                         this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png"
                     }
                 }
-                this.renderOldGrid()
+                this._renderOverlay = true
+                this.renderSingleGrid(this._tileInfo[releasedTile].xStart, this._tileInfo[releasedTile].xEnd, this._tileInfo[releasedTile].yStart, this._tileInfo[releasedTile].yEnd, this._tileInfo[releasedTile].imageSrc)
             }
         }
     }
@@ -358,39 +366,39 @@ class GameView extends BaseView {
     }
     //UnfoldedBuilderView
     private renderFoldedBuilderView(): void {
-        this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
-        this._canvasHelper.writeTextToCanvas('<--', 20, this._canvasHelper.getWidth() - 10, 10, 'black', 'right')
+        this._canvasHelperOverlay.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
+        this._canvasHelperOverlay.writeTextToCanvas('<--', 20, this._canvasHelperOverlay.getWidth() - 10, 10, 'black', 'right')
     }
     //FoldedBuilderView
     private renderUnFoldedBuilderView(): void {
         let _yPosLine1: number = 70
         let _yPosLine2: number = 155
         let _yposLine3: number = 250
-        this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green')
-        this._canvasHelper.writeTextToCanvas('GEBOUWEN', 48, (this._canvasHelper.getWidth() - this._viewWidth / 2), 40)
-        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1, this._canvasHelper.getWidth(), _yPosLine1)
-        // this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1)
-        // this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine1)
-        this._canvasHelper.writeTextToCanvas('HUIS', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 100, undefined, 'left')
-        this._canvasHelper.writeTextToCanvas(`HOUT: 40`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
-        this._canvasHelper.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 80, 90, 64)
-        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2)
-        // this._canvasHelper.moveTo(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2)
-        // this._canvasHelper.lineTo(this._canvasHelper.getWidth(), _yPosLine2)
-        this._canvasHelper.writeTextToCanvas('FABRIEK', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 200, undefined, 'left')
-        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 235, undefined, 'left')
-        this._canvasHelper.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 180, 90, 64)
+        this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelperOverlay.getHeight(), 'green')
+        this._canvasHelperOverlay.writeTextToCanvas('GEBOUWEN', 48, (this._canvasHelperOverlay.getWidth() - this._viewWidth / 2), 40)
+        this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine1, this._canvasHelperOverlay.getWidth(), _yPosLine1)
+        // this._canvasHelperOverlay.moveTo(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine1)
+        // this._canvasHelperOverlay.lineTo(this._canvasHelperOverlay.getWidth(), _yPosLine1)
+        this._canvasHelperOverlay.writeTextToCanvas('HUIS', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 100, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT: 40`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 80, 90, 64)
+        this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2)
+        // this._canvasHelperOverlay.moveTo(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2)
+        // this._canvasHelperOverlay.lineTo(this._canvasHelperOverlay.getWidth(), _yPosLine2)
+        this._canvasHelperOverlay.writeTextToCanvas('FABRIEK', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 200, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 235, undefined, 'left')
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 180, 90, 64)
 
-        this._canvasHelper.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 300, undefined, 'left')
-        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 335, undefined, 'left')
-        this._canvasHelper.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 320, 90, 64)
+        this._canvasHelperOverlay.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 300, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 335, undefined, 'left')
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 320, 90, 64)
 
-        this._canvasHelper.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 400, undefined, 'left')
-        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
-        this._canvasHelper.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 380, 90, 64)
+        this._canvasHelperOverlay.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 400, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 380, 90, 64)
 
-        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2)
-        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2)
+        this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2)
+        this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2)
     }
     //Overlay toggle button
     private renderOverlayToggle(): void {
@@ -415,6 +423,8 @@ class GameView extends BaseView {
         let Houses = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/house.png")
         Houses.forEach(house => {
             App._gold += 1
+            let canvas = document.getElementById("canvasOverlay")
+            canvas.style.backgroundImage = "../images/opacities/25percent.png"
         })
     }
     //nameBox
@@ -435,5 +445,22 @@ class GameView extends BaseView {
             this._canvasHelperOverlay.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin")
             setTimeout(() => { this._canvasHelperOverlay.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); this._renderedToolbar = false; setTimeout(() => { this._renderedToolbar = false }, 3000) }, 3000)
         }, 3000)
+    }
+
+    private checkPlacement(image: string): boolean {
+        if (image == "./assets/images/houses/house.png" ||
+            image == "./assets/images/houses/lumberjack.png" ||
+            image == "./assets/images/houses/fabriek1.png" ||
+            image == "./assets/images/houses/house.png" ||
+            image == "./assets/images/earth_textures/mountain.png" ||
+            image == "./assets/images/earth_textures/water.png" ||
+            image == "./assets/images/foliage/tree.png" ||
+            image == "./assets/images/houses/miner.png" ||
+            image == "./assets/images/houses/windMill.png" ||
+            image == "./assets/images/water/lake1.png" ||
+            image == "./assets/images/water/lake2.png" ||
+            image == "./assets/images/houses/solarPanels.png"
+        ) return false
+        else return true
     }
 }
