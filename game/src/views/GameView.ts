@@ -11,7 +11,7 @@ class GameView extends BaseView {
     protected _homeView: HomeView
     private _renderOverlay: boolean
     private _canvasOverlay = document.getElementById("canvasOverlay")
-    private _canvasOverlay = document.getElementById("canvasWarning")
+    private _canvasWarning = document.getElementById("canvasWarning")
     //BuilderView
     private _viewWidth: number
     private _renderedBuilderView: boolean = false
@@ -57,19 +57,19 @@ class GameView extends BaseView {
         }
 
         if(App._klimaat < 75 && App._klimaat > 50){
-            this.canvasOverlay.classList.remove("opacity_50")
-            this.canvasOverlay.classList.add("opacity_25")
+            this._canvasOverlay.classList.remove("opacity_50")
+            this._canvasOverlay.classList.add("opacity_25")
         }
 
         if(App._klimaat < 50 && App._klimaat > 25 ){
-            this.canvasOverlay.classList.remove("opacity_75")
-            this.canvasOverlay.classList.remove("opacity_25")
-            this.canvasOverlay.classList.add("opacity_50")
+            this._canvasOverlay.classList.remove("opacity_75")
+            this._canvasOverlay.classList.remove("opacity_25")
+            this._canvasOverlay.classList.add("opacity_50")
         }
 
         if (App._klimaat < 25) {
-            this.canvasOverlay.classList.remove("opacity_50")
-            this.canvasOverlay.classList.add("opacity_75")
+            this._canvasOverlay.classList.remove("opacity_50")
+            this._canvasOverlay.classList.add("opacity_75")
         }
 
 
