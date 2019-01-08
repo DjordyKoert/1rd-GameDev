@@ -180,6 +180,18 @@ class GameView extends BaseView {
                     App._klimaat += 1
                 }
             }
+
+            else if (this._curTool == "seed") {
+                document.body.style.cursor = "url('assets/cursors/Seed_Cursor.png'), auto";
+                let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+                if (!filter) return;
+                if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && App.ResourceCheck(0, 0, 5)) {
+                    let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
+                    this._tileInfo[n].imageSrc = "./assets/images/foliage/tree.png"
+                    this.renderOldGrid()
+                    App._klimaat += 5
+                }
+            }
             else {
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (filter.imageSrc == "./assets/images/houses/house1.png" && App.ResourceCheck(100, 200, 100)) {
@@ -205,6 +217,9 @@ class GameView extends BaseView {
             }
             if (this._curTool == "bucket") {
                 document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor.png'), auto";
+            }
+            if (this._curTool == "seed") {
+                document.body.style.cursor = "url('assets/cursors/Seed_Cursor.png'), auto";
             }
 
         })
@@ -312,20 +327,24 @@ class GameView extends BaseView {
             this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.32, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "purple")
             this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.43, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "yellow")
             this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.54, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "blue")
+            this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.65, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "lightgreen")
             let DiamondAxe = new Image();
             let DiamondHammer = new Image();
             let DiamondPickaxe = new Image();
             let IronBucket = new Image();
+            let Seed = new Image();
             DiamondAxe.addEventListener('load', () => {
                 this._canvasHelperOverlay._context.drawImage(DiamondAxe, this._canvasHelperOverlay.getWidth() * 0.21, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18)
                 this._canvasHelperOverlay._context.drawImage(DiamondHammer, this._canvasHelperOverlay.getWidth() * 0.3057, this._canvasHelperOverlay.getHeight() * 0.79, this._canvasHelperOverlay.getWidth() * 0.12, this._canvasHelperOverlay.getHeight() * 0.20)
                 this._canvasHelperOverlay._context.drawImage(DiamondPickaxe, this._canvasHelperOverlay.getWidth() * 0.43, this._canvasHelperOverlay.getHeight() * 0.83, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.15)
                 this._canvasHelperOverlay._context.drawImage(IronBucket, this._canvasHelperOverlay.getWidth() * 0.54, this._canvasHelperOverlay.getHeight() * 0.795, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.20)
+                this._canvasHelperOverlay._context.drawImage(Seed, this._canvasHelperOverlay.getWidth() * 0.65, this._canvasHelperOverlay.getHeight() * 0.795, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.20)
             });
             DiamondAxe.src = "./assets/images/toolBar_textures/Diamond_Axe.png"
             DiamondHammer.src = "./assets/images/toolBar_textures/Diamond_Hammer.png"
             DiamondPickaxe.src = "./assets/images/toolBar_textures/Diamond_Pickaxe.png"
             IronBucket.src = "./assets/images/toolBar_textures/Iron_Bucket.png"
+            Seed.src = "./assets/images/toolBar_textures/Oak_Sapling.png"
             this._renderedToolbar = true
         }
         this.toolBarClick()
@@ -386,6 +405,19 @@ class GameView extends BaseView {
                     this._clickedToolbar = true
                     document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor.png'), auto";
                     this._curTool = "bucket"
+                }
+            }
+            if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.65 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.65 + this._canvasHelper.getWidth() * 0.1)) {
+                if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getWidth() * 0.18)) {
+                    if (this._curTool == "seed") {
+                        this._clickedToolbar = true
+                        this._curTool = undefined
+                        document.body.style.cursor = 'default'
+                        return
+                    }
+                    this._clickedToolbar = true
+                    document.body.style.cursor = "url('assets/cursors/Seed_Cursor.png'), auto";
+                    this._curTool = "seed"
                 }
             }
         }
