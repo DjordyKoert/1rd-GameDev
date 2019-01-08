@@ -22,13 +22,14 @@ class GameView extends BaseView {
     private _curTool: string
     private _renderedToolbar: boolean
     private _clickedOverlayToggle: boolean
-
+    private _renderInfo: boolean
+    private _clickedInfoToggle: boolean
     public constructor(canvas: HTMLCanvasElement) {
         super(canvas)
         this._mouseHelper = new MouseHelper()
         this._gridsRendered = false
         this._xCoord = this._yCoord = 0
-        this._lines = 20
+        this._lines = 15
         //Check screen size to make grids fit
         if (this._canvasHelper.getWidth() > this._canvasHelper.getHeight()) {
             this._sqSize = this._canvasHelper.getWidth() / this._lines
@@ -55,12 +56,12 @@ class GameView extends BaseView {
             setInterval(() => this.BuildingCheck(), 1000)
         }
 
-        if(App._klimaat < 75 && App._klimaat > 50){
+        if (App._klimaat < 75 && App._klimaat > 50) {
             this._canvasOverlay.classList.remove("opacity_50")
             this._canvasOverlay.classList.add("opacity_25")
         }
 
-        if(App._klimaat < 50 && App._klimaat > 25 ){
+        if (App._klimaat < 50 && App._klimaat > 25) {
             this._canvasOverlay.classList.remove("opacity_75")
             this._canvasOverlay.classList.remove("opacity_25")
             this._canvasOverlay.classList.add("opacity_50")
@@ -72,7 +73,9 @@ class GameView extends BaseView {
         }
 
 
+
         this.renderOverlayToggle()
+        this.gameInfo()
         this.renderBuilderView()
         if (this._renderOverlay) {
             this.renderToolbarView()
@@ -150,7 +153,7 @@ class GameView extends BaseView {
                     filter == "./assets/images/houses/Fabriek1.png" ||
                     filter == "./assets/images/houses/miner.png" ||
                     filter == "./assets/images/houses/powerPlant.png")
-                 && this.ResourceCheck(0, 0, 40)) {
+                    && this.ResourceCheck(0, 0, 40)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
@@ -273,7 +276,7 @@ class GameView extends BaseView {
                     }
                 }
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
-                    if (this._mouseHelper.getClick().y > 280 && this._mouseHelper.getClick().y < 280 + 64) {
+                    if (this._mouseHelper.getClick().y > 300 && this._mouseHelper.getClick().y < 300 + 64) {
                         this._clickedBuilderView = true;
                         this._selectedBuilding = "Houthakker";
                     }
@@ -513,6 +516,25 @@ class GameView extends BaseView {
         if (!this._mouseHelper.getClick().click) this._clickedOverlayToggle = false
     }
 
+    private gameInfo() {
+        this._canvasHelperOverlay.writeImageToCanvas("./assets/images/toolBar_textures/infoButton.png", 50, this._canvasHelper.getHeight() - 40, 40, 40)
+        if (this._mouseHelper.getClick().click && !this._clickedInfoToggle) {
+            if (this._mouseHelper.ClickCheck(50, 90, this._canvasHelper.getHeight() - 40, this._canvasHelper.getHeight())) {
+                if (this._renderInfo) {
+                    this._renderInfo = false
+                    this._clickedInfoToggle = true
+                    this._canvasWarning.clear()
+                    return
+                }
+                this._renderInfo = true
+                this._clickedInfoToggle = true
+                this._canvasWarning.writeImageToCanvas("./assets/images/info.png", this._canvasWarning.getWidth() / 8, this._canvasWarning.getHeight() / 8, 1000, 450);
+            }
+        }
+        if (!this._mouseHelper.getClick().click) this._clickedInfoToggle = false
+    }
+
+
     private BuildingCheck() {
         let Houses = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/house1.png")
         let HousesLevel2 = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/houseLevel2.png")
@@ -525,7 +547,7 @@ class GameView extends BaseView {
         })
         Fabrieken.forEach(Fabriek => {
             App._stone += 2
-            App._klimaat -= 0.4
+            App._klimaat -= 1
         });
         Powerplants.forEach(Fabriek => {
             App._stone += 5
@@ -533,7 +555,7 @@ class GameView extends BaseView {
         });
         Houthakkers.forEach(Fabriek => {
             App._wood += 1
-            App._klimaat += 1
+            App._klimaat += 0.4
         });
         Mijnwerkers.forEach(Fabriek => {
             App._stone += 2
@@ -551,7 +573,6 @@ class GameView extends BaseView {
     private renderTutorial(): void {
         this._canvasWarning.writeWarning(`Welkom ${App._name}`)
         setTimeout(() => {
-            this._renderedToolbar = false
             this._canvasWarning.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin")
             setTimeout(() => { this._canvasWarning.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); }, 3000)
         }, 3000)
