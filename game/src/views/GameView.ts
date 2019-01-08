@@ -488,7 +488,7 @@ class GameView extends BaseView {
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 320, 90, 64)
 
         this._canvasHelperOverlay.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 400, undefined, 'left')
-        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:10,STONE:20,GOLD:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:10,STEEN::20,GOUD:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 450, 90, 64)
 
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2)
