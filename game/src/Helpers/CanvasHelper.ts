@@ -142,7 +142,8 @@ class CanvasHelper {
 
         barProgress: string = "green",
         barLeft: string = "red",
-    ) {
+    ): void {
+        if (value > maxNumber) return
         //Red bar
         this.createRect(rectXPos + 10, rectYPos + 10, rectWidth, rectHeight, barLeft)
         //Green bar
