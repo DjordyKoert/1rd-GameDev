@@ -10,8 +10,6 @@ class GameView extends BaseView {
     private _tileInfo: Array<any>
     protected _homeView: HomeView
     private _renderOverlay: boolean
-    private container = document.getElementById("container")
-    private canvasOverlay = document.getElementById("canvasOverlay")
     //BuilderView
     private _viewWidth: number
     private _renderedBuilderView: boolean = false
@@ -56,9 +54,8 @@ class GameView extends BaseView {
             setInterval(() => this.BuildingCheck(), 1000)
         }
 
-        
 
-<<<<<<< HEAD
+
         // if(App._klimaat < 75 && App._klimaat > 50){
         //     this.canvasOverlay.classList.remove("opacity_50")
         //     this.canvasOverlay.classList.add("opacity_25")
@@ -75,23 +72,6 @@ class GameView extends BaseView {
         //     this.canvasOverlay.classList.remove("opacity_50")
         //     this.canvasOverlay.classList.add("opacity_75")
         // }
-=======
-        if(App._klimaat < 75 && App._klimaat > 50){
-            this.canvasOverlay.classList.remove("opacity_50")
-            this.canvasOverlay.classList.add("opacity_25")
-        }
-
-        if(App._klimaat < 50 && App._klimaat > 25 ){
-            this.canvasOverlay.classList.remove("opacity_75")
-            this.canvasOverlay.classList.remove("opacity_25")
-            this.canvasOverlay.classList.add("opacity_50")
-        }
-
-        if (App._klimaat < 25) {
-            this.canvasOverlay.classList.remove("opacity_50")
-            this.canvasOverlay.classList.add("opacity_75")
-        }
->>>>>>> 14265f6544bb1943e56b5f647de2a306a3a800e4
 
         this.renderOverlayToggle()
         this.renderBuilderView()
@@ -115,7 +95,7 @@ class GameView extends BaseView {
         });
     }
     private renderSingleGrid(xStart: number, xEnd: number, yStart: number, yEnd: number, imageSrc: string): void {
-        
+
         this._canvasHelper.writeImageToCanvas(imageSrc, xStart, yStart, xEnd - xStart, yEnd - yStart)
     }
     public renderNewGrid(): void {
@@ -165,7 +145,13 @@ class GameView extends BaseView {
                 document.body.style.cursor = "url('assets/cursors/Diamond_hammerChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-                if (filter.imageSrc == "./assets/images/houses/house1.png" && App.ResourceCheck(0, 0, 4)) {
+                if ((filter == "./assets/images/houses/house1.png" ||
+                    filter == "./assets/images/houses/houseLevel2.png" ||
+                    filter == "./assets/images/houses/lumberjack.png" ||
+                    filter == "./assets/images/houses/Fabriek1.png" ||
+                    filter == "./assets/images/houses/miner.png" ||
+                    filter == "./assets/images/houses/powerPlant.png")
+                 && App.ResourceCheck(0, 0, 40)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
@@ -278,7 +264,6 @@ class GameView extends BaseView {
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
                     if (this._mouseHelper.getClick().y > 80 && this._mouseHelper.getClick().y < 80 + 64) {
                         this._clickedBuilderView = true;
-                        this._renderOverlay = false;
                         this._selectedBuilding = "House";
                     }
                 }
@@ -468,6 +453,7 @@ class GameView extends BaseView {
             this._canvasHelperOverlay._context.fillText(`${App._stone}`, 340, 33)
             this._canvasHelperOverlay._context.fillText(`${App._gold}`, 530, 33)
             this._canvasHelperOverlay.loadingBar(-11, 53, 590, 15, App._klimaat, 100)
+            this._canvasHelperOverlay.writeTextToCanvas(App._klimaat.toString(), 20, 600, 20, "white", "left")
         });
         imageUIBackground.src = "./assets/images/backgrounds/UIBackground.png"
         imageWoodResource.src = "./assets/images/resources/woodResource.png"
@@ -490,21 +476,21 @@ class GameView extends BaseView {
         // this._canvasHelperOverlay.moveTo(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine1)
         // this._canvasHelperOverlay.lineTo(this._canvasHelperOverlay.getWidth(), _yPosLine1)
         this._canvasHelperOverlay.writeTextToCanvas('HUIS', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 100, undefined, 'left')
-        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:40`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 135, undefined, 'left')
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/house1.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 80, 90, 64)
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2)
         // this._canvasHelperOverlay.moveTo(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2)
         // this._canvasHelperOverlay.lineTo(this._canvasHelperOverlay.getWidth(), _yPosLine2)
         this._canvasHelperOverlay.writeTextToCanvas('FABRIEK', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 200, undefined, 'left')
-        this._canvasHelperOverlay.writeTextToCanvas(`GOUD:100`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 235, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`GOUD:100`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 235, undefined, 'left')
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 180, 90, 64)
 
         this._canvasHelperOverlay.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 300, undefined, 'left')
-        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:20, GOUD: 20`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 335, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:20, GOUD: 20`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 335, undefined, 'left')
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 320, 90, 64)
 
         this._canvasHelperOverlay.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 400, undefined, 'left')
-        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:10,STONE:20,GOLD:40`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:10,STONE:20,GOLD:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 445, undefined, 'left')
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 380, 90, 64)
 
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2)
@@ -530,7 +516,7 @@ class GameView extends BaseView {
     }
 
     private BuildingCheck() {
-        let Houses = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/house.png")
+        let Houses = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/house1.png")
         let HousesLevel2 = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/houseLevel2.png")
         let Fabrieken = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/Fabriek1.png")
         let Powerplants = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/powerPlant.png")
@@ -574,10 +560,10 @@ class GameView extends BaseView {
     }
 
     private checkPlacement(image: string): boolean {
-        if (image == "./assets/images/houses/house.png" ||
+        if (image == "./assets/images/houses/house1.png" ||
+            image == "./assets/images/houses/houseLevel2.png" ||
             image == "./assets/images/houses/lumberjack.png" ||
             image == "./assets/images/houses/Fabriek1.png" ||
-            image == "./assets/images/houses/house.png" ||
             image == "./assets/images/earth_textures/mountain.png" ||
             image == "./assets/images/earth_textures/water.png" ||
             image == "./assets/images/foliage/tree.png" ||
