@@ -49,6 +49,8 @@ class CanvasHelper {
         });
     }
     loadingBar(rectXPos, rectYPos, rectWidth, rectHeight, value, maxNumber, barProgress = "green", barLeft = "red") {
+        if (value > maxNumber)
+            return;
         this.createRect(rectXPos + 10, rectYPos + 10, rectWidth, rectHeight, barLeft);
         this.createRect(rectXPos + 10, rectYPos + 10, rectWidth * (value / maxNumber), rectHeight, barProgress);
     }
@@ -65,7 +67,7 @@ class CanvasHelper {
         this._context.stroke();
     }
     writeWarning(warnMessage) {
-        let warnCanvas = new CanvasHelper(document.getElementById("canvasOverlay"));
+        let warnCanvas = new CanvasHelper(document.getElementById("canvasWarning"));
         let msgWidth = this._context.measureText(warnMessage).width;
         warnCanvas.createRect(warnCanvas.getCenter().X - msgWidth * 1.5, warnCanvas.getCenter().Y - 15, msgWidth * 3, 30, "black");
         warnCanvas.writeTextToCanvas(warnMessage, 30, warnCanvas.getCenter().X, warnCanvas.getCenter().Y, "red", "center");
@@ -79,7 +81,8 @@ class App {
         this._homeView = new HomeView(canvasElem);
         this._startView = new StartView(canvasElem);
         this._gameView = new GameView(canvasElem);
-        App._klimaat = 0;
+        this._gameOverView = new GameOverView(canvasElem, this.newGame);
+        App._klimaat = 1;
         App._gold = 0;
         App._wood = 0;
         App._stone = 0;
@@ -92,16 +95,13 @@ class App {
             this._homeView.renderScreen();
         if (App._screen == "game")
             this._gameView.renderScreen();
+        if (App._screen == "gameover")
+            this._gameOverView.renderScreen();
+        if (App._klimaat <= 0)
+            App._screen = "gameover";
     }
-    static ResourceCheck(wood, stone, gold) {
-        if (App._wood >= wood && App._stone >= stone && App._gold >= gold) {
-            App._wood -= wood;
-            App._stone -= stone;
-            App._gold -= gold;
-            return true;
-        }
-        else
-            return false;
+    newGame() {
+        console.log("restart");
     }
 }
 let init = function () {
@@ -113,7 +113,20 @@ class BaseView {
     constructor(canvas) {
         this._canvasHelper = new CanvasHelper(canvas);
         this._canvasHelperOverlay = new CanvasHelper(document.getElementById("canvasOverlay"));
+        this._canvasWarning = new CanvasHelper(document.getElementById("canvasOverlay"));
         this._mouseHelper = new MouseHelper();
+    }
+    ResourceCheck(wood, stone, gold) {
+        if (App._wood >= wood && App._stone >= stone && App._gold >= gold) {
+            App._wood -= wood;
+            App._stone -= stone;
+            App._gold -= gold;
+            return true;
+        }
+        else {
+            this._canvasWarning.writeWarning(`Je mist ${App._wood - wood} hout, ${App._stone - stone} steen en ${App._gold - gold} goud`);
+            return false;
+        }
     }
 }
 class MathHelper {
@@ -152,19 +165,41 @@ class MouseHelper {
         return false;
     }
 }
+class GameOverView extends BaseView {
+    constructor(canvas, restartGame) {
+        super(canvas);
+        this._clicked = false;
+        this.restartGame = restartGame;
+        this._gameOver = false;
+        this._buttonDimension = [225, 125];
+    }
+    renderScreen() {
+        if (!this._gameOver) {
+            this._canvasHelper.clear();
+            this._canvasHelperOverlay.clear();
+            this._canvasWarning.clear();
+            this._canvasHelper.writeTextToCanvas(App._name, 60, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 - 20, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Je eind score:`, 50, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 60, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Goud: ${App._gold}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 120, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Steen: ${App._stone}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 180, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Hout: ${App._wood}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 230, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Klik op f5 om te restarten`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 300, "white", "center");
+            this._gameOver = true;
+        }
+    }
+}
 class GameView extends BaseView {
     constructor(canvas) {
         super(canvas);
         this._screen = "gameScreen";
-        this.container = document.getElementById("container");
-        this.canvasOverlay = document.getElementById("canvasOverlay");
+        this._canvasOverlay = document.getElementById("canvasOverlay");
         this._renderedBuilderView = false;
         this._clickedBuilderView = false;
         this._folded = true;
         this._mouseHelper = new MouseHelper();
         this._gridsRendered = false;
         this._xCoord = this._yCoord = 0;
-        this._lines = 18;
+        this._lines = 20;
         if (this._canvasHelper.getWidth() > this._canvasHelper.getHeight()) {
             this._sqSize = this._canvasHelper.getWidth() / this._lines;
         }
@@ -190,17 +225,17 @@ class GameView extends BaseView {
             setInterval(() => this.BuildingCheck(), 1000);
         }
         if (App._klimaat < 75 && App._klimaat > 50) {
-            this.canvasOverlay.classList.remove("opacity_50");
-            this.canvasOverlay.classList.add("opacity_25");
+            this._canvasOverlay.classList.remove("opacity_50");
+            this._canvasOverlay.classList.add("opacity_25");
         }
         if (App._klimaat < 50 && App._klimaat > 25) {
-            this.canvasOverlay.classList.remove("opacity_75");
-            this.canvasOverlay.classList.remove("opacity_25");
-            this.canvasOverlay.classList.add("opacity_50");
+            this._canvasOverlay.classList.remove("opacity_75");
+            this._canvasOverlay.classList.remove("opacity_25");
+            this._canvasOverlay.classList.add("opacity_50");
         }
         if (App._klimaat < 25) {
-            this.canvasOverlay.classList.remove("opacity_50");
-            this.canvasOverlay.classList.add("opacity_75");
+            this._canvasOverlay.classList.remove("opacity_50");
+            this._canvasOverlay.classList.add("opacity_75");
         }
         this.renderOverlayToggle();
         this.renderBuilderView();
@@ -208,9 +243,7 @@ class GameView extends BaseView {
             this.renderToolbarView();
             this.renderUIView();
             this.nameBox();
-            console.log(App._klimaat);
         }
-        console.log(this._selectedBuilding);
     }
     renderOldGrid() {
         this._xCoord = 0;
@@ -222,22 +255,10 @@ class GameView extends BaseView {
             this._canvasHelper.lineTo(this._xCoord, this._canvasHelper.getHeight());
         }
         this._tileInfo.forEach(tile => {
-            if (tile.imageSrc == "./assets/images/houses/house.png") {
-                this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/buildingEarth.png", tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart);
-            }
-            else {
-                this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart);
-            }
             this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart);
         });
     }
     renderSingleGrid(xStart, xEnd, yStart, yEnd, imageSrc) {
-        if (imageSrc == "./assets/images/houses/house.png") {
-            this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/buildingEarth.png", xStart, yStart, xEnd - xStart, yEnd - yStart);
-        }
-        else {
-            this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", xStart, yStart, xEnd - xStart, yEnd - yStart);
-        }
         this._canvasHelper.writeImageToCanvas(imageSrc, xStart, yStart, xEnd - xStart, yEnd - yStart);
     }
     renderNewGrid() {
@@ -276,24 +297,30 @@ class GameView extends BaseView {
                     App._wood += 10;
                 }
             }
-            if (this._curTool == "hammer") {
+            else if (this._curTool == "hammer") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_hammerChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                 if (!filter)
                     return;
-                if (filter.imageSrc == "./assets/images/houses/house.png" && App.ResourceCheck(0, 0, 4)) {
+                if ((filter == "./assets/images/houses/house1.png" ||
+                    filter == "./assets/images/houses/houseLevel2.png" ||
+                    filter == "./assets/images/houses/lumberjack.png" ||
+                    filter == "./assets/images/houses/Fabriek1.png" ||
+                    filter == "./assets/images/houses/miner.png" ||
+                    filter == "./assets/images/houses/powerPlant.png")
+                    && this.ResourceCheck(0, 0, 40)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
                     this.renderOldGrid();
                     App._klimaat += 1;
                 }
             }
-            if (this._curTool == "pickaxe") {
+            else if (this._curTool == "pickaxe" && this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/miner.png").length > 0) {
                 document.body.style.cursor = "url('assets/cursors/Diamond_PickaxeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                 if (!filter)
                     return;
-                if (filter.imageSrc == "./assets/images/earth_textures/mountain.png" && App.ResourceCheck(0, 0, 20)) {
+                if (filter.imageSrc == "./assets/images/earth_textures/mountain.png" && this.ResourceCheck(0, 0, 20)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
                     this.renderOldGrid();
@@ -301,17 +328,39 @@ class GameView extends BaseView {
                     App._stone += 10;
                 }
             }
-            if (this._curTool == "bucket") {
+            else if (this._curTool == "bucket") {
                 document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor_Blub.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                 if (!filter)
                     return;
-                if ((filter.imageSrc == "./assets/images/water/lake1.png" || filter.imageSrc == "./assets/images/water/lake2.png") && App.ResourceCheck(0, 0, 15)) {
+                if ((filter.imageSrc == "./assets/images/water/lake1.png" || filter.imageSrc == "./assets/images/water/lake2.png") && this.ResourceCheck(0, 0, 15)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
                     this.renderOldGrid();
                     App._klimaat += 1;
                 }
+            }
+            else if (this._curTool == "seed") {
+                document.body.style.cursor = "url('assets/cursors/Seed_Cursor.png'), auto";
+                let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
+                if (!filter)
+                    return;
+                if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && this.ResourceCheck(0, 0, 5)) {
+                    let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
+                    this._tileInfo[n].imageSrc = "./assets/images/foliage/tree.png";
+                    this.renderOldGrid();
+                    App._klimaat += 5;
+                }
+            }
+            else {
+                let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
+                if (filter.imageSrc == "./assets/images/houses/house1.png" && this.ResourceCheck(100, 200, 100)) {
+                    filter.imageSrc = "./assets/images/houses/houseLevel2.png";
+                }
+                else if (filter.imageSrc == "./assets/images/houses/Fabriek1.png" && this.ResourceCheck(150, 400, 150)) {
+                    filter.imageSrc = "./assets/images/houses/powerPlant.png";
+                }
+                this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, filter.imageSrc);
             }
         });
         window.addEventListener("mouseup", e => {
@@ -326,6 +375,9 @@ class GameView extends BaseView {
             }
             if (this._curTool == "bucket") {
                 document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor.png'), auto";
+            }
+            if (this._curTool == "seed") {
+                document.body.style.cursor = "url('assets/cursors/Seed_Cursor.png'), auto";
             }
         });
         this._gridsRendered = true;
@@ -359,7 +411,6 @@ class GameView extends BaseView {
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
                     if (this._mouseHelper.getClick().y > 80 && this._mouseHelper.getClick().y < 80 + 64) {
                         this._clickedBuilderView = true;
-                        this._renderOverlay = false;
                         this._selectedBuilding = "House";
                     }
                 }
@@ -376,7 +427,7 @@ class GameView extends BaseView {
                     }
                 }
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
-                    if (this._mouseHelper.getClick().y > 380 && this._mouseHelper.getClick().y < 380 + 64) {
+                    if (this._mouseHelper.getClick().y > 450 && this._mouseHelper.getClick().y < 450 + 64) {
                         this._clickedBuilderView = true;
                         this._selectedBuilding = "Mijnwerker";
                     }
@@ -393,27 +444,26 @@ class GameView extends BaseView {
                     this._canvasHelperOverlay.writeWarning("verwijder eerst wat hier staat");
                 else {
                     if (this._selectedBuilding == "House") {
-                        if (App.ResourceCheck(40, 0, 0)) {
-                            this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png";
+                        if (this.ResourceCheck(40, 0, 0)) {
+                            this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house1.png";
                         }
                     }
                     else if (this._selectedBuilding == "Fabriek") {
-                        if (App.ResourceCheck(40, 0, 0)) {
+                        if (this.ResourceCheck(0, 0, 100)) {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/Fabriek1.png";
                         }
                     }
                     else if (this._selectedBuilding == "Houthakker") {
-                        if (App.ResourceCheck(40, 0, 0)) {
+                        if (this.ResourceCheck(20, 0, 20)) {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/lumberjack.png";
                         }
                     }
                     else if (this._selectedBuilding == "Mijnwerker") {
-                        if (App.ResourceCheck(40, 0, 0)) {
+                        if (this.ResourceCheck(10, 20, 40)) {
                             this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/miner.png";
                         }
                     }
                 }
-                this._renderOverlay = true;
                 this.renderSingleGrid(this._tileInfo[releasedTile].xStart, this._tileInfo[releasedTile].xEnd, this._tileInfo[releasedTile].yStart, this._tileInfo[releasedTile].yEnd, this._tileInfo[releasedTile].imageSrc);
             }
         }
@@ -425,20 +475,24 @@ class GameView extends BaseView {
             this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.32, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "purple");
             this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.43, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "yellow");
             this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.54, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "blue");
+            this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() * 0.65, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18, "lightgreen");
             let DiamondAxe = new Image();
             let DiamondHammer = new Image();
             let DiamondPickaxe = new Image();
             let IronBucket = new Image();
+            let Seed = new Image();
             DiamondAxe.addEventListener('load', () => {
                 this._canvasHelperOverlay._context.drawImage(DiamondAxe, this._canvasHelperOverlay.getWidth() * 0.21, this._canvasHelperOverlay.getHeight() * 0.81, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.18);
                 this._canvasHelperOverlay._context.drawImage(DiamondHammer, this._canvasHelperOverlay.getWidth() * 0.3057, this._canvasHelperOverlay.getHeight() * 0.79, this._canvasHelperOverlay.getWidth() * 0.12, this._canvasHelperOverlay.getHeight() * 0.20);
                 this._canvasHelperOverlay._context.drawImage(DiamondPickaxe, this._canvasHelperOverlay.getWidth() * 0.43, this._canvasHelperOverlay.getHeight() * 0.83, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.15);
                 this._canvasHelperOverlay._context.drawImage(IronBucket, this._canvasHelperOverlay.getWidth() * 0.54, this._canvasHelperOverlay.getHeight() * 0.795, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.20);
+                this._canvasHelperOverlay._context.drawImage(Seed, this._canvasHelperOverlay.getWidth() * 0.65, this._canvasHelperOverlay.getHeight() * 0.795, this._canvasHelperOverlay.getWidth() * 0.1, this._canvasHelperOverlay.getHeight() * 0.20);
             });
             DiamondAxe.src = "./assets/images/toolBar_textures/Diamond_Axe.png";
             DiamondHammer.src = "./assets/images/toolBar_textures/Diamond_Hammer.png";
             DiamondPickaxe.src = "./assets/images/toolBar_textures/Diamond_Pickaxe.png";
             IronBucket.src = "./assets/images/toolBar_textures/Iron_Bucket.png";
+            Seed.src = "./assets/images/toolBar_textures/Oak_Sapling.png";
             this._renderedToolbar = true;
         }
         this.toolBarClick();
@@ -497,6 +551,19 @@ class GameView extends BaseView {
                     this._curTool = "bucket";
                 }
             }
+            if (this._mouseHelper.getClick().x >= this._canvasHelper.getWidth() * 0.65 && this._mouseHelper.getClick().x <= (this._canvasHelper.getWidth() * 0.65 + this._canvasHelper.getWidth() * 0.1)) {
+                if (this._mouseHelper.getClick().y >= this._canvasHelper.getHeight() * 0.81 && this._mouseHelper.getClick().y <= (this._canvasHelper.getHeight() * 0.81 + this._canvasHelper.getWidth() * 0.18)) {
+                    if (this._curTool == "seed") {
+                        this._clickedToolbar = true;
+                        this._curTool = undefined;
+                        document.body.style.cursor = 'default';
+                        return;
+                    }
+                    this._clickedToolbar = true;
+                    document.body.style.cursor = "url('assets/cursors/Seed_Cursor.png'), auto";
+                    this._curTool = "seed";
+                }
+            }
         }
         if (!this._mouseHelper.getClick().click)
             this._clickedToolbar = false;
@@ -517,6 +584,7 @@ class GameView extends BaseView {
             this._canvasHelperOverlay._context.fillText(`${App._stone}`, 340, 33);
             this._canvasHelperOverlay._context.fillText(`${App._gold}`, 530, 33);
             this._canvasHelperOverlay.loadingBar(-11, 53, 590, 15, App._klimaat, 100);
+            this._canvasHelperOverlay.writeTextToCanvas(App._klimaat.toString(), 20, 600, 20, "white", "left");
         });
         imageUIBackground.src = "./assets/images/backgrounds/UIBackground.png";
         imageWoodResource.src = "./assets/images/resources/woodResource.png";
@@ -535,18 +603,18 @@ class GameView extends BaseView {
         this._canvasHelperOverlay.writeTextToCanvas('GEBOUWEN', 48, (this._canvasHelperOverlay.getWidth() - this._viewWidth / 2), 40);
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine1, this._canvasHelperOverlay.getWidth(), _yPosLine1);
         this._canvasHelperOverlay.writeTextToCanvas('HUIS', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 100, undefined, 'left');
-        this._canvasHelperOverlay.writeTextToCanvas(`HOUT: 40`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 135, undefined, 'left');
-        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 80, 90, 64);
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 135, undefined, 'left');
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/house1.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 80, 90, 64);
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2);
         this._canvasHelperOverlay.writeTextToCanvas('FABRIEK', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 200, undefined, 'left');
-        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 235, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`GOUD:100`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 235, undefined, 'left');
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 180, 90, 64);
         this._canvasHelperOverlay.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 300, undefined, 'left');
-        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 335, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:20, GOUD: 20`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 335, undefined, 'left');
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 320, 90, 64);
         this._canvasHelperOverlay.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 400, undefined, 'left');
-        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left');
-        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 380, 90, 64);
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:10,STEEN::20,GOUD:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left');
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 450, 90, 64);
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2);
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2);
     }
@@ -569,34 +637,52 @@ class GameView extends BaseView {
             this._clickedOverlayToggle = false;
     }
     BuildingCheck() {
-        let Houses = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/house.png");
-        Houses.forEach(house => {
+        let Houses = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/house1.png");
+        let HousesLevel2 = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/houseLevel2.png");
+        let Fabrieken = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/Fabriek1.png");
+        let Powerplants = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/powerPlant.png");
+        let Houthakkers = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/lumberjack.png");
+        let Mijnwerkers = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/miner.png");
+        Houses.forEach(House => {
             App._gold += 1;
-            let canvas = document.getElementById("canvasOverlay");
-            canvas.style.backgroundImage = "../images/opacities/25percent.png";
+        });
+        Fabrieken.forEach(Fabriek => {
+            App._stone += 2;
+            App._klimaat -= 0.4;
+        });
+        Powerplants.forEach(Fabriek => {
+            App._stone += 5;
+            App._klimaat -= 2;
+        });
+        Houthakkers.forEach(Fabriek => {
+            App._wood += 1;
+            App._klimaat += 1;
+        });
+        Mijnwerkers.forEach(Fabriek => {
+            App._stone += 2;
+            App._klimaat -= 1;
+        });
+        HousesLevel2.forEach(Fabriek => {
+            App._gold += 3;
+            App._klimaat -= 3;
         });
     }
     nameBox() {
-        let nameBoxBackground = new Image();
-        nameBoxBackground.addEventListener('load', () => {
-            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth() / 2 - 215, 0);
-            this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
-        });
-        nameBoxBackground.src = "assets/images/backgrounds/nameBoxBackground.png";
+        this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
     }
     renderTutorial() {
-        this._canvasHelperOverlay.writeWarning(`Welkom ${App._name}`);
+        this._canvasWarning.writeWarning(`Welkom ${App._name}`);
         setTimeout(() => {
             this._renderedToolbar = false;
-            this._canvasHelperOverlay.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin");
-            setTimeout(() => { this._canvasHelperOverlay.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); this._renderedToolbar = false; setTimeout(() => { this._renderedToolbar = false; }, 3000); }, 3000);
+            this._canvasWarning.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin");
+            setTimeout(() => { this._canvasWarning.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); }, 3000);
         }, 3000);
     }
     checkPlacement(image) {
-        if (image == "./assets/images/houses/house.png" ||
+        if (image == "./assets/images/houses/house1.png" ||
+            image == "./assets/images/houses/houseLevel2.png" ||
             image == "./assets/images/houses/lumberjack.png" ||
-            image == "./assets/images/houses/fabriek1.png" ||
-            image == "./assets/images/houses/house.png" ||
+            image == "./assets/images/houses/Fabriek1.png" ||
             image == "./assets/images/earth_textures/mountain.png" ||
             image == "./assets/images/earth_textures/water.png" ||
             image == "./assets/images/foliage/tree.png" ||
