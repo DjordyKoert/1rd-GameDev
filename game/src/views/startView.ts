@@ -1,11 +1,11 @@
 class StartView extends BaseView {
     protected _canvasHelper: CanvasHelper
+    protected _homeView: HomeView
+
     private _rendered: boolean = false;
     private _clicked: boolean = false;
-    protected _homeView: HomeView
     private _buttonDimension: Array<number>
-
-    private _gameName: string = 'PLANEGER'
+    private _gameName: string = 'PLANET MANAGER'
 
     public constructor(canvas: HTMLCanvasElement) {
         super(canvas)
@@ -13,6 +13,9 @@ class StartView extends BaseView {
         this._buttonDimension = [225, 125]
     }
 
+    /**
+     * Renders the StartScreen
+     */
     public renderScreen() {
 
         if (!this._rendered) {
@@ -24,19 +27,27 @@ class StartView extends BaseView {
         // console.log("start")
     }
 
-
+    /**
+     * Draw the titlescreen
+     */
     public drawTitle() {
         this._canvasHelper.writeTextToCanvas(this._gameName, 125, (this._canvasHelper.getWidth() / 2) + 2, 102, "black")
         this._canvasHelper.writeTextToCanvas(this._gameName, 125, (this._canvasHelper.getWidth() / 2), 100, "white")
     }
 
-    public drawStartButton() {
+    /**
+     * Draws the Startbutton
+     */
+    private drawStartButton() {
         this._canvasHelper.createRect((this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2), (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2), this._buttonDimension[0] + 2, this._buttonDimension[1] + 2, "green")
         this._canvasHelper.createRect((this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2), (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2), this._buttonDimension[0], this._buttonDimension[1])
         this._canvasHelper.writeTextToCanvas("START SPEL", 30, this._canvasHelper.getWidth() / 2, this._canvasHelper.getHeight() / 2, "black")
     }
 
-    public buttonClick() {
+    /**
+     * Checks if you pressed in the Startbutton to advance to the homescreen
+     */
+    private buttonClick() {
         if (this._mouseHelper.getClick().click && !this._clicked) {
             // received a mouse down event
             this._clicked = true;
@@ -47,21 +58,24 @@ class StartView extends BaseView {
             this._clicked = false;
         }
 
-        // console.log(this._clicked);
+        // Looks if you pressed M1 @ the start button
         if (this._clicked) {
             if (this._mouseHelper.getClick().x > (this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) && this._mouseHelper.getClick().x < (this._canvasHelper.getWidth() / 2) + (this._buttonDimension[0] / 2)) {
                 if (this._mouseHelper.getClick().y > (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2) && this._mouseHelper.getClick().y < (this._canvasHelper.getHeight() / 2) + (this._buttonDimension[1] / 2)) {
-                    // console.log('pressed')
+
+                    // Startbutton Animation
                     this._canvasHelper.clear((this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) - 2, (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2) - 2, this._buttonDimension[0] + 4, this._buttonDimension[1] + 4)
                     this._canvasHelper.createRect((this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) + 2, (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2) + 2, this._buttonDimension[0], this._buttonDimension[1])
                     this._canvasHelper.writeTextToCanvas("START SPEL", 30, (this._canvasHelper.getWidth() / 2) + 2, (this._canvasHelper.getHeight() / 2) + 2, "black")
                 }
             }
         }
+        // Looks if you released M1 @ the start button
         if (!this._clicked) {
             if (this._mouseHelper.getClick().x > (this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) && this._mouseHelper.getClick().x < (this._canvasHelper.getWidth() / 2) + (this._buttonDimension[0] / 2)) {
                 if (this._mouseHelper.getClick().y > (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2) && this._mouseHelper.getClick().y < (this._canvasHelper.getHeight() / 2) + (this._buttonDimension[1] / 2)) {
-                    // console.log('released')
+                    
+                    // Clears screen and advance to the homescreen
                     this._canvasHelper.clear()
                     this._rendered = false
                     App._screen = "home"
