@@ -149,11 +149,7 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
-<<<<<<< HEAD
-                    App._klimaat -= 10
-=======
                     App._klimaat -= 5
->>>>>>> 2e01f30101e4115c59fe354806feedfabcc95101
                     App._wood += 10
                 }
 
@@ -188,11 +184,7 @@ class GameView extends BaseView {
                 document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor_Blub.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-<<<<<<< HEAD
-                if ((filter.imageSrc == "./assets/images/water/lake1.png" || "./assets/images/water/lake2.png") && App.ResourceCheck(0, 0, 15)) {
-=======
                 if ((filter.imageSrc == "./assets/images/water/lake1.png" || filter.imageSrc == "./assets/images/water/lake2.png") && App.ResourceCheck(0, 0, 15)) {
->>>>>>> 11b981f6540a8c517899ea0719db4e5788199122
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png"
                     this.renderOldGrid()
@@ -255,9 +247,7 @@ class GameView extends BaseView {
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
                     if (this._mouseHelper.getClick().y > 80 && this._mouseHelper.getClick().y < 80 + 64) {
                         this._clickedBuilderView = true
-<<<<<<< HEAD
                         this._renderOverlay = false
-=======
                         this._selectedBuilding = "House"
                     }
                 }
@@ -277,7 +267,6 @@ class GameView extends BaseView {
                     if (this._mouseHelper.getClick().y > 380 && this._mouseHelper.getClick().y < 380 + 64) {
                         this._clickedBuilderView = true
                         this._selectedBuilding = "Mijnwerker";
->>>>>>> 11b981f6540a8c517899ea0719db4e5788199122
                     }
                 }
             }

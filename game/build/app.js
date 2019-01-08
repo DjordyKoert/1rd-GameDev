@@ -83,7 +83,7 @@ class App {
         App._gold = 0;
         App._wood = 0;
         App._stone = 0;
-        App._screen = "home";
+        App._screen = "start";
     }
     gameLoop() {
         if (App._screen == "start")
@@ -156,6 +156,8 @@ class GameView extends BaseView {
     constructor(canvas) {
         super(canvas);
         this._screen = "gameScreen";
+        this.container = document.getElementById("container");
+        this.canvasOverlay = document.getElementById("canvasOverlay");
         this._renderedBuilderView = false;
         this._clickedBuilderView = false;
         this._folded = true;
@@ -181,16 +183,24 @@ class GameView extends BaseView {
         this._renderOverlay = true;
         this._curTool = "";
     }
-    renderOverlay() {
-        this.renderBuilderView();
-        this.renderToolbarView();
-        this.renderUIView();
-    }
     renderScreen() {
         if (!this._gridsRendered) {
             this.renderNewGrid();
             this.renderTutorial();
             setInterval(() => this.BuildingCheck(), 1000);
+        }
+        if (App._klimaat < 75 && App._klimaat > 50) {
+            this.canvasOverlay.classList.remove("opacity_50");
+            this.canvasOverlay.classList.add("opacity_25");
+        }
+        if (App._klimaat < 50 && App._klimaat > 25) {
+            this.canvasOverlay.classList.remove("opacity_75");
+            this.canvasOverlay.classList.remove("opacity_25");
+            this.canvasOverlay.classList.add("opacity_50");
+        }
+        if (App._klimaat < 25) {
+            this.canvasOverlay.classList.remove("opacity_50");
+            this.canvasOverlay.classList.add("opacity_75");
         }
         this.renderOverlayToggle();
         this.renderBuilderView();
@@ -198,7 +208,9 @@ class GameView extends BaseView {
             this.renderToolbarView();
             this.renderUIView();
             this.nameBox();
+            console.log(App._klimaat);
         }
+        console.log(this._selectedBuilding);
     }
     renderOldGrid() {
         this._xCoord = 0;
@@ -218,6 +230,15 @@ class GameView extends BaseView {
             }
             this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart);
         });
+    }
+    renderSingleGrid(xStart, xEnd, yStart, yEnd, imageSrc) {
+        if (imageSrc == "./assets/images/houses/house.png") {
+            this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/buildingEarth.png", xStart, yStart, xEnd - xStart, yEnd - yStart);
+        }
+        else {
+            this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", xStart, yStart, xEnd - xStart, yEnd - yStart);
+        }
+        this._canvasHelper.writeImageToCanvas(imageSrc, xStart, yStart, xEnd - xStart, yEnd - yStart);
     }
     renderNewGrid() {
         for (let line = 0; line < this._lines; line++) {
@@ -251,41 +272,41 @@ class GameView extends BaseView {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
                     this.renderOldGrid();
-                    App._klimaat -= 1;
+                    App._klimaat -= 5;
                     App._wood += 10;
                 }
             }
-            if (this._curTool == "hammer" && App.ResourceCheck(0, 0, 4)) {
+            if (this._curTool == "hammer") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_hammerChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                 if (!filter)
                     return;
-                if (filter.imageSrc == "./assets/images/houses/house.png") {
+                if (filter.imageSrc == "./assets/images/houses/house.png" && App.ResourceCheck(0, 0, 4)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
                     this.renderOldGrid();
                     App._klimaat += 1;
                 }
             }
-            if (this._curTool == "pickaxe" && App.ResourceCheck(0, 0, 20)) {
+            if (this._curTool == "pickaxe") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_PickaxeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                 if (!filter)
                     return;
-                if (filter.imageSrc == "./assets/images/earth_textures/mountain.png") {
+                if (filter.imageSrc == "./assets/images/earth_textures/mountain.png" && App.ResourceCheck(0, 0, 20)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
                     this.renderOldGrid();
-                    App._klimaat -= 1;
-                    App._stone += 5;
+                    App._klimaat -= 2;
+                    App._stone += 10;
                 }
             }
-            if (this._curTool == "bucket" && App.ResourceCheck(0, 0, 15)) {
+            if (this._curTool == "bucket") {
                 document.body.style.cursor = "url('assets/cursors/Iron_Bucket_Cursor_Blub.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                 if (!filter)
                     return;
-                if (filter.imageSrc == "./assets/images/water/lake1.png" || "./assets/images/water/lake2.png") {
+                if ((filter.imageSrc == "./assets/images/water/lake1.png" || filter.imageSrc == "./assets/images/water/lake2.png") && App.ResourceCheck(0, 0, 15)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
                     this.renderOldGrid();
@@ -323,7 +344,7 @@ class GameView extends BaseView {
             }
             if (!this._mouseHelper.getClick().click && this._clickedBuilderView) {
                 this._clickedBuilderView = false;
-                this._canvasHelper.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight());
+                this._canvasHelperOverlay.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight());
                 this._folded = false;
                 this._renderedBuilderView = false;
             }
@@ -338,26 +359,62 @@ class GameView extends BaseView {
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
                     if (this._mouseHelper.getClick().y > 80 && this._mouseHelper.getClick().y < 80 + 64) {
                         this._clickedBuilderView = true;
+                        this._renderOverlay = false;
+                        this._selectedBuilding = "House";
+                    }
+                }
+                if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
+                    if (this._mouseHelper.getClick().y > 180 && this._mouseHelper.getClick().y < 180 + 64) {
+                        this._clickedBuilderView = true;
+                        this._selectedBuilding = "Fabriek";
+                    }
+                }
+                if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
+                    if (this._mouseHelper.getClick().y > 280 && this._mouseHelper.getClick().y < 280 + 64) {
+                        this._clickedBuilderView = true;
+                        this._selectedBuilding = "Houthakker";
+                    }
+                }
+                if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
+                    if (this._mouseHelper.getClick().y > 380 && this._mouseHelper.getClick().y < 380 + 64) {
+                        this._clickedBuilderView = true;
+                        this._selectedBuilding = "Mijnwerker";
                     }
                 }
             }
             if (!this._mouseHelper.getClick().click && this._clickedBuilderView) {
                 this._clickedBuilderView = false;
-                this._canvasHelper.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight());
+                this._canvasHelperOverlay.clear(this._canvasHelper.getWidth() - this._viewWidth, 0, this._canvasHelper.getWidth(), this._canvasHelper.getHeight());
                 this._folded = true;
                 this._renderedBuilderView = false;
+                console.log('Image Released');
                 let releasedTile = this._tileInfo.findIndex(x => x.xStart <= this._mouseHelper.getClick().x && x.xEnd >= this._mouseHelper.getClick().x && x.yStart <= this._mouseHelper.getClick().y && x.yEnd >= this._mouseHelper.getClick().y);
-                if (this._tileInfo[releasedTile].imageSrc == "./assets/images/foliage/tree.png" ||
-                    this._tileInfo[releasedTile].imageSrc == "./assets/images/earth_textures/mountain.png" ||
-                    this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake1.png" ||
-                    this._tileInfo[releasedTile].imageSrc == "./assets/images/water/lake2.png")
-                    this._canvasHelper.writeWarning("verwijder eerst wat hier staat");
+                if (!this.checkPlacement(this._tileInfo[releasedTile].imageSrc))
+                    this._canvasHelperOverlay.writeWarning("verwijder eerst wat hier staat");
                 else {
-                    if (App.ResourceCheck(40, 0, 0)) {
-                        this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png";
+                    if (this._selectedBuilding == "House") {
+                        if (App.ResourceCheck(40, 0, 0)) {
+                            this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/house.png";
+                        }
+                    }
+                    else if (this._selectedBuilding == "Fabriek") {
+                        if (App.ResourceCheck(40, 0, 0)) {
+                            this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/Fabriek1.png";
+                        }
+                    }
+                    else if (this._selectedBuilding == "Houthakker") {
+                        if (App.ResourceCheck(40, 0, 0)) {
+                            this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/lumberjack.png";
+                        }
+                    }
+                    else if (this._selectedBuilding == "Mijnwerker") {
+                        if (App.ResourceCheck(40, 0, 0)) {
+                            this._tileInfo[releasedTile].imageSrc = "./assets/images/houses/miner.png";
+                        }
                     }
                 }
-                this.renderOldGrid();
+                this._renderOverlay = true;
+                this.renderSingleGrid(this._tileInfo[releasedTile].xStart, this._tileInfo[releasedTile].xEnd, this._tileInfo[releasedTile].yStart, this._tileInfo[releasedTile].yEnd, this._tileInfo[releasedTile].imageSrc);
             }
         }
     }
@@ -467,31 +524,31 @@ class GameView extends BaseView {
         imageGoldResource.src = "./assets/images/resources/goldResource.png";
     }
     renderFoldedBuilderView() {
-        this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green');
-        this._canvasHelper.writeTextToCanvas('<--', 20, this._canvasHelper.getWidth() - 10, 10, 'black', 'right');
+        this._canvasHelperOverlay.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green');
+        this._canvasHelperOverlay.writeTextToCanvas('<--', 20, this._canvasHelperOverlay.getWidth() - 10, 10, 'black', 'right');
     }
     renderUnFoldedBuilderView() {
         let _yPosLine1 = 70;
         let _yPosLine2 = 155;
         let _yposLine3 = 250;
-        this._canvasHelper.createRect(this._canvasHelper.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelper.getHeight(), 'green');
-        this._canvasHelper.writeTextToCanvas('GEBOUWEN', 48, (this._canvasHelper.getWidth() - this._viewWidth / 2), 40);
-        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine1, this._canvasHelper.getWidth(), _yPosLine1);
-        this._canvasHelper.writeTextToCanvas('HUIS', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 100, undefined, 'left');
-        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 135, undefined, 'left');
-        this._canvasHelper.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 80, 90, 64);
-        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2);
-        this._canvasHelper.writeTextToCanvas('FABRIEK', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 200, undefined, 'left');
-        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 235, undefined, 'left');
-        this._canvasHelper.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 180, 90, 64);
-        this._canvasHelper.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 300, undefined, 'left');
-        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 335, undefined, 'left');
-        this._canvasHelper.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 320, 90, 64);
-        this._canvasHelper.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelper.getWidth() - this._viewWidth + 10), 400, undefined, 'left');
-        this._canvasHelper.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelper.getWidth() - this._viewWidth + 10), 435, undefined, 'left');
-        this._canvasHelper.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelper.getWidth() - this._viewWidth + 190), 380, 90, 64);
-        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2);
-        this._canvasHelper.makeLine(this._canvasHelper.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelper.getWidth(), _yPosLine2);
+        this._canvasHelperOverlay.createRect(this._canvasHelperOverlay.getWidth() - this._viewWidth, 0, this._viewWidth, this._canvasHelperOverlay.getHeight(), 'green');
+        this._canvasHelperOverlay.writeTextToCanvas('GEBOUWEN', 48, (this._canvasHelperOverlay.getWidth() - this._viewWidth / 2), 40);
+        this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine1, this._canvasHelperOverlay.getWidth(), _yPosLine1);
+        this._canvasHelperOverlay.writeTextToCanvas('HUIS', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 100, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT: 40`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 135, undefined, 'left');
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/house.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 80, 90, 64);
+        this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2);
+        this._canvasHelperOverlay.writeTextToCanvas('FABRIEK', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 200, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 235, undefined, 'left');
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 180, 90, 64);
+        this._canvasHelperOverlay.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 300, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 335, undefined, 'left');
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 320, 90, 64);
+        this._canvasHelperOverlay.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 400, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`GOUD: 50`, 24, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left');
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 380, 90, 64);
+        this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2);
+        this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2);
     }
     renderOverlayToggle() {
         this._canvasHelperOverlay.writeImageToCanvas("./assets/images/toolBar_textures/eye.png", 0, this._canvasHelper.getHeight() - 40, 40, 40);
@@ -515,76 +572,85 @@ class GameView extends BaseView {
         let Houses = this._tileInfo.filter(x => x.imageSrc == "./assets/images/houses/house.png");
         Houses.forEach(house => {
             App._gold += 1;
+            let canvas = document.getElementById("canvasOverlay");
+            canvas.style.backgroundImage = "../images/opacities/25percent.png";
         });
     }
     nameBox() {
         let nameBoxBackground = new Image();
         nameBoxBackground.addEventListener('load', () => {
-            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth() / 2 - 220, 0);
+            this._canvasHelperOverlay._context.drawImage(nameBoxBackground, this._canvasHelperOverlay.getWidth() / 2 - 215, 0);
             this._canvasHelperOverlay.writeTextToCanvas(App._name, 50, this._canvasHelperOverlay.getWidth() / 2, 30);
         });
         nameBoxBackground.src = "assets/images/backgrounds/nameBoxBackground.png";
     }
     renderTutorial() {
-        this._canvasHelperOverlay.writeWarning(`Welkom {App._name}`);
+        this._canvasHelperOverlay.writeWarning(`Welkom ${App._name}`);
         setTimeout(() => {
             this._renderedToolbar = false;
             this._canvasHelperOverlay.writeWarning("Om je toolbar en resourcebalk aan/uit te zetten klik je op het oogje links onderin");
             setTimeout(() => { this._canvasHelperOverlay.writeWarning("Om gebouwen te plaatsen moet je ze SLEPEN"); this._renderedToolbar = false; setTimeout(() => { this._renderedToolbar = false; }, 3000); }, 3000);
         }, 3000);
     }
+    checkPlacement(image) {
+        if (image == "./assets/images/houses/house.png" ||
+            image == "./assets/images/houses/lumberjack.png" ||
+            image == "./assets/images/houses/fabriek1.png" ||
+            image == "./assets/images/houses/house.png" ||
+            image == "./assets/images/earth_textures/mountain.png" ||
+            image == "./assets/images/earth_textures/water.png" ||
+            image == "./assets/images/foliage/tree.png" ||
+            image == "./assets/images/houses/miner.png" ||
+            image == "./assets/images/houses/windMill.png" ||
+            image == "./assets/images/water/lake1.png" ||
+            image == "./assets/images/water/lake2.png" ||
+            image == "./assets/images/houses/solarPanels.png")
+            return false;
+        else
+            return true;
+    }
 }
 class HomeView extends BaseView {
     constructor(canvas) {
         super(canvas);
         this._screen = "homeScreen";
-        this._rendered = false;
-        this.MouseHelper = new MouseHelper();
+        this._mouseHelper = new MouseHelper();
         this._gameView = new GameView(canvas);
-        this.clicked = false;
-        this.planetList = [
-            "./assets/images/temporary_textures/homeScreen_planet2.png",
-        ];
-        this.planetXCoords = [
-            this._canvasHelper.getWidth() / 2 - 250,
-        ];
-        this.planetYCoords = [
-            200
-        ];
+        this._clicked = false;
+        this._planetImageDimensions = [250, 250];
+        this._planetList = "./assets/images/temporary_textures/homeScreen_planet2.png",
+            this._planetXcoord = (this._canvasHelper.getWidth() / 2) - (this._planetImageDimensions[0] / 2);
+        this._planetYcoord = (this._canvasHelper.getHeight() / 2) - (this._planetImageDimensions[1] / 2);
     }
     renderScreen() {
-        this.drawPlanets();
-        this.drawBackButton();
+        if (!this._rendered) {
+            this.drawPlanets();
+            this.drawBackButton();
+        }
+        this._rendered = true;
         this.screenClick();
     }
     drawPlanets() {
-        const maxPlanets = 3;
-        for (let i = 0; i < maxPlanets; i++) {
-            this._canvasHelper.writeImageToCanvas(this.planetList[i], this.planetXCoords[i], this.planetYCoords[i], 500, 500);
-            this._canvasHelper.writeTextToCanvas("new world", 50, this.planetXCoords[i] + 250, this.planetYCoords[i] + 540);
-        }
+        this._canvasHelper.writeImageToCanvas(this._planetList, this._planetXcoord, this._planetYcoord, this._planetImageDimensions[0], this._planetImageDimensions[1]);
+        this._canvasHelper.writeTextToCanvas("Nieuwe Wereld", 50, this._planetXcoord + 250, this._planetYcoord + 540);
     }
     drawBackButton() {
+        this._canvasHelper.createRect(0, 0, 152, 102, 'green');
         this._canvasHelper.createRect(0, 0, 150, 100);
-        this._canvasHelper.writeTextToCanvas("BACK", 30, 75, 50, "black");
-        if (this.MouseHelper.getClick().x > 0 && this.MouseHelper.getClick().x < 150) {
-            if (this.MouseHelper.getClick().y > 0 && this.MouseHelper.getClick().y < 100) {
-                this._canvasHelper.clear();
-            }
-        }
+        this._canvasHelper.writeTextToCanvas("TERUG", 30, 75, 50, "black");
     }
     screenClick() {
-        if (this.MouseHelper.getClick().click && !this.clicked) {
-            this.clicked = true;
+        if (this._mouseHelper.getClick().click && !this._clicked) {
+            this._clicked = true;
         }
-        if (!this.MouseHelper.getClick().click && this.clicked) {
-            this.clicked = false;
-            for (let i = 0; i < this.planetList.length; i++) {
-                if (this.MouseHelper.getClick().x > this.planetXCoords[i] && this.MouseHelper.getClick().x < this.planetXCoords[i] + 500) {
-                    if (this.MouseHelper.getClick().y > this.planetYCoords[i] && this.MouseHelper.getClick().y < this.planetYCoords[i] + 500) {
-                        let person = prompt("Please enter your name", "");
+        if (!this._mouseHelper.getClick().click && this._clicked) {
+            this._clicked = false;
+            if (!this._clicked) {
+                if (this._mouseHelper.getClick().x > this._planetXcoord && this._mouseHelper.getClick().x < this._planetXcoord + 500) {
+                    if (this._mouseHelper.getClick().y > this._planetYcoord && this._mouseHelper.getClick().y < this._planetYcoord + 500) {
+                        let person = prompt("Voer je naam in", "");
                         if (person == null || person == "") {
-                            window.alert("voer eerst een naam in");
+                            window.alert("voer eerst een naam in (maximaal 10 letters)");
                         }
                         else {
                             if (person.length > 10) {
@@ -599,6 +665,23 @@ class HomeView extends BaseView {
                 }
             }
         }
+        if (this._clicked) {
+            if (this._mouseHelper.getClick().x > 0 && this._mouseHelper.getClick().x < 150) {
+                if (this._mouseHelper.getClick().y > 0 && this._mouseHelper.getClick().y < 100) {
+                    this._canvasHelper.createRect(0, 0, 152, 102);
+                    this._canvasHelper.writeTextToCanvas("TERUG", 30, 77, 52, "black");
+                }
+            }
+        }
+        if (!this._clicked) {
+            if (this._mouseHelper.getClick().x > 0 && this._mouseHelper.getClick().x < 150) {
+                if (this._mouseHelper.getClick().y > 0 && this._mouseHelper.getClick().y < 100) {
+                    this._canvasHelper.clear();
+                    this._rendered = false;
+                    App._screen = 'start';
+                }
+            }
+        }
     }
 }
 class StartView extends BaseView {
@@ -606,19 +689,25 @@ class StartView extends BaseView {
         super(canvas);
         this._rendered = false;
         this._clicked = false;
+        this._gameName = 'PLANET MANAGER';
         this._homeView = new HomeView(canvas);
+        this._buttonDimension = [225, 125];
     }
     renderScreen() {
-        this.drawTitle();
-        this.drawStartButton();
+        if (!this._rendered) {
+            this.drawTitle();
+            this.drawStartButton();
+        }
+        this._rendered = true;
         this.buttonClick();
-        console.log("start");
     }
     drawTitle() {
-        this._canvasHelper.writeTextToCanvas("SAMPLE TEXT", 50, (this._canvasHelper.getWidth() / 2), 100, "white");
+        this._canvasHelper.writeTextToCanvas(this._gameName, 125, (this._canvasHelper.getWidth() / 2) + 2, 102, "black");
+        this._canvasHelper.writeTextToCanvas(this._gameName, 125, (this._canvasHelper.getWidth() / 2), 100, "white");
     }
     drawStartButton() {
-        this._canvasHelper.createRect((this._canvasHelper.getWidth() / 2) - 150, (this._canvasHelper.getHeight() / 2) - 100, 300, 200);
+        this._canvasHelper.createRect((this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2), (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2), this._buttonDimension[0] + 2, this._buttonDimension[1] + 2, "green");
+        this._canvasHelper.createRect((this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2), (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2), this._buttonDimension[0], this._buttonDimension[1]);
         this._canvasHelper.writeTextToCanvas("START SPEL", 30, this._canvasHelper.getWidth() / 2, this._canvasHelper.getHeight() / 2, "black");
     }
     buttonClick() {
@@ -627,10 +716,21 @@ class StartView extends BaseView {
         }
         if (!this._mouseHelper.getClick().click && this._clicked) {
             this._clicked = false;
-            console.log(this._clicked);
-            if (this._mouseHelper.getClick().x > (this._canvasHelper.getWidth() / 2) - 150 && this._mouseHelper.getClick().x < (this._canvasHelper.getWidth() / 2) + 150) {
-                if (this._mouseHelper.getClick().y > (this._canvasHelper.getHeight() / 2) - 100 && this._mouseHelper.getClick().y < (this._canvasHelper.getHeight() / 2) + 100) {
+        }
+        if (this._clicked) {
+            if (this._mouseHelper.getClick().x > (this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) && this._mouseHelper.getClick().x < (this._canvasHelper.getWidth() / 2) + (this._buttonDimension[0] / 2)) {
+                if (this._mouseHelper.getClick().y > (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2) && this._mouseHelper.getClick().y < (this._canvasHelper.getHeight() / 2) + (this._buttonDimension[1] / 2)) {
+                    this._canvasHelper.clear((this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) - 2, (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2) - 2, this._buttonDimension[0] + 4, this._buttonDimension[1] + 4);
+                    this._canvasHelper.createRect((this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) + 2, (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2) + 2, this._buttonDimension[0], this._buttonDimension[1]);
+                    this._canvasHelper.writeTextToCanvas("START SPEL", 30, (this._canvasHelper.getWidth() / 2) + 2, (this._canvasHelper.getHeight() / 2) + 2, "black");
+                }
+            }
+        }
+        if (!this._clicked) {
+            if (this._mouseHelper.getClick().x > (this._canvasHelper.getWidth() / 2) - (this._buttonDimension[0] / 2) && this._mouseHelper.getClick().x < (this._canvasHelper.getWidth() / 2) + (this._buttonDimension[0] / 2)) {
+                if (this._mouseHelper.getClick().y > (this._canvasHelper.getHeight() / 2) - (this._buttonDimension[1] / 2) && this._mouseHelper.getClick().y < (this._canvasHelper.getHeight() / 2) + (this._buttonDimension[1] / 2)) {
                     this._canvasHelper.clear();
+                    this._rendered = false;
                     App._screen = "home";
                 }
             }
