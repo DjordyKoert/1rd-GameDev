@@ -9,9 +9,13 @@ body {
 #container {
     position: relative;
   }
-  #container canvas, #canvasOverlay {
+  #container canvas, #canvasOverlay, #canvasWarning {
     position: absolute;
   }
+  #canvasWarning {
+      z-index: 3;
+  }
+  
 
 .opacity_75{
     background-image: url("../images/opacities/75percent.png") 

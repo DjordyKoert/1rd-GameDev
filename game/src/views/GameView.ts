@@ -10,8 +10,8 @@ class GameView extends BaseView {
     private _tileInfo: Array<any>
     protected _homeView: HomeView
     private _renderOverlay: boolean
-    private container = document.getElementById("container")
-    private canvasOverlay = document.getElementById("canvasOverlay")
+    private _canvasOverlay = document.getElementById("canvasOverlay")
+    private _canvasOverlay = document.getElementById("canvasWarning")
     //BuilderView
     private _viewWidth: number
     private _renderedBuilderView: boolean = false
@@ -29,7 +29,7 @@ class GameView extends BaseView {
         this._mouseHelper = new MouseHelper()
         this._gridsRendered = false
         this._xCoord = this._yCoord = 0
-        this._lines = 18
+        this._lines = 20
         //Check screen size to make grids fit
         if (this._canvasHelper.getWidth() > this._canvasHelper.getHeight()) {
             this._sqSize = this._canvasHelper.getWidth() / this._lines
