@@ -73,7 +73,7 @@ class HomeView extends BaseView {
                         // Pop-up promt asking for the Players Name
                         let person = prompt("Voer je naam in", "");
                         if (person == null || person == "") {
-                            window.alert("Voer een naam in")
+                            window.alert("voer eerst een naam in (maximaal 10 letters)")
                         }
                         else {
                             if (person.length > 10) {
