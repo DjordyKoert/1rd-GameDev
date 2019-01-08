@@ -58,22 +58,22 @@ class GameView extends BaseView {
 
         
 
-        if(App._klimaat < 75 && App._klimaat > 50){
-            this.canvasOverlay.classList.remove("opacity_50")
-            this.canvasOverlay.classList.add("opacity_25")
-        }
+        // if(App._klimaat < 75 && App._klimaat > 50){
+        //     this.canvasOverlay.classList.remove("opacity_50")
+        //     this.canvasOverlay.classList.add("opacity_25")
+        // }
 
-        if(App._klimaat < 50 && App._klimaat > 25 ){
-            this.canvasOverlay.classList.remove("opacity_75")
-            this.canvasOverlay.classList.remove("opacity_25")
-            this.canvasOverlay.classList.add("opacity_50")
-            this._canvasHelper.writeWarning("Je klimaat zit op 50%")
-        }
+        // if(App._klimaat < 50 && App._klimaat > 25 ){
+        //     this.canvasOverlay.classList.remove("opacity_75")
+        //     this.canvasOverlay.classList.remove("opacity_25")
+        //     this.canvasOverlay.classList.add("opacity_50")
+        //     this._canvasHelper.writeWarning("Je klimaat zit op 50%")
+        // }
 
-        if (App._klimaat < 25) {
-            this.canvasOverlay.classList.remove("opacity_50")
-            this.canvasOverlay.classList.add("opacity_75")
-        }
+        // if (App._klimaat < 25) {
+        //     this.canvasOverlay.classList.remove("opacity_50")
+        //     this.canvasOverlay.classList.add("opacity_75")
+        // }
 
         this.renderOverlayToggle()
         this.renderBuilderView()
@@ -534,11 +534,11 @@ class GameView extends BaseView {
         })
         Fabrieken.forEach(Fabriek => {
             App._stone += 2
-            App._klimaat -= 2
+            App._klimaat -= 0.4
         });
         Powerplants.forEach(Fabriek => {
             App._stone += 5
-            App._klimaat -= 5
+            App._klimaat -= 2
         });
         Houthakkers.forEach(Fabriek => {
             App._wood += 1
