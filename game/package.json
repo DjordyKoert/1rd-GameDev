@@ -1,0 +1,22 @@
+{
+  "name": "1rd_game-dev",
+  "version": "1.0.0",
+  "description": "game",
+  "main": "app.js",
+  "scripts": {
+    "test": "we are live!",
+    "tsc": "tsc",
+    "watch": "tsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DjordyKoert/1rd-GameDev.git"
+  },
+  "author": "1rd_game_dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DjordyKoert/1rd-GameDev/issues"
+  },
+  "homepage": "https://github.com/DjordyKoert/1rd-GameDev#readme",
+  "dependencies": {}
+}
