@@ -10,6 +10,8 @@ class GameView extends BaseView {
     private _tileInfo: Array<any>
     protected _homeView: HomeView
     private _renderOverlay: boolean
+    private container = document.getElementById("container")
+    private canvasOverlay = document.getElementById("canvasOverlay")
     //BuilderView
     private _viewWidth: number
     private _renderedBuilderView: boolean = false
@@ -54,24 +56,22 @@ class GameView extends BaseView {
             setInterval(() => this.BuildingCheck(), 1000)
         }
 
+        if(App._klimaat < 75 && App._klimaat > 50){
+            this.canvasOverlay.classList.remove("opacity_50")
+            this.canvasOverlay.classList.add("opacity_25")
+        }
 
+        if(App._klimaat < 50 && App._klimaat > 25 ){
+            this.canvasOverlay.classList.remove("opacity_75")
+            this.canvasOverlay.classList.remove("opacity_25")
+            this.canvasOverlay.classList.add("opacity_50")
+        }
 
-        // if(App._klimaat < 75 && App._klimaat > 50){
-        //     this.canvasOverlay.classList.remove("opacity_50")
-        //     this.canvasOverlay.classList.add("opacity_25")
-        // }
+        if (App._klimaat < 25) {
+            this.canvasOverlay.classList.remove("opacity_50")
+            this.canvasOverlay.classList.add("opacity_75")
+        }
 
-        // if(App._klimaat < 50 && App._klimaat > 25 ){
-        //     this.canvasOverlay.classList.remove("opacity_75")
-        //     this.canvasOverlay.classList.remove("opacity_25")
-        //     this.canvasOverlay.classList.add("opacity_50")
-        //     this._canvasHelper.writeWarning("Je klimaat zit op 50%")
-        // }
-
-        // if (App._klimaat < 25) {
-        //     this.canvasOverlay.classList.remove("opacity_50")
-        //     this.canvasOverlay.classList.add("opacity_75")
-        // }
 
         this.renderOverlayToggle()
         this.renderBuilderView()
@@ -280,7 +280,7 @@ class GameView extends BaseView {
                     }
                 }
                 if (this._mouseHelper.getClick().x > this._canvasHelper.getWidth() - this._viewWidth + 190 && this._mouseHelper.getClick().x < this._canvasHelper.getWidth() - this._viewWidth + 190 + 90) {
-                    if (this._mouseHelper.getClick().y > 380 && this._mouseHelper.getClick().y < 380 + 64) {
+                    if (this._mouseHelper.getClick().y > 450 && this._mouseHelper.getClick().y < 450 + 64) {
                         this._clickedBuilderView = true;
                         this._selectedBuilding = "Mijnwerker";
                     }
@@ -490,8 +490,8 @@ class GameView extends BaseView {
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 320, 90, 64)
 
         this._canvasHelperOverlay.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 400, undefined, 'left')
-        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:10,STONE:20,GOLD:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 445, undefined, 'left')
-        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 380, 90, 64)
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:10,STONE:20,GOLD:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left')
+        this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 450, 90, 64)
 
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2)
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2)
