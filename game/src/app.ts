@@ -16,7 +16,7 @@ class App {
         this._startView = new StartView(canvasElem)
         this._gameView = new GameView(canvasElem)
         this._gameOverView = new GameOverView(canvasElem)
-        App._klimaat = 1
+        App._klimaat = 5
         App._gold = 0
         App._wood = 0
         App._stone = 0
@@ -40,7 +40,6 @@ class App {
 
             }
         }
-
     }
 }
 
