@@ -82,11 +82,17 @@ class App {
         this._startView = new StartView(canvasElem);
         this._gameView = new GameView(canvasElem);
         this._gameOverView = new GameOverView(canvasElem);
-        App._klimaat = 1;
+        App._klimaat = 5;
         App._gold = 0;
         App._wood = 0;
         App._stone = 0;
         App._screen = "start";
+        App._timer = 0;
+        setInterval(() => this.timer(), 1000);
+    }
+    timer() {
+        App._timer += 1;
+        console.log(App._timer);
     }
     gameLoop() {
         if (App._screen == "start")
@@ -179,6 +185,8 @@ class GameOverView extends BaseView {
         this._buttonDimension = [225, 125];
     }
     renderScreen() {
+        var total = (App._gold + App._stone + App._wood);
+        var totalScore = ((App._gold + App._stone + App._wood) / App._timer);
         if (!this._gameOver) {
             this._canvasHelper.clear();
             this._canvasHelperOverlay.clear();
@@ -187,8 +195,11 @@ class GameOverView extends BaseView {
             this._canvasHelper.writeTextToCanvas(`Je eind score:`, 50, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 60, "white", "center");
             this._canvasHelper.writeTextToCanvas(`Goud: ${App._gold}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 120, "white", "center");
             this._canvasHelper.writeTextToCanvas(`Steen: ${App._stone}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 180, "white", "center");
-            this._canvasHelper.writeTextToCanvas(`Hout: ${App._wood}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 230, "white", "center");
-            this._canvasHelper.writeTextToCanvas(`Klik op f5 om te restarten`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 300, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Hout: ${App._wood}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 240, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Totaal: ${total} `, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 300, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`tijd: ${App._timer} seconden `, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 360, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Score = totaal / tijd: ${totalScore.toFixed(1)} `, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 420, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Klik op f5 om te restarten`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 480, "white", "center");
             this._gameOver = true;
         }
     }
@@ -290,6 +301,8 @@ class GameView extends BaseView {
             App._klimaat += 1;
         });
         window.addEventListener("mousedown", e => {
+            if (App._screen != "game")
+                return;
             if (this._curTool == "axe") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_axeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
@@ -354,7 +367,7 @@ class GameView extends BaseView {
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                 if (!filter)
                     return;
-                if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && this.ResourceCheck(0, 0, 5)) {
+                if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && this.ResourceCheck(0, 0, 30)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/foliage/tree.png";
                     this.renderOldGrid();
@@ -593,7 +606,7 @@ class GameView extends BaseView {
             this._canvasHelperOverlay._context.fillText(`${App._stone}`, 340, 33);
             this._canvasHelperOverlay._context.fillText(`${App._gold}`, 530, 33);
             this._canvasHelperOverlay.loadingBar(-11, 53, 590, 15, App._klimaat, 100);
-            this._canvasHelperOverlay.writeTextToCanvas(App._klimaat.toString(), 20, 600, 20, "white", "left");
+            this._canvasHelperOverlay.writeTextToCanvas(App._klimaat.toFixed(1), 20, 580, 20, "white", "left");
         });
         imageUIBackground.src = "./assets/images/backgrounds/UIBackground.png";
         imageWoodResource.src = "./assets/images/resources/woodResource.png";

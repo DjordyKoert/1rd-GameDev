@@ -32,7 +32,7 @@ class GameOverView extends BaseView {
             this._canvasHelper.writeTextToCanvas(`Hout: ${App._wood}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y /5 + 240, "white", "center")
             this._canvasHelper.writeTextToCanvas(`Totaal: ${total} `, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y /5 + 300, "white", "center")
             this._canvasHelper.writeTextToCanvas(`tijd: ${App._timer} seconden `, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y /5 + 360, "white", "center")
-            this._canvasHelper.writeTextToCanvas(`Score = totaal / tijd: ${totalScore} `, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y /5 + 420, "white", "center")
+            this._canvasHelper.writeTextToCanvas(`Score = totaal / tijd: ${totalScore.toFixed(1)} `, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y /5 + 420, "white", "center")
             this._canvasHelper.writeTextToCanvas(`Klik op f5 om te restarten`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y /5 + 480, "white", "center")
             this._gameOver = true
         }
