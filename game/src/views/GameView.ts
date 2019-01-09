@@ -5,6 +5,7 @@ class GameView extends BaseView {
     protected _yCoord: number
     protected _lines: number
     protected _sqSize: number
+
     private _gridsRendered: boolean
     private _tileImages: Array<string>
     private _tileInfo: Array<any>
@@ -30,6 +31,7 @@ class GameView extends BaseView {
         this._gridsRendered = false
         this._xCoord = this._yCoord = 0
         this._lines = 15
+
         //Check screen size to make grids fit
         if (this._canvasHelper.getWidth() > this._canvasHelper.getHeight()) {
             this._sqSize = this._canvasHelper.getWidth() / this._lines
@@ -49,6 +51,7 @@ class GameView extends BaseView {
         this._renderOverlay = true
         this._curTool = ""
     }
+
     public renderScreen(): void {
         if (!this._gridsRendered) {
             this.renderNewGrid()
@@ -72,17 +75,19 @@ class GameView extends BaseView {
             this._canvasOverlay.classList.add("opacity_75")
         }
 
-
-
         this.renderOverlayToggle()
         this.gameInfo()
         this.renderBuilderView()
+
         if (this._renderOverlay) {
             this.renderToolbarView()
             this.renderUIView()
             this.nameBox()
+
         }
     }
+
+    
     public renderOldGrid(): void {
         this._xCoord = 0
         this._yCoord = 0

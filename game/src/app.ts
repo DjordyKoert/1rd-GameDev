@@ -10,6 +10,7 @@ class App {
     public static _klimaat: number
     public static _screen: string
     public static _name: string
+    public static _timer: number
 
     constructor(canvasElem: HTMLCanvasElement) {
         this._homeView = new HomeView(canvasElem)
@@ -21,6 +22,14 @@ class App {
         App._wood = 0
         App._stone = 0
         App._screen = "start"
+        App._timer = 0
+
+        setInterval(() => this.timer(), 1000)
+    }
+
+    public timer(){
+        App._timer += 1
+        console.log(App._timer)
     }
 
     public gameLoop(): void {
@@ -28,6 +37,8 @@ class App {
         if (App._screen == "home") this._homeView.renderScreen()
         if (App._screen == "game") this._gameView.renderScreen()
         if (App._screen == "gameover") this._gameOverView.renderScreen()
+
+
 
         if (App._klimaat <= 0) App._screen = "gameover"
         if(App._klimaat >= 100){
@@ -37,15 +48,16 @@ class App {
                         App._screen = "gameover"
                     }
                 }
-
             }
         }
     }
+    
 }
 
 
 let init = function () {
     const Game = new App(<HTMLCanvasElement>document.getElementById('canvas'));
     window.setInterval(() => Game.gameLoop(), 1000 / 60)
+
 };
 window.addEventListener('load', init);
