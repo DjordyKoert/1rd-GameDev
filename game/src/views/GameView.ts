@@ -129,6 +129,7 @@ class GameView extends BaseView {
             App._klimaat += 1
         });
         window.addEventListener("mousedown", e => {
+            if (App._screen != "game") return
             if (this._curTool == "axe") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_axeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
@@ -193,7 +194,7 @@ class GameView extends BaseView {
                 document.body.style.cursor = "url('assets/cursors/Seed_Cursor.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                 if (!filter) return;
-                if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && this.ResourceCheck(0, 0, 5)) {
+                if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && this.ResourceCheck(0, 0, 30)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd)
                     this._tileInfo[n].imageSrc = "./assets/images/foliage/tree.png"
                     this.renderOldGrid()
@@ -457,7 +458,7 @@ class GameView extends BaseView {
             this._canvasHelperOverlay._context.fillText(`${App._stone}`, 340, 33)
             this._canvasHelperOverlay._context.fillText(`${App._gold}`, 530, 33)
             this._canvasHelperOverlay.loadingBar(-11, 53, 590, 15, App._klimaat, 100)
-            this._canvasHelperOverlay.writeTextToCanvas(App._klimaat.toString(), 20, 600, 20, "white", "left")
+            this._canvasHelperOverlay.writeTextToCanvas(App._klimaat.toFixed(1), 20, 580, 20, "white", "left")
         });
         imageUIBackground.src = "./assets/images/backgrounds/UIBackground.png"
         imageWoodResource.src = "./assets/images/resources/woodResource.png"
