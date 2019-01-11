@@ -39,7 +39,8 @@ class HomeView extends BaseView {
      */
     private drawPlanets() {
         this._canvasHelper.writeImageToCanvas(this._planetList, this._planetXcoord, this._planetYcoord, this._planetImageDimensions[0], this._planetImageDimensions[1])
-        this._canvasHelper.writeTextToCanvas("Nieuwe Wereld", 50, this._planetXcoord + 250, this._planetYcoord + 540)
+        this._canvasHelper.writeTextToCanvas("Nieuwe Wereld", 50, this._planetXcoord + (this._planetImageDimensions[0]/2), 
+             this._planetYcoord + (this._planetImageDimensions[1]* 1.1))
     }
 
     /**
