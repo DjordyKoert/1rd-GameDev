@@ -82,11 +82,17 @@ class App {
         this._startView = new StartView(canvasElem);
         this._gameView = new GameView(canvasElem);
         this._gameOverView = new GameOverView(canvasElem);
-        App._klimaat = 1;
+        App._klimaat = 5;
         App._gold = 0;
         App._wood = 0;
         App._stone = 0;
         App._screen = "start";
+        App._timer = 0;
+        setInterval(() => this.timer(), 1000);
+    }
+    timer() {
+        App._timer += 1;
+        console.log(App._timer);
     }
     gameLoop() {
         if (App._screen == "start")
@@ -179,6 +185,8 @@ class GameOverView extends BaseView {
         this._buttonDimension = [225, 125];
     }
     renderScreen() {
+        var total = (App._gold + App._stone + App._wood + App._klimaat);
+        var totalScore = ((App._gold + App._stone + App._wood + App._klimaat) / App._timer);
         if (!this._gameOver) {
             this._canvasHelper.clear();
             this._canvasHelperOverlay.clear();
@@ -187,8 +195,12 @@ class GameOverView extends BaseView {
             this._canvasHelper.writeTextToCanvas(`Je eind score:`, 50, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 60, "white", "center");
             this._canvasHelper.writeTextToCanvas(`Goud: ${App._gold}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 120, "white", "center");
             this._canvasHelper.writeTextToCanvas(`Steen: ${App._stone}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 180, "white", "center");
-            this._canvasHelper.writeTextToCanvas(`Hout: ${App._wood}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 230, "white", "center");
-            this._canvasHelper.writeTextToCanvas(`Klik op f5 om te restarten`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 300, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Hout: ${App._wood}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 240, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Klimaat: ${App._klimaat}`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 300, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Totaal: ${total} `, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 360, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`tijd: ${App._timer} seconden `, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 420, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Score = totaal / tijd: ${totalScore.toFixed(1)} `, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 480, "white", "center");
+            this._canvasHelper.writeTextToCanvas(`Klik op f5 om te restarten`, 40, this._canvasHelper.getCenter().X, this._canvasHelper.getCenter().Y / 5 + 540, "white", "center");
             this._gameOver = true;
         }
     }
@@ -251,20 +263,8 @@ class GameView extends BaseView {
             this.nameBox();
         }
     }
-    renderOldGrid() {
-        this._xCoord = 0;
-        this._yCoord = 0;
-        for (let line = 0; line < this._lines; line++) {
-            this._canvasHelper.moveTo(0, this._yCoord);
-            this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this._yCoord);
-            this._canvasHelper.moveTo(this._xCoord, 0);
-            this._canvasHelper.lineTo(this._xCoord, this._canvasHelper.getHeight());
-        }
-        this._tileInfo.forEach(tile => {
-            this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart);
-        });
-    }
     renderSingleGrid(xStart, xEnd, yStart, yEnd, imageSrc) {
+        this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", xStart, yStart, xEnd - xStart, yEnd - yStart);
         this._canvasHelper.writeImageToCanvas(imageSrc, xStart, yStart, xEnd - xStart, yEnd - yStart);
     }
     renderNewGrid() {
@@ -290,6 +290,8 @@ class GameView extends BaseView {
             App._klimaat += 1;
         });
         window.addEventListener("mousedown", e => {
+            if (App._screen != "game")
+                return;
             if (this._curTool == "axe") {
                 document.body.style.cursor = "url('assets/cursors/Diamond_axeChop.png'), auto";
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
@@ -298,7 +300,7 @@ class GameView extends BaseView {
                 if (filter.imageSrc == "./assets/images/foliage/tree.png") {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
-                    this.renderOldGrid();
+                    this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, "./assets/images/earth_textures/earth.png");
                     App._klimaat -= 5;
                     App._wood += 10;
                 }
@@ -332,7 +334,7 @@ class GameView extends BaseView {
                 if (filter.imageSrc == "./assets/images/earth_textures/mountain.png" && this.ResourceCheck(0, 0, 20)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
-                    this.renderOldGrid();
+                    this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, "./assets/images/earth_textures/earth.png");
                     App._klimaat -= 2;
                     App._stone += 10;
                 }
@@ -345,7 +347,7 @@ class GameView extends BaseView {
                 if ((filter.imageSrc == "./assets/images/water/lake1.png" || filter.imageSrc == "./assets/images/water/lake2.png") && this.ResourceCheck(0, 0, 15)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
-                    this.renderOldGrid();
+                    this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, "./assets/images/earth_textures/earth.png");
                     App._klimaat += 1;
                 }
             }
@@ -354,10 +356,10 @@ class GameView extends BaseView {
                 let filter = this._tileInfo.find(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                 if (!filter)
                     return;
-                if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && this.ResourceCheck(0, 0, 5)) {
+                if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && this.ResourceCheck(0, 0, 30)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/foliage/tree.png";
-                    this.renderOldGrid();
+                    this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, "./assets/images/foliage/tree.png");
                     App._klimaat += 5;
                 }
             }
@@ -593,7 +595,7 @@ class GameView extends BaseView {
             this._canvasHelperOverlay._context.fillText(`${App._stone}`, 340, 33);
             this._canvasHelperOverlay._context.fillText(`${App._gold}`, 530, 33);
             this._canvasHelperOverlay.loadingBar(-11, 53, 590, 15, App._klimaat, 100);
-            this._canvasHelperOverlay.writeTextToCanvas(App._klimaat.toString(), 20, 600, 20, "white", "left");
+            this._canvasHelperOverlay.writeTextToCanvas(App._klimaat.toFixed(1), 20, 580, 20, "white", "left");
         });
         imageUIBackground.src = "./assets/images/backgrounds/UIBackground.png";
         imageWoodResource.src = "./assets/images/resources/woodResource.png";
@@ -613,16 +615,23 @@ class GameView extends BaseView {
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine1, this._canvasHelperOverlay.getWidth(), _yPosLine1);
         this._canvasHelperOverlay.writeTextToCanvas('HUIS', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 100, undefined, 'left');
         this._canvasHelperOverlay.writeTextToCanvas(`HOUT:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 135, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`EFFECT: + GOUD`, 15, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 150, undefined, 'left');
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/house1.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 80, 90, 64);
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2);
         this._canvasHelperOverlay.writeTextToCanvas('FABRIEK', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 200, undefined, 'left');
         this._canvasHelperOverlay.writeTextToCanvas(`GOUD:100`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 235, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`EFFECT: + STEEN`, 15, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 250, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`- KLIMAAT`, 15, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 72), 265, undefined, 'left');
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/fabriek1.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 180, 90, 64);
         this._canvasHelperOverlay.writeTextToCanvas('HOUTHAKKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 300, undefined, 'left');
         this._canvasHelperOverlay.writeTextToCanvas(`HOUT:20, GOUD: 20`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 335, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`EFFECT: + HOUT`, 15, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 350, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`+ KLIMAAT`, 15, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 72), 365, undefined, 'left');
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/lumberjack.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 320, 90, 64);
         this._canvasHelperOverlay.writeTextToCanvas('MIJNWERKER', 36, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 400, undefined, 'left');
-        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:10,STEEN::20,GOUD:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`HOUT:10,STEEN:20,GOUD:40`, 20, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 435, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`EFFECT: + STEEN`, 15, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 10), 450, undefined, 'left');
+        this._canvasHelperOverlay.writeTextToCanvas(`- KLIMAAT`, 15, (this._canvasHelperOverlay.getWidth() - this._viewWidth + 72), 465, undefined, 'left');
         this._canvasHelperOverlay.writeImageToCanvas('./assets/images/houses/miner.png', (this._canvasHelperOverlay.getWidth() - this._viewWidth + 190), 450, 90, 64);
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2);
         this._canvasHelperOverlay.makeLine(this._canvasHelperOverlay.getWidth() - this._viewWidth, _yPosLine2, this._canvasHelperOverlay.getWidth(), _yPosLine2);
@@ -747,7 +756,7 @@ class HomeView extends BaseView {
     }
     drawPlanets() {
         this._canvasHelper.writeImageToCanvas(this._planetList, this._planetXcoord, this._planetYcoord, this._planetImageDimensions[0], this._planetImageDimensions[1]);
-        this._canvasHelper.writeTextToCanvas("Nieuwe Wereld", 50, this._planetXcoord + 250, this._planetYcoord + 540);
+        this._canvasHelper.writeTextToCanvas("Nieuwe Wereld", 50, this._planetXcoord + (this._planetImageDimensions[0] / 2), this._planetYcoord + (this._planetImageDimensions[1] * 1.1));
     }
     drawBackButton() {
         this._canvasHelper.createRect(0, 0, 152, 102, 'green');
