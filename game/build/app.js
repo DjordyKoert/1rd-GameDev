@@ -262,20 +262,8 @@ class GameView extends BaseView {
             this.nameBox();
         }
     }
-    renderOldGrid() {
-        this._xCoord = 0;
-        this._yCoord = 0;
-        for (let line = 0; line < this._lines; line++) {
-            this._canvasHelper.moveTo(0, this._yCoord);
-            this._canvasHelper.lineTo(this._canvasHelper.getWidth(), this._yCoord);
-            this._canvasHelper.moveTo(this._xCoord, 0);
-            this._canvasHelper.lineTo(this._xCoord, this._canvasHelper.getHeight());
-        }
-        this._tileInfo.forEach(tile => {
-            this._canvasHelper.writeImageToCanvas(tile.imageSrc, tile.xStart, tile.yStart, tile.xEnd - tile.xStart, tile.yEnd - tile.yStart);
-        });
-    }
     renderSingleGrid(xStart, xEnd, yStart, yEnd, imageSrc) {
+        this._canvasHelper.writeImageToCanvas("./assets/images/earth_textures/earth.png", xStart, yStart, xEnd - xStart, yEnd - yStart);
         this._canvasHelper.writeImageToCanvas(imageSrc, xStart, yStart, xEnd - xStart, yEnd - yStart);
     }
     renderNewGrid() {
@@ -311,7 +299,7 @@ class GameView extends BaseView {
                 if (filter.imageSrc == "./assets/images/foliage/tree.png") {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
-                    this.renderOldGrid();
+                    this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, "./assets/images/earth_textures/earth.png");
                     App._klimaat -= 5;
                     App._wood += 10;
                 }
@@ -345,7 +333,7 @@ class GameView extends BaseView {
                 if (filter.imageSrc == "./assets/images/earth_textures/mountain.png" && this.ResourceCheck(0, 0, 20)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
-                    this.renderOldGrid();
+                    this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, "./assets/images/earth_textures/earth.png");
                     App._klimaat -= 2;
                     App._stone += 10;
                 }
@@ -358,7 +346,7 @@ class GameView extends BaseView {
                 if ((filter.imageSrc == "./assets/images/water/lake1.png" || filter.imageSrc == "./assets/images/water/lake2.png") && this.ResourceCheck(0, 0, 15)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/earth_textures/earth.png";
-                    this.renderOldGrid();
+                    this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, "./assets/images/earth_textures/earth.png");
                     App._klimaat += 1;
                 }
             }
@@ -370,7 +358,7 @@ class GameView extends BaseView {
                 if ((filter.imageSrc == "./assets/images/earth_textures/earth.png") && this.ResourceCheck(0, 0, 30)) {
                     let n = this._tileInfo.findIndex(x => e.x >= x.xStart && e.x <= x.xEnd && e.y >= x.yStart && e.y <= x.yEnd);
                     this._tileInfo[n].imageSrc = "./assets/images/foliage/tree.png";
-                    this.renderOldGrid();
+                    this.renderSingleGrid(filter.xStart, filter.xEnd, filter.yStart, filter.yEnd, "./assets/images/foliage/tree.png");
                     App._klimaat += 5;
                 }
             }
