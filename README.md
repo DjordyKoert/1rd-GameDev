@@ -1,3 +1,1 @@
-Vet coole README voor Papa Djordy 
-
-( UwU ) <-- Papa Djordy
+Game gemaakt met behulp van Typescript voor basisschool kinderen
